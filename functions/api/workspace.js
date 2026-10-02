@@ -59,40 +59,38 @@ export async function onRequestPut(context) {
 
     const revision = expected + 1;
     const now = new Date().toISOString();
-    let result;
-    if (current) {
-      result = await context.env.DB.prepare(`
-        UPDATE workspaces SET workspace_json = ?, revision = ?, last_write_id = ?, updated_at = ?
-        WHERE user_id = ? AND revision = ?
-      `).bind(workspaceJson, revision, body.writeId, now, user.id, expected).run();
-    } else {
-      try {
-        result = await context.env.DB.prepare(`
+    const write = current
+      ? context.env.DB.prepare(`
+          UPDATE workspaces SET workspace_json = ?, revision = ?, last_write_id = ?, updated_at = ?
+          WHERE user_id = ? AND revision = ?
+        `).bind(workspaceJson, revision, body.writeId, now, user.id, expected)
+      : context.env.DB.prepare(`
           INSERT INTO workspaces (user_id, workspace_json, revision, last_write_id, updated_at)
-          VALUES (?, ?, ?, ?, ?)
-        `).bind(user.id, workspaceJson, revision, body.writeId, now).run();
-      } catch {
-        result = { meta: { changes: 0 } };
-      }
-    }
-    if (!result.meta?.changes) {
-      const latest = await context.env.DB.prepare(`
-        SELECT workspace_json, revision, updated_at FROM workspaces WHERE user_id = ?
-      `).bind(user.id).first();
-      return json(workspaceResponse(latest), 409);
-    }
-
-    await context.env.DB.batch([
+          VALUES (?, ?, ?, ?, ?) ON CONFLICT(user_id) DO NOTHING
+        `).bind(user.id, workspaceJson, revision, body.writeId, now);
+    // D1 batches are transactional: the current save and recovery copy commit together.
+    const results = await context.env.DB.batch([
+      write,
       context.env.DB.prepare(`
-        INSERT OR REPLACE INTO workspace_revisions (user_id, revision, workspace_json, write_id, updated_at)
-        VALUES (?, ?, ?, ?, ?)
-      `).bind(user.id, revision, workspaceJson, body.writeId, now),
+        INSERT INTO workspace_revisions (user_id, revision, workspace_json, write_id, updated_at)
+        SELECT user_id, revision, workspace_json, last_write_id, updated_at FROM workspaces
+        WHERE user_id = ? AND revision = ? AND last_write_id = ?
+        ON CONFLICT(user_id, revision) DO NOTHING
+      `).bind(user.id, revision, body.writeId),
       context.env.DB.prepare(`
         DELETE FROM workspace_revisions WHERE user_id = ? AND revision NOT IN (
           SELECT revision FROM workspace_revisions WHERE user_id = ? ORDER BY revision DESC LIMIT 100
         )
       `).bind(user.id, user.id)
     ]);
+    if (!results[0].meta?.changes) {
+      const latest = await context.env.DB.prepare(`
+        SELECT workspace_json, revision, last_write_id, updated_at FROM workspaces WHERE user_id = ?
+      `).bind(user.id).first();
+      if (latest?.last_write_id === body.writeId) return json({ ok: true, revision: latest.revision });
+      return json(workspaceResponse(latest), 409);
+    }
+
     return json({ ok: true, revision, updatedAt: now }, 200, { ETag: `"${revision}"` });
   } catch (error) {
     return errorResponse(error);

@@ -1,7 +1,9 @@
 import { json } from "./http.js";
 
 const COOKIE = "counterplot_session";
-const ITERATIONS = 600_000;
+// Cloudflare Workers currently caps native PBKDF2 at 100,000 iterations.
+// Production also uses a separately stored, high-entropy AUTH_PEPPER.
+const ITERATIONS = 100_000;
 const SESSION_DAYS = 30;
 const encoder = new TextEncoder();
 

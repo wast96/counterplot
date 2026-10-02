@@ -28,3 +28,12 @@ test("password verification accepts only the original password and pepper", asyn
   assert.equal(await verifyPassword("incorrect horse battery staple", user, "test-pepper"), false);
   assert.equal(await verifyPassword("correct horse battery staple", user, "wrong-pepper"), false);
 });
+
+
+test("production password derivation fits Cloudflare's native iteration limit", async () => {
+  const result = await hashPassword("a strong production passphrase", undefined, undefined, "separate-server-pepper");
+  assert.equal(result.iterations, 100_000);
+  assert.equal(await verifyPassword("a strong production passphrase", {
+    password_hash: result.hash, password_salt: result.salt, password_iterations: result.iterations
+  }, "separate-server-pepper"), true);
+});

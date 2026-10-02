@@ -4,11 +4,11 @@ Counterplot is a static writing workspace deployed on Cloudflare Pages. The host
 
 ## Authentication model
 
-- Passwords are derived with PBKDF2-HMAC-SHA-256, a unique salt, and 600,000 iterations. The readable password is never stored.
+- Passwords are derived with PBKDF2-HMAC-SHA-256, a unique salt, and 100,000 iterations (the Cloudflare Workers native limit). The readable password is never stored.
 - Session identifiers are random, are delivered in `Secure`, `HttpOnly`, `SameSite=Lax` cookies, and are stored in D1 only as SHA-256 hashes.
 - Eight unsuccessful attempts for the same email/IP pair cause a 15-minute lockout.
 - Registration is open when `REGISTRATION_CODE` is absent. Set that secret to make registration invite-only.
-- `AUTH_PEPPER` is optional. If used, it must remain stable: changing it invalidates every existing password.
+- `AUTH_PEPPER` is configured in production and preview, separately from the database. It must remain stable: changing it invalidates every existing password.
 
 ## Cloudflare setup
 
