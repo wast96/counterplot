@@ -1,90 +1,100 @@
-function getUserId(request) {
-  const email = request.headers.get("Cf-Access-Authenticated-User-Email");
-  if (!email) return null;
-  return email.toLowerCase();
+import { requireUser } from "../_lib/auth.js";
+import { assertSameOrigin, errorResponse, json, readJson } from "../_lib/http.js";
+
+const MAX_WORKSPACE_BYTES = 5_000_000;
+
+function workspaceResponse(row) {
+  return {
+    workspace: row ? JSON.parse(row.workspace_json) : null,
+    revision: row?.revision || 0,
+    updatedAt: row?.updated_at || null
+  };
 }
 
 export async function onRequestGet(context) {
-  const userId = getUserId(context.request);
-
-  if (!userId) {
-    return Response.json(
-      { error: "Not signed in" },
-      { status: 401 }
-    );
+  try {
+    const user = await requireUser(context);
+    const revision = new URL(context.request.url).searchParams.get("revision");
+    let row;
+    if (revision !== null) {
+      if (!/^\d+$/.test(revision)) return json({ error: "Invalid revision" }, 400);
+      row = await context.env.DB.prepare(`
+        SELECT workspace_json, revision, updated_at FROM workspace_revisions
+        WHERE user_id = ? AND revision = ?
+      `).bind(user.id, Number(revision)).first();
+      if (!row) return json({ error: "Revision not found" }, 404);
+    } else {
+      row = await context.env.DB.prepare(`
+        SELECT workspace_json, revision, updated_at FROM workspaces WHERE user_id = ?
+      `).bind(user.id).first();
+      const etag = `"${row?.revision || 0}"`;
+      if (context.request.headers.get("If-None-Match") === etag) {
+        return new Response(null, { status: 304, headers: { ETag: etag, "Cache-Control": "no-store" } });
+      }
+    }
+    const response = workspaceResponse(row);
+    return json(response, 200, { ETag: `"${response.revision}"` });
+  } catch (error) {
+    return errorResponse(error);
   }
-
-  const row = await context.env.DB
-    .prepare(`
-      SELECT data, updated_at
-      FROM workspaces
-      WHERE user_id = ?
-    `)
-    .bind(userId)
-    .first();
-
-  if (!row) {
-    return Response.json({
-      data: null,
-      updatedAt: null
-    });
-  }
-
-  return Response.json({
-    data: JSON.parse(row.data),
-    updatedAt: row.updated_at
-  });
 }
 
 export async function onRequestPut(context) {
-  const userId = getUserId(context.request);
-
-  if (!userId) {
-    return Response.json(
-      { error: "Not signed in" },
-      { status: 401 }
-    );
-  }
-
-  let body;
-
   try {
-    body = await context.request.json();
-  } catch {
-    return Response.json(
-      { error: "Invalid JSON" },
-      { status: 400 }
-    );
+    assertSameOrigin(context.request);
+    const user = await requireUser(context);
+    const body = await readJson(context.request, MAX_WORKSPACE_BYTES + 32_768);
+    if (!body?.workspace || typeof body.workspace !== "object" || !Number.isInteger(body.revision) || body.revision < 0 || typeof body.writeId !== "string" || !body.writeId || body.writeId.length > 100) {
+      return json({ error: "Invalid workspace save" }, 400);
+    }
+    const workspaceJson = JSON.stringify(body.workspace);
+    if (new TextEncoder().encode(workspaceJson).byteLength > MAX_WORKSPACE_BYTES) return json({ error: "Workspace is too large" }, 413);
+
+    const current = await context.env.DB.prepare(`
+      SELECT workspace_json, revision, last_write_id, updated_at FROM workspaces WHERE user_id = ?
+    `).bind(user.id).first();
+    if (current?.last_write_id === body.writeId) return json({ ok: true, revision: current.revision });
+    const expected = current?.revision || 0;
+    if (body.revision !== expected) return json(workspaceResponse(current), 409);
+
+    const revision = expected + 1;
+    const now = new Date().toISOString();
+    let result;
+    if (current) {
+      result = await context.env.DB.prepare(`
+        UPDATE workspaces SET workspace_json = ?, revision = ?, last_write_id = ?, updated_at = ?
+        WHERE user_id = ? AND revision = ?
+      `).bind(workspaceJson, revision, body.writeId, now, user.id, expected).run();
+    } else {
+      try {
+        result = await context.env.DB.prepare(`
+          INSERT INTO workspaces (user_id, workspace_json, revision, last_write_id, updated_at)
+          VALUES (?, ?, ?, ?, ?)
+        `).bind(user.id, workspaceJson, revision, body.writeId, now).run();
+      } catch {
+        result = { meta: { changes: 0 } };
+      }
+    }
+    if (!result.meta?.changes) {
+      const latest = await context.env.DB.prepare(`
+        SELECT workspace_json, revision, updated_at FROM workspaces WHERE user_id = ?
+      `).bind(user.id).first();
+      return json(workspaceResponse(latest), 409);
+    }
+
+    await context.env.DB.batch([
+      context.env.DB.prepare(`
+        INSERT OR REPLACE INTO workspace_revisions (user_id, revision, workspace_json, write_id, updated_at)
+        VALUES (?, ?, ?, ?, ?)
+      `).bind(user.id, revision, workspaceJson, body.writeId, now),
+      context.env.DB.prepare(`
+        DELETE FROM workspace_revisions WHERE user_id = ? AND revision NOT IN (
+          SELECT revision FROM workspace_revisions WHERE user_id = ? ORDER BY revision DESC LIMIT 100
+        )
+      `).bind(user.id, user.id)
+    ]);
+    return json({ ok: true, revision, updatedAt: now }, 200, { ETag: `"${revision}"` });
+  } catch (error) {
+    return errorResponse(error);
   }
-
-  if (!body || typeof body.data !== "object") {
-    return Response.json(
-      { error: "Invalid workspace" },
-      { status: 400 }
-    );
-  }
-
-  const data = JSON.stringify(body.data);
-  const updatedAt = new Date().toISOString();
-
-  await context.env.DB
-    .prepare(`
-      INSERT INTO workspaces (
-        user_id,
-        data,
-        updated_at
-      )
-      VALUES (?, ?, ?)
-      ON CONFLICT(user_id)
-      DO UPDATE SET
-        data = excluded.data,
-        updated_at = excluded.updated_at
-    `)
-    .bind(userId, data, updatedAt)
-    .run();
-
-  return Response.json({
-    ok: true,
-    updatedAt
-  });
 }

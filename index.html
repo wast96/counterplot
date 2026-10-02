@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-hosted="true">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -3221,6 +3221,7 @@ dialog::backdrop {
 .draft-notice[hidden]{display:none}.saved-draft{display:flex;gap:15px;align-items:center;padding:17px 0;border-bottom:1px solid var(--line,#ccd0c5)}.saved-draft>div{flex:1;min-width:0}.saved-draft p{overflow-wrap:anywhere;white-space:pre-wrap}.saved-draft h3{font:23px Georgia,serif}
 .path-steps{counter-reset:path}.path-step{display:grid;grid-template-columns:30px minmax(120px,1.5fr) minmax(110px,1fr) 32px;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line,#ccd0c5)}.path-step .field{margin:0;min-width:0}.path-step select{width:100%}.path-step .ordinal{font:20px Georgia,serif}.path-preview{border-top:1px solid var(--line,#ccd0c5);padding:22px 0}.path-preview h3{font:24px/1.3 Georgia,serif;margin:12px 0}.path-preview p{font-size:15px;line-height:1.7;white-space:pre-wrap}
 .sync-panel{position:fixed;inset:0;background:var(--paper,#f3f0e7);z-index:10000;display:grid;place-items:center;padding:25px}.sync-panel[hidden]{display:none}.sync-panel-inner{max-width:580px;width:100%}.sync-panel h1{font:48px/1.1 Georgia,serif}.sync-panel p{font-size:16px;line-height:1.7}.sync-panel button{margin:10px 10px 0 0}.sync-live-notice{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);max-width:min(95vw,750px);background:var(--paper,#f3f0e7);color:var(--ink,#26362b);border:1px solid var(--line,#c8ccbf);padding:14px 18px;z-index:120;font-size:14px;box-shadow:0 4px 25px #0001}
+.auth-form{margin-top:28px}.auth-form .field{margin-bottom:16px}.auth-error{color:var(--accent,#93412b);min-height:1.5em}.auth-switch{margin-top:24px}.auth-form button[type=submit]{width:100%;margin:8px 0 0}
 html[data-hosted="true"] .save-status{cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 html[data-hosted="true"] .save-status:focus-visible{outline:2px solid currentColor;outline-offset:5px}
 .route-reasoning p,.scene-body p,.thread-scene p{white-space:pre-wrap}
@@ -9030,7 +9031,7 @@ if(typeof module!=='undefined'&&module.exports)module.exports=CounterplotSyncCor
  async function openCache(){return new Promise((resolve,reject)=>{const request=indexedDB.open('counterplot-private-v2',1);request.onupgradeneeded=()=>request.result.createObjectStore('workspaces');request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error);});}
  async function cacheOp(method,value){if(!cache)return null;return new Promise((resolve,reject)=>{const tx=cache.transaction('workspaces',method==='get'||method==='getAll'?'readonly':'readwrite'),store=tx.objectStore('workspaces');let req;if(method==='put')req=store.put(value,slot);else if(method==='get')req=store.get(slot);else if(method==='getAll')req=store.getAll();else req=store.delete(slot);tx.oncomplete=()=>resolve(req.result);tx.onerror=()=>reject(tx.error||req.error);tx.onabort=()=>reject(tx.error||new Error('Local recovery write aborted'));});}
  async function persist(){try{await cacheOp('put',{owner:user,slot,base,revision,pending,inflight,updatedAt:new Date().toISOString()});}catch{cacheIssue='The browser could not retain a recovery copy';paint();}}
- async function api(path,options={}){const r=await fetch('/api/'+path,{credentials:'same-origin',cache:'no-store',...options,headers:{...(options.body?{'Content-Type':'application/json'}:{}),...options.headers},signal:AbortSignal.timeout(15000)});if(r.status===304)return null;let body;try{body=await r.json();}catch{throw new Error('Sign in again to reconnect');}if(r.status===409)return {...body,conflict:true};if(!r.ok)throw new Error(r.status===401?'Your session needs a new sign-in':body.error||'Server unavailable');return body;}
+ async function api(path,options={}){const r=await fetch('/api/'+path,{credentials:'same-origin',cache:'no-store',...options,headers:{...(options.body?{'Content-Type':'application/json'}:{}),...options.headers},signal:AbortSignal.timeout(15000)});if(r.status===304)return null;let body;try{body=await r.json();}catch{const error=new Error('The server returned an unreadable response');error.status=r.status;throw error;}if(r.status===409)return {...body,conflict:true};if(!r.ok){const error=new Error(body.error||'Server unavailable');error.status=r.status;throw error;}return body;}
  function enqueue(data){if(!ready)return;pending=core.copy(data);paint();void persist();clearTimeout(timer);timer=setTimeout(flush,750);}
  function mergeRemote(remote){
   const local=pending||bridge.snapshot(), merged=core.merge(base,local,remote.workspace);
@@ -9064,20 +9065,35 @@ if(typeof module!=='undefined'&&module.exports)module.exports=CounterplotSyncCor
   try{const remote=await api('workspace',{headers:{'If-None-Match':'"'+revision+'"'}});networkIssue='';if(remote?.workspace){if(bridge.isEditing())remoteWaiting=remote;else{mergeRemote(remote);lastSynced=new Date().toISOString();await persist();}}}
   catch(e){networkIssue=e.message;}finally{busy=false;paint();if(pending&&!networkIssue)void flush();}
  }
+ function showAuth(mode='login',message=''){
+  const registering=mode==='register';shield.replaceChildren();const inner=document.createElement('div');inner.className='sync-panel-inner';
+  const eyebrow=document.createElement('div');eyebrow.className='eyebrow';eyebrow.textContent='COUNTERPLOT / PRIVATE ACCOUNT';
+  const title=document.createElement('h1');title.textContent=registering?'Create your account.':'Welcome back.';
+  const intro=document.createElement('p');intro.textContent=registering?'Your stories will be saved privately and available on your signed-in devices.':'Sign in to open your private writing workspace.';
+  const form=document.createElement('form');form.className='auth-form';form.innerHTML=`<label class="field"><span class="field-label">Email</span><input type="email" name="email" autocomplete="email" required maxlength="254"></label><label class="field"><span class="field-label">Password</span><input type="password" name="password" autocomplete="${registering?'new-password':'current-password'}" required minlength="12" maxlength="1024"></label>${registering?'<label class="field"><span class="field-label">Registration code <span class="muted">/ if required</span></span><input type="password" name="registrationCode" autocomplete="off"></label><p class="field-help">Use at least 12 characters. Counterplot never stores the readable password.</p>':''}<p class="auth-error" role="alert"></p><button class="button" type="submit">${registering?'Create account':'Sign in'} ↗</button>`;
+  const switcher=document.createElement('button');switcher.type='button';switcher.className='text-button auth-switch';switcher.textContent=registering?'Already registered? Sign in':'New here? Create an account';switcher.addEventListener('click',()=>showAuth(registering?'login':'register'));
+  form.addEventListener('submit',async event=>{event.preventDefault();const submit=form.querySelector('[type=submit]'),error=form.querySelector('.auth-error'),data=new FormData(form);submit.disabled=true;error.textContent='';try{await api('auth/'+(registering?'register':'login'),{method:'POST',body:JSON.stringify({email:data.get('email'),password:data.get('password'),registrationCode:data.get('registrationCode')||''})});await boot();}catch(e){error.textContent=e.message;submit.disabled=false;}});
+  inner.append(eyebrow,title,intro,form,switcher);shield.append(inner);shield.hidden=false;setTimeout(()=>form.elements.email.focus(),0);
+ }
+ async function offerLegacyImport(){
+  let legacy;try{const raw=localStorage.getItem('counterplot.workspace.v1');if(raw)legacy=bridge.validate(JSON.parse(raw));}catch{return null;}
+  if(!legacy)return null;
+  return new Promise(resolve=>box('Bring this device’s work with you?','Counterplot found a workspace saved in this browser before account sync was enabled. Import it into this account, or start a separate blank workspace. The browser copy will not be deleted.',[['Import browser workspace',()=>resolve(legacy)],['Start blank',()=>resolve(null)]]));
+ }
  async function boot(){
   box('Your private workshop.','Connecting to your account before displaying any saved story.');
   try{
-   const session=await api('session');user=session.user;email=session.email;slot=user+':'+tab;
+   const session=await api('auth/session');user=session.user;email=session.email;slot=user+':'+tab;
    try{cache=await openCache();}catch{cacheIssue='Browser recovery storage is unavailable';}
    const saved=await cacheOp('get'), remote=await api('workspace');
    if(saved?.owner===user&&saved.pending){base=saved.base;revision=saved.revision;pending=bridge.validate(saved.pending);inflight=saved.inflight||null;if(remote.workspace){mergeRemote(remote);}else{bridge.replace(pending);base=null;revision=0;inflight=null;}}
    else if(remote.workspace){base=bridge.validate(remote.workspace);revision=remote.revision;bridge.replace(base);lastSynced=new Date().toISOString();}
-   else{base=null;revision=0;pending=bridge.snapshot();}
+   else{base=null;revision=0;pending=await offerLegacyImport()||bridge.snapshot();if(pending)bridge.replace(pending);}
    ready=true;networkIssue='';shield.hidden=true;await persist();paint();
    const other=(await cacheOp('getAll')||[]).filter(x=>x.owner===user&&x.slot!==slot&&x.pending);
    if(other.length)showNotice('This browser also has unfinished work from another tab or earlier session. Open the save status to recover it without replacing current work.');
    if(pending)void flush();
-  }catch(e){networkIssue=e.message;box('Not connected yet.',e.message+'. No private workspace has been replaced. Signing in requires the deployed site’s authorized account.',[['Try again',boot],['Sign in again',()=>location.reload()]]);paint();}
+  }catch(e){networkIssue=e.message;if(e.status===401)showAuth('login');else box('Not connected yet.',e.message+'. No private workspace has been replaced.',[['Try again',boot]]);paint();}
  }
  async function details(){
   const text=[email?('Account: '+email+'.'):'',status()+'.','Changes appear on another connected device after the server confirms the save. Simultaneous conflicting edits are preserved as separate project versions.',cacheIssue?'Local recovery is currently unavailable. Keep this tab open until the server confirms your save.':'A local recovery copy covers ongoing edits if the connection drops. An offline cold launch still requires sign-in before showing private data.'].join(' ');
@@ -9088,8 +9104,8 @@ if(typeof module!=='undefined'&&module.exports)module.exports=CounterplotSyncCor
  async function recoverTabs(){try{const records=(await cacheOp('getAll')||[]).filter(x=>x.owner===user&&x.slot!==slot&&x.pending);box('Unfinished device copies.',records.length?'These are separate local recovery slots, not automatically accepted story changes. Recovering adds copies without overwriting your work.':'No other unfinished device copies were found.',[['Back',details],...records.map(r=>['Recover '+new Date(r.updatedAt).toLocaleString(),()=>{appendRecovery(r.pending,'recovered device copy');shield.hidden=true;}])]);}catch(e){box('Recovery unavailable.',e.message,[['Back',details]]);}}
  async function signOut(){
   if(pending||inflight||remoteWaiting){await flush();if(pending||inflight||remoteWaiting){box('Finish saving before signing out.','There are changes the server has not confirmed. They remain in this session; reconnect before signing out.',[['Back to writing',()=>shield.hidden=true],['Retry',async()=>{await flush();await details();}]]);return;}}
-  try{await cacheOp('delete');sessionStorage.removeItem('counterplot.tab');}catch{}
-  location.assign('/cdn-cgi/access/logout');
+  try{await api('auth/logout',{method:'POST'});await cacheOp('delete');sessionStorage.removeItem('counterplot.tab');}catch(e){box('Sign out failed.',e.message,[['Back',details]]);return;}
+  ready=false;base=null;pending=null;inflight=null;user='';email='';showAuth('login');
  }
  window.counterplotSync=Object.freeze({enqueue,status,problem,details,flush});
  document.querySelector('#save-status').setAttribute('tabindex','0');document.querySelector('#save-status').setAttribute('role','button');document.querySelector('#save-status').setAttribute('aria-label','Save and synchronization details');document.querySelector('#save-status').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();details();}});
