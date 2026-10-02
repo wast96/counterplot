@@ -1,0 +1,5 @@
+# Optional: when set, new accounts must supply this code on the registration form.
+REGISTRATION_CODE="replace-with-a-long-random-value"
+
+# Optional defense in depth. Set it once and do not rotate it without resetting passwords.
+AUTH_PEPPER="replace-with-a-different-long-random-value"
