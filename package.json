@@ -4,6 +4,10 @@
   "type": "module",
   "scripts": {
     "test": "node --test",
-    "check": "node --check functions/_lib/auth.js && node --check functions/_lib/http.js && node --check functions/api/auth/register.js && node --check functions/api/auth/login.js && node --check functions/api/auth/session.js && node --check functions/api/auth/logout.js && node --check functions/api/workspace.js && node --check functions/api/history.js"
+    "check": "node --check functions/_lib/auth.js && node --check functions/_lib/http.js && node --check functions/api/auth/register.js && node --check functions/api/auth/login.js && node --check functions/api/auth/session.js && node --check functions/api/auth/logout.js && node --check functions/api/workspace.js && node --check functions/api/history.js",
+    "test:browser": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0"
   }
 }

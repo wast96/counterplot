@@ -80,3 +80,15 @@ The server retains the latest 100 workspace revisions. Conflicting saves return 
 - D1 is the authoritative cross-device copy. IndexedDB is only a per-browser recovery queue.
 - Registration currently does not verify ownership of the supplied email address and there is no automated password reset. Use invite-only registration until those features are added.
 - Never log passwords, cookies, registration codes, peppers, or complete workspace JSON.
+
+## Development checks
+
+```sh
+npm ci
+npm test
+npm run check
+npx playwright install chromium
+npm run test:browser
+```
+
+The browser suite tests the local edition with fresh workspaces on desktop and mobile, including Storyline's first-scene guide, scene creation, and Scene Explorer navigation. It does not need Cloudflare credentials or a running server. To use an existing Chromium installation, set `CHROMIUM_PATH` to its executable path when running `npm run test:browser`.
