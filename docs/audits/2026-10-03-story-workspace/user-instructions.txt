@@ -1,0 +1,89 @@
+# Counterplot: Audit → Plan → Implement
+
+Improve Counterplot toward 5/5 on the six criteria below and a separate 5/5 for bug-freedom. Success is meaningful improvement to the storytelling experience, not finding counts, feature counts, or score inflation.
+
+Protect security, privacy, data integrity, existing work, accessibility, and core functionality. Resolve genuine blockers first; otherwise prioritize the six criteria in order—not exhausting the bug backlog. Seek solutions that satisfy competing goals rather than accepting avoidable compromises.
+
+**Protected behavior:** Keep the Outline page’s MICE bar floating/hovering at the viewport bottom while scrolling. Do not remove, relocate, or convert it to an inline/docked panel without my explicit instruction. Improve it within that model without obscuring content.
+
+# PHASE 1: AUDIT — READ-ONLY
+
+Identify the live deployment and verify correspondence with the inspected repository/branch. Report material differences rather than assuming they match.
+
+## Product/design audit
+
+Evaluate these six criteria first. Score each out of 5 using the stated weights. Be sharply critical and insightful without being unfair. Keep weights and standards consistent; improvement over an earlier version does not itself earn a high score.
+
+1. **Usefulness — 20%.** Does this feel designed by storytellers, for storytellers? Does it help people build stories, develop material, and make creative decisions in ways that reflect how writers discover, revise, explore, change their minds, and get stuck—not impose a generic productivity model? Assess complete creative workflows, not just individual features. Identify unnecessary ceremony: clicks, modal hops, backtracking, mode switching, repeated input, and needless scrolling. Preserve working context, selections, position, and orientation; surface relevant information rather than requiring recall.
+
+2. **Intuitiveness — 18%.** Can a total newcomer understand each section, what can be done, and what happened? Assess labels, navigation, affordances, hierarchy, feedback, and consistency. Familiar pages and controls should look and behave recognizably: an account page should read as an account page. Clickable, editable, draggable, expandable, selected, disabled, and destructive states should be clear without dependence on hover, hidden gestures, unfamiliar icons, or experimentation. Evaluate first-use, empty, loading, partial, error, and dense states. Follow established UX/UI conventions where helpful without flattening distinctive visual character or storyteller-specific interactions into generic SaaS patterns.
+
+3. **Creative flexibility — 17%.** Can this help someone write any story without prescribing tropes, structures, character models, or methods? Test representative conventional/unconventional, linear/nonlinear, plot-heavy/character-driven, and sparse/complex stories, including quiet, ambiguous, and experimental work. Distinguish inherent storytelling complexity from software-created complexity. Make core functionality apparent, secondary functionality subordinate, and advanced depth accessible through sensible progressive disclosure—not obscure collapsed sections or unnecessary configuration.
+
+4. **Purposeful design — 16%.** How bullshit-free is the site? Is copy concise and useful? Does every page, feature, control, mode, setting, visualization, and workflow earn its place in the whole product, considering duplication, attention, space, cognitive load, learning, complexity, and maintenance? Judge net value, not isolated usefulness. Treat removal, consolidation, relocation, demotion, automation, and stronger defaults as legitimate improvements. Question “UI about the UI,” unnecessary explanation, nested controls, and mini-app-like subsystems. Do not substitute settings for product decisions; retain preferences where users genuinely need persistent alternatives. Preserve important capabilities and existing work, not every current screen or control.
+
+5. **Satisfying design/feel — 15%.** Does using it feel satisfying and fun—not merely functional or frustration-free? Do small actions feel responsive, tactile, rewarding, and unusually satisfying? Evaluate placement, timing, feedback, transitions, state changes, typing, scrolling, dragging, and navigation. Does it support sustained creative concentration and make someone want to spend hours working inside it and return? Assess real/perceived performance at realistic project sizes and cumulative friction from individually small annoyances.
+
+6. **Visually compelling — 14%.** Does it look good, have a strong coherent identity, and create a positive emotional response? Does it fuck hard design-wise? Assess the shared design system, typography, spacing, controls, and hierarchy. Watch for excessive containers, repeated headings, borders, competing actions, and unrelated screen designs. Explicitly inspect spatial collisions: elements crowding, visually attaching to, or crashing into text, controls, rules, or container edges—even without literal overlap. Check padding, alignment, negative space, wrapping, and proximity across content lengths and viewports. Assess WCAG 2.2 AA accessibility, including contrast, keyboard access, focus, labels, zoom/reflow, and target sizes; a scanner pass does not establish compliance.
+
+For each criterion, explain strengths, weaknesses, and the 1–3 issues that most determine its score, where warranted. Ground judgments in observed behavior or structure; distinguish evidence from inference. Score overall quality and impact, not criticism counts. Bugs affect a design score only through their demonstrated impact on that criterion. Unknown or untested behavior is not a confirmed defect.
+
+Explain the meaningful gap to 4/5 or 5/5, especially for scores below 4. Do not justify low scores with minor nitpicks while leaving fundamental weaknesses unexplained. Do not manufacture changes in already-strong areas; “leave this alone” is valid.
+
+Report the weighted score: sum each score multiplied by its weight. Then synthesize the highest-leverage product opportunities and assess the whole information architecture, navigation, grouping, defaults, and mental model. Ask: **Is this an exceptional environment for constructing stories, or merely a well-designed and well-engineered application?** Identify what prevents the former without adding another score. High-level directions are allowed; specific designs and implementation plans belong in Phase 2.
+
+## Separate bug-freedom audit
+
+Score independently out of 5. Keep this thorough but separate from the product agenda. Test:
+
+- Crashes, runtime errors, dead links, missing/unreachable features, misleading or ineffective controls, and success/error/loading/unchanged-state feedback.
+- Layout and spatial failures, clipping, overflow, obscured content, scrolling, dialogs, notices, floating/fixed panels, focus, and browser Back/Forward.
+- Saving, undo/redo, recovery, refresh/reopen, imports/exports, migrations, historical states, references, synchronization, and consistent propagation across views.
+- Authentication, sign-in/out, session expiration, account recovery, interruption/reconnection, and cross-device access; failed saves, simultaneous edits, stale/conflicting state, navigation away, and account changes must not silently discard, overwrite, duplicate, or revert work.
+- Destructive actions: deletion, clearing, resetting, replacement, overwriting, and unlinking. Verify clear consequences, accidental-activation protection, and recovery where appropriate.
+- Performance: loading, input latency, navigation, scrolling/dragging, and degradation with large interconnected projects.
+- Security/privacy: authorization boundaries, unauthorized actions/access, session handling, and exposure of private content or sensitive information in interfaces, URLs, logs, errors, or exports. No obvious finding does not establish security.
+
+Use hands-on workflows and rendered-screen inspection alongside relevant code, data-flow, persistence, migration, and state inspection. A handler running, test passing, or clean console is not proof of a working feature.
+
+Exercise repeated actions, changed/unchanged inputs, unfinished workflows, long names/text, and empty through realistically large projects with many scenes, characters, threads, relationships, references, and historical states. Test desktop, tablet, narrow mobile, landscape, zoom, keyboard use, and supported browsers where available, including Safari, Chrome, and Firefox. Failures must preserve work and offer understandable recovery/retry, not just an error message.
+
+Use test accounts/data and isolated environments for risky, destructive, authorization, migration, and conflicting-state tests. Never expose or damage real user data or compromise production availability. Report unavailable environments and untested areas honestly.
+
+Record confirmed bugs with reproduction steps, expected/actual results, severity, and practical impact. Group related minor findings without losing their identities. Present the complete audit before Phase 2; do not let bug volume replace deep product judgment.
+
+# PHASE 2: PLANNING — READ-ONLY
+
+Lead with **no more than five high-leverage product/design changes**; fewer are fine. Do not manufacture a redesign quota. Explain how each addresses the underlying reasons for low scores and produces observable improvement—not merely a predicted score increase.
+
+The existing structure is not sacred. Propose removing, consolidating, relocating, simplifying, demoting, or rethinking features, pages, navigation, defaults, modes, and interaction models when justified. Preserve work, accessibility, compatibility, and important capabilities through better replacement workflows where appropriate. Do not preserve bad interfaces because they exist or redesign for novelty.
+
+Organize the plan into high-leverage changes, supporting workflow/design improvements, and grouped bug fixes/polish. Identify blockers and dependencies that must be implemented first, without letting minor cleanup displace product improvements.
+
+For each substantive change, specify the finding, proposed change and rationale, intended behavior/feedback, tradeoffs, edge cases, data/account-access preservation or migration, and observable acceptance checks. Prefer systemic fixes to shared components, design patterns, information architecture, or data flows over repeated local patches.
+
+Trace major product criticisms, high-impact bugs, security/privacy issues, and data-loss risks to actions or explained deferrals. Group lesser findings into a traceable cleanup backlog. Make scope and deferrals explicit for approval.
+
+Perform a final simplification pass: replace unnecessary additions with removal, consolidation, flattening, automation, relocation, stronger defaults, or existing patterns. Verify cuts preserve essential workflows, accessibility, dependencies, and accessible user data.
+
+Finish with a substantially shorter plain-language summary of what changes, why, and how. Aim toward both 5/5 scores through meaningful product impact, not issue-count maximization.
+
+**Wait for my approval before implementation.**
+
+# PHASE 3: IMPLEMENTATION — WRITE
+
+Implement the approved scope, including the high-leverage work; do not silently substitute easier cleanup. Address genuine blockers and dependencies first, then preserve the agreed product priorities. Report material scope changes for approval rather than making a different plan unilaterally.
+
+Re-run the Phase 1 test matrix and original reproductions, including regressions, existing projects, retained capabilities, and risky/large-project scenarios. Explicitly verify that the MICE bar still floats at the Outline viewport bottom.
+
+Verify experiential acceptance checks through realistic use and rendered comparisons. Major changes must address the original weaknesses; simplifications must reduce actual complexity; and redesigned elements must fit the wider product. Assess composition, context, flexibility, and interaction pleasure—not just technical correctness. Correct unsuccessful changes within scope rather than retaining them because they were built.
+
+Reconcile every approved item as verified, incomplete, or blocked, with evidence and reasons. Do not claim completion with approved work outstanding, inflate scores, or manufacture further work to reach 5/5.
+
+Then:
+
+1. Push to GitHub, create the pull request, and verify required checks. Do not merge/deploy with failed required checks, critical regressions, data-loss risks, security/privacy failures, or other release blockers. Resolve safely within scope or stop and report.
+2. Merge approved, verified changes; verify the live deployment and MICE behavior; then delete the implementation branch. Report completed work, testing, deferrals, and limitations. Failed deployment verification is not completion: report and address it safely within scope.
+3. Re-present these instructions verbatim in an easily copyable block.
+
+Stop after the approved cycle. If I say **“repeat,”** restart Phase 1 against the current live version using these latest instructions.
