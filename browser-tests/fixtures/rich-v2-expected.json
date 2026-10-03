@@ -1,0 +1,34 @@
+{
+  "stale": [
+    "cp-murxxa1r-9nt2tu1oc2o"
+  ],
+  "state": {
+    "id": "cp-murxxa0r-mai0zglggb",
+    "name": "Mara",
+    "identity": "",
+    "notes": "",
+    "archived": false,
+    "lifeStatus": "alive",
+    "blocks": [
+      {
+        "id": "cp-mury5fwc-n6rbh271pw",
+        "kind": "want",
+        "key": "custom",
+        "text": "Carry the songs to another port",
+        "title": "",
+        "targetId": "",
+        "context": "",
+        "detail": "",
+        "knownBy": [],
+        "locked": true
+      }
+    ],
+    "prominence": {
+      "opening": "",
+      "changes": [],
+      "checkpoints": []
+    }
+  },
+  "knowledge": true,
+  "outline": "[PLOTS A] <C> The songs at risk: Mara wants to preserve the harbor songs.\n    An evening rehearsal: \n[PLOTS A] </C> "
+}

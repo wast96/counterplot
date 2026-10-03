@@ -55,6 +55,14 @@ export async function onRequestPut(context) {
     `).bind(user.id).first();
     if (current?.last_write_id === body.writeId) return json({ ok: true, revision: current.revision });
     const expected = current?.revision || 0;
+    const writer = Number(context.request.headers.get("X-Counterplot-Writer") || 2);
+    const currentSchema = current ? JSON.parse(current.workspace_json).schema : 0;
+    if (!Number.isInteger(writer) || writer < currentSchema || body.workspace.schema > writer || body.workspace.schema < currentSchema) {
+      return json({ error: "Update Counterplot before saving. Your local edits are retained." }, 426);
+    }
+    if (![1, 2, 3].includes(body.workspace.schema) || !Array.isArray(body.workspace.projects) || !body.workspace.projects.length) {
+      return json({ error: "Unsupported workspace format" }, 400);
+    }
     if (body.revision !== expected) return json(workspaceResponse(current), 409);
 
     const revision = expected + 1;
