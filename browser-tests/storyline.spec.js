@@ -23,7 +23,7 @@ async function openScene(page, ideas = false) {
     await page.getByRole('button', { name: 'Create a character' }).click();
   }
   await expect(page.getByRole('heading', { name: 'Build this scene.' })).toBeVisible();
-  return page.getByRole('dialog', { name: 'Build this scene.' });
+  const planning=page.locator('.scene-planning');if(!await planning.evaluate(e=>e.open))await planning.locator('summary').first().click();return page.getByRole('dialog', { name: 'Build this scene.' });
 }
 async function saveScene(page, title = 'The letter') {
   await page.locator('[data-draft="title"]').fill(title);
@@ -43,7 +43,7 @@ test('the canvas develops setup before tension, turn, outcome and reaction; cont
   await expect(page.getByRole('region', { name: 'Three small steps. A story that moves.' }).getByRole('listitem')).toHaveCount(3);
   await openScene(page);
   expect(await page.locator('.scene-canvas-section h3').allTextContents()).toEqual([
-    '01 Set the scene', '02 Build tension', '03 Find the turn', '04 Show the outcome', '05 Let it land', 'Write freely'
+    'Write freely', 'Opening', 'Development', 'Turn or continuation', 'Outcome', 'Afterward'
   ]);
   for (const [key, value] of Object.entries(fields)) await page.locator(`[data-draft="${key}"]`).fill(value);
   await saveScene(page);
@@ -58,7 +58,7 @@ test('the canvas develops setup before tension, turn, outcome and reaction; cont
   const workspace = await page.evaluate(() => counterplotDiagnostics.snapshot());
   expect(workspace.projects[0].scenes[1].parent).toBe(workspace.projects[0].scenes[0].id);
   await page.getByRole('button', { name: 'Edit scene The letter', exact: true }).click();
-  await page.locator('[data-draft="turn"]').fill('A different name is on the arrest notice.');
+  await page.locator('.scene-planning>summary').click();await page.locator('[data-draft="turn"]').fill('A different name is on the arrest notice.');
   await page.getByRole('button', { name: 'Save scene', exact: false }).click();
   const stale = await page.evaluate(() => counterplotDiagnostics.staleSceneIds());
   expect(stale).toContain(workspace.projects[0].scenes[1].id);
@@ -71,16 +71,16 @@ test('Explorer offers varied questions inside the canvas and keeps possibilities
   await page.locator('[data-draft="context"]').fill(fields.context);
   await page.locator('[data-draft="goal"]').fill(fields.goal);
   await page.getByRole('button', { name: 'Refresh from this scene’s setup' }).click();
-  await expect(page.locator('.scene-idea')).toHaveCount(13);
+  await expect(page.locator('.scene-idea:visible')).toHaveCount(3);await page.getByRole('button',{name:'Browse more questions'}).click();
   await expect(page.locator('.scene-idea').first()).toContainText(fields.context);
-  await expect(page.locator('.scene-idea').nth(1)).toContainText(fields.goal);
+  await expect(page.locator('.scene-idea').filter({has:page.getByRole('heading',{name:'A smaller attempt',exact:true})})).toContainText(fields.goal);
   await page.locator('.scene-idea').first().getByRole('button').click();
   await expect(page.locator('[data-draft="ideaNotes"]')).toContainText(fields.context);
   await expect(page.locator('[data-draft="action"]')).toHaveValue('');
   await expect(page.locator('[data-draft="after"]')).toHaveValue('');
   await page.locator('[data-draft="sceneKind"]').selectOption('aftermath');
   await expect(page.locator('[data-draft="goal"]')).toHaveValue(fields.goal);
-  await expect(page.locator('.scene-idea')).toHaveCount(4);
+  await expect(page.locator('.scene-idea:visible').first()).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Make room for relief' })).toBeVisible();
   await page.getByRole('button', { name: 'Save unfinished draft' }).click();
   await page.getByRole('button', { name: 'Resume or discard' }).click();
@@ -91,7 +91,7 @@ test('Explorer offers varied questions inside the canvas and keeps possibilities
 
 test('free prose and incomplete scenes can be saved, edited and recovered after reload', async ({ page }) => {
   await openScene(page);
-  await page.getByRole('button', { name: 'Write freely first' }).click();
+  await page.getByRole('button', { name: 'Planning first',exact:true }).click();await page.getByRole('button', { name: 'Write freely first',exact:true }).click();
   expect((await page.locator('.scene-canvas-section h3').allTextContents())[0]).toBe('Write freely');
   await page.locator('[data-draft="notes"]').fill('The cup was still warm. She did not move it.');
   await saveScene(page, 'A quiet morning');
@@ -100,7 +100,7 @@ test('free prose and incomplete scenes can be saved, edited and recovered after 
   await page.getByRole('button', { name: 'Edit scene A quiet morning' }).click();
   await expect(page.locator('[data-draft="notes"]')).toHaveValue('The cup was still warm. She did not move it.');
   await expect(page.locator('[data-draft="action"]')).toHaveValue('');
-  await page.locator('[data-draft="reaction"]').fill('Grief felt like waiting.');
+  await page.locator('.scene-planning>summary').click();await page.locator('[data-draft="reaction"]').fill('Grief felt like waiting.');
   await page.getByRole('button', { name: 'Save scene', exact: false }).click();
   await expect(page.locator('.scene-card')).toContainText('Grief felt like waiting.');
 });
@@ -131,7 +131,7 @@ test('legacy scenes, unfinished edits and retired range values survive loading a
   await page.getByRole('button', { name: 'Edit scene The old letter' }).click();
   await expect(page.locator('[data-draft="context"]')).toHaveValue('A courier waits at the gate.');
   await expect(page.locator('[data-draft="notes"]')).toHaveValue('Legacy prose. Keep these exact words.');
-  await page.locator('[data-draft="goal"]').fill('Get inside before the gates close.');
+  await page.locator('.scene-planning>summary').click();await page.locator('[data-draft="goal"]').fill('Get inside before the gates close.');
   await page.getByRole('button', { name: 'Save scene', exact: false }).click();
   await page.getByRole('button', { name: 'Resume or discard' }).click();
   await page.locator('[data-action="resume-draft"]').click();
@@ -143,12 +143,11 @@ test('legacy scenes, unfinished edits and retired range values survive loading a
 });
 
 test('World and MICE have no Story range; MICE opens the same scene workshop; invalid new fields are rejected', async ({ page }) => {
-  await page.locator('[data-nav="world"]').click();
+  await page.locator('[data-nav="world"]').first().click();
   await expect(page.getByText('STORY RANGE', { exact: true })).toHaveCount(0);
   await expect(page.locator('[data-action="story-range"]')).toHaveCount(0);
   await page.locator('[data-nav="structure"]').click();
   await page.getByRole('button', { name: 'Explore scene', exact: true }).click();
-  await page.getByRole('button', { name: 'Create a character' }).click();
   await expect(page.getByRole('heading', { name: 'Build this scene.' })).toBeVisible();
   await expect(page.locator('#scene-ideas')).toHaveAttribute('open', '');
   await page.locator('[data-draft="context"]').fill('A scene fragment.');
@@ -204,12 +203,12 @@ test('relationship questions use the selected participants and immediate aim wit
     counterplotBridge.replace(data);
   }, structuredClone(legacy));
   await page.getByRole('button', { name: 'Write another scene' }).click();
-  await page.locator('[data-draft="partner"]').selectOption('ivo');
+  await page.locator('.scene-metadata summary').click();await page.locator('[data-draft="partner"]').selectOption('ivo');if(!await page.locator('.scene-planning').evaluate(e=>e.open))await page.locator('.scene-planning>summary').click();
   await page.locator('[data-draft="goal"]').fill('Borrow a room without exposing Ivo.');
   await page.locator('[data-draft="sceneKind"]').selectOption('relationship');
   await page.getByRole('button', { name: 'Explore scene ideas', exact: true }).last().click();
   const question = page.locator('.scene-idea').filter({has:page.getByRole('heading', {name:'Two aims in one encounter'})});
-  await expect(question).toContainText('Mara');
+  await page.getByRole('button',{name:'Browse more questions'}).click();await expect(question).toContainText('Mara');
   await expect(question).toContainText('Ivo');
   await expect(question).toContainText('Borrow a room without exposing Ivo.');
   await expect(question).not.toContainText('undefined');

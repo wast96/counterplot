@@ -1,0 +1,529 @@
+{
+  "format": "counterplot",
+  "schema": 2,
+  "id": "cp-murxx9t8-cixpqvjdcg7",
+  "active": "cp-murxx9t8-z9ubtdouh3",
+  "projects": [
+    {
+      "id": "cp-murxx9t8-z9ubtdouh3",
+      "title": "The Harbor Archive",
+      "version": "Main draft",
+      "createdAt": "2026-10-03T05:17:26.636Z",
+      "updatedAt": "2026-10-03T05:23:49.220Z",
+      "characters": [
+        {
+          "id": "cp-murxxa0r-mai0zglggb",
+          "name": "Mara",
+          "identity": "",
+          "notes": "",
+          "archived": false,
+          "lifeStatus": "alive",
+          "lifeChanges": [],
+          "blocks": [
+            {
+              "id": "cp-mury5fwc-n6rbh271pw",
+              "kind": "want",
+              "key": "custom",
+              "text": "Preserve the harbor\u2019s old songs",
+              "title": "",
+              "targetId": "",
+              "context": "",
+              "detail": "",
+              "knownBy": [],
+              "locked": true
+            }
+          ],
+          "prominence": {
+            "opening": "",
+            "changes": [],
+            "checkpoints": []
+          },
+          "changes": [
+            {
+              "id": "change-want",
+              "momentId": "harbor-change",
+              "blockId": "cp-mury5fwc-n6rbh271pw",
+              "operation": "replace",
+              "block": {
+                "id": "cp-mury5fwc-n6rbh271pw",
+                "kind": "want",
+                "key": "custom",
+                "text": "Carry the songs to another port",
+                "title": "",
+                "targetId": "",
+                "context": "",
+                "detail": "",
+                "knownBy": [],
+                "locked": true
+              },
+              "reason": "The harbor closes.",
+              "direction": "A new destination"
+            }
+          ]
+        },
+        {
+          "id": "ivo",
+          "name": "Ivo",
+          "identity": "",
+          "notes": "",
+          "archived": false,
+          "lifeStatus": "alive",
+          "lifeChanges": [
+            {
+              "id": "life-ivo",
+              "momentId": "harbor-change",
+              "status": "dead",
+              "reason": "The winter crossing."
+            }
+          ],
+          "blocks": [],
+          "prominence": {
+            "opening": "",
+            "changes": [],
+            "checkpoints": []
+          }
+        }
+      ],
+      "castOrder": [
+        "cp-murxxa0r-mai0zglggb",
+        "ivo"
+      ],
+      "connections": [
+        {
+          "id": "cp-mury5g6x-6fnnf68myrl",
+          "a": "cp-murxxa0r-mai0zglggb",
+          "b": "ivo",
+          "bond": "Friends",
+          "aWant": "Hear the truth",
+          "bWant": "Keep a promise",
+          "notes": "",
+          "terms": {
+            "active": true,
+            "membership": "unspecified",
+            "position": "",
+            "leadership": false,
+            "visibility": "open",
+            "aTie": "",
+            "bTie": "",
+            "factId": ""
+          },
+          "changes": [
+            {
+              "id": "connection-change",
+              "momentId": "harbor-change",
+              "bond": "Former friends",
+              "reason": "The truth was withheld."
+            }
+          ]
+        }
+      ],
+      "entities": [
+        {
+          "id": "cp-mury5gcy-ikj7v3a0dar",
+          "type": "fact",
+          "name": "The harbor will close",
+          "notes": "The closure is scheduled for winter.",
+          "knownBy": [
+            "cp-murxxa0r-mai0zglggb"
+          ],
+          "knownFrom": {
+            "cp-murxxa0r-mai0zglggb": "harbor-change"
+          },
+          "readerAppearances": [
+            {
+              "id": "reader-first",
+              "sceneId": "cp-murxxa1r-9nt2tu1oc2o",
+              "kind": "shown",
+              "note": "The notice is legible."
+            }
+          ],
+          "stateLabel": "",
+          "stateValue": "",
+          "stateTargetId": "",
+          "stateChanges": []
+        },
+        {
+          "id": "cp-mury5gh4-zjy4bmn2uug",
+          "type": "group",
+          "name": "Harbor Choir",
+          "notes": "",
+          "knownBy": [],
+          "knownFrom": {},
+          "readerAppearances": [],
+          "stateLabel": "Activity",
+          "stateValue": "Rehearsing",
+          "stateTargetId": "",
+          "stateChanges": [
+            {
+              "id": "world-change",
+              "momentId": "harbor-change",
+              "value": "Disbanded",
+              "targetId": "",
+              "reason": "Closure."
+            }
+          ],
+          "faction": {
+            "blocks": [],
+            "changes": [],
+            "checkpoints": []
+          }
+        }
+      ],
+      "scenes": [
+        {
+          "id": "cp-murxxa1r-9nt2tu1oc2o",
+          "title": "The harbor at dawn",
+          "focus": "cp-murxxa0r-mai0zglggb",
+          "partner": "",
+          "context": "",
+          "action": "",
+          "gain": "",
+          "cost": "",
+          "response": "",
+          "after": "",
+          "next": "",
+          "notes": "First paragraph.\n\nSecond paragraph.\nA new line.",
+          "arc": "Not yet interpreted",
+          "status": "Planned",
+          "parent": "",
+          "plotlineId": "cp-murxx9t8-5523lvxpbh6",
+          "storyDate": "",
+          "storyEndDate": "",
+          "miceLinks": [],
+          "ideaIds": [],
+          "archived": false,
+          "goal": "Zirconium wish",
+          "stakes": "",
+          "tension": "Obsidian tension",
+          "development": "Marigold development",
+          "turn": "Cobalt turn",
+          "reaction": "Vermilion reaction",
+          "purpose": "",
+          "readerExpectation": "",
+          "entry": "",
+          "exit": "",
+          "ideaNotes": "",
+          "sceneKind": "open",
+          "beats": [],
+          "ensemble": [],
+          "sources": {
+            "continuityVersion": 1,
+            "ensembleVersion": 2,
+            "factionIds": [],
+            "rolePlotIds": [
+              "cp-murxx9t8-5523lvxpbh6"
+            ],
+            "characters": [
+              "cp-murxxa0r-mai0zglggb"
+            ],
+            "cast": [
+              "cp-murxxa0r-mai0zglggb"
+            ],
+            "entities": [],
+            "connection": "",
+            "connections": [],
+            "range": false,
+            "timeline": true,
+            "momentId": "",
+            "miceId": "",
+            "miceIds": []
+          },
+          "ensembleSnapshot": {
+            "roles": [],
+            "factions": [],
+            "connections": []
+          },
+          "sourceHash": "b12rvf",
+          "parentHash": "",
+          "extraParents": [],
+          "createdAt": "2026-10-03T05:17:27.458Z",
+          "updatedAt": "2026-10-03T05:17:27.458Z",
+          "pressure": "",
+          "route": "author",
+          "routeLabel": "Author scene",
+          "why": "Written by the author.",
+          "assumptions": [],
+          "blockSources": [],
+          "knowledge": [],
+          "factionIds": [],
+          "futureMetadata": {
+            "authorLabel": "Retain this extension"
+          }
+        }
+      ],
+      "plotlines": [
+        {
+          "id": "cp-murxx9t8-5523lvxpbh6",
+          "label": "A",
+          "title": "Main plot",
+          "cast": [],
+          "notes": ""
+        }
+      ],
+      "world": {
+        "setting": "",
+        "reality": "undecided",
+        "tones": [],
+        "notes": "",
+        "range": {
+          "audience": "open",
+          "mood": "open",
+          "violence": "open"
+        }
+      },
+      "drafts": [
+        {
+          "id": "preserved-draft",
+          "kind": "scene",
+          "editing": true,
+          "draft": {
+            "id": "cp-murxxa1r-9nt2tu1oc2o",
+            "title": "The harbor at dawn",
+            "focus": "cp-murxxa0r-mai0zglggb",
+            "partner": "",
+            "context": "",
+            "action": "",
+            "gain": "",
+            "cost": "",
+            "response": "",
+            "after": "",
+            "next": "",
+            "notes": "Unfinished words.\n\nKeep every paragraph.",
+            "arc": "Not yet interpreted",
+            "status": "Planned",
+            "parent": "",
+            "plotlineId": "cp-murxx9t8-5523lvxpbh6",
+            "storyDate": "",
+            "storyEndDate": "",
+            "miceLinks": [],
+            "ideaIds": [],
+            "archived": false,
+            "goal": "Zirconium wish",
+            "stakes": "",
+            "tension": "Obsidian tension",
+            "development": "Marigold development",
+            "turn": "Cobalt turn",
+            "reaction": "Vermilion reaction",
+            "purpose": "",
+            "readerExpectation": "",
+            "entry": "",
+            "exit": "",
+            "ideaNotes": "",
+            "sceneKind": "open",
+            "beats": [],
+            "ensemble": [],
+            "sources": {
+              "continuityVersion": 1,
+              "ensembleVersion": 2,
+              "factionIds": [],
+              "rolePlotIds": [
+                "cp-murxx9t8-5523lvxpbh6"
+              ],
+              "characters": [
+                "cp-murxxa0r-mai0zglggb"
+              ],
+              "cast": [
+                "cp-murxxa0r-mai0zglggb"
+              ],
+              "entities": [],
+              "connection": "",
+              "connections": [],
+              "range": false,
+              "timeline": true,
+              "momentId": "",
+              "miceId": "",
+              "miceIds": []
+            },
+            "ensembleSnapshot": {
+              "roles": [],
+              "factions": [],
+              "connections": []
+            },
+            "sourceHash": "b12rvf",
+            "parentHash": "",
+            "extraParents": [],
+            "createdAt": "2026-10-03T05:17:27.458Z",
+            "updatedAt": "2026-10-03T05:17:27.458Z",
+            "pressure": "",
+            "route": "author",
+            "routeLabel": "Author scene",
+            "why": "Written by the author.",
+            "assumptions": [],
+            "blockSources": [],
+            "knowledge": [],
+            "factionIds": []
+          },
+          "updatedAt": "2026-10-03T00:00:00Z"
+        }
+      ],
+      "moments": [
+        {
+          "id": "harbor-change",
+          "title": "The winter closure",
+          "date": "2040-12-01",
+          "endDate": "",
+          "plotlineId": "cp-murxx9t8-5523lvxpbh6",
+          "povId": "cp-murxxa0r-mai0zglggb",
+          "affectedCharacterIds": [
+            "cp-murxxa0r-mai0zglggb",
+            "ivo"
+          ],
+          "sceneId": "cp-murxxa1r-9nt2tu1oc2o",
+          "nodeId": "",
+          "edge": ""
+        }
+      ],
+      "structure": [
+        {
+          "id": "cp-mury5gnl-xywb3h7lrfl",
+          "type": "C",
+          "parentId": "",
+          "plotlineId": "cp-murxx9t8-5523lvxpbh6",
+          "plotlineIds": [
+            "cp-murxx9t8-5523lvxpbh6"
+          ],
+          "povId": "",
+          "storyDate": "",
+          "storyEndDate": "",
+          "title": "The songs at risk",
+          "opening": "Mara wants to preserve the harbor songs.",
+          "closing": "",
+          "status": "open",
+          "characterId": "",
+          "targetId": "",
+          "openSceneId": "",
+          "closeSceneId": "",
+          "notes": "",
+          "factionIds": [],
+          "evidenceLinks": []
+        },
+        {
+          "id": "cp-mury5gyq-he7zdvjagul",
+          "type": "beat",
+          "parentId": "cp-mury5gnl-xywb3h7lrfl",
+          "plotlineId": "cp-murxx9t8-5523lvxpbh6",
+          "plotlineIds": [
+            "cp-murxx9t8-5523lvxpbh6"
+          ],
+          "povId": "",
+          "storyDate": "",
+          "storyEndDate": "",
+          "title": "An evening rehearsal",
+          "opening": "",
+          "closing": "",
+          "status": "open",
+          "characterId": "",
+          "targetId": "",
+          "openSceneId": "",
+          "closeSceneId": "",
+          "notes": "",
+          "factionIds": [],
+          "evidenceLinks": []
+        }
+      ],
+      "lab": {
+        "focus": "",
+        "partner": "",
+        "pressure": "",
+        "context": "",
+        "from": "",
+        "wantId": "",
+        "methodId": "",
+        "valueId": "",
+        "suggestions": [
+          {
+            "id": "earlier-idea",
+            "title": "The harbor at dawn",
+            "focus": "cp-murxxa0r-mai0zglggb",
+            "partner": "",
+            "context": "",
+            "action": "",
+            "gain": "",
+            "cost": "",
+            "response": "",
+            "after": "",
+            "next": "",
+            "notes": "First paragraph.\n\nSecond paragraph.\nA new line.",
+            "arc": "Not yet interpreted",
+            "status": "Planned",
+            "parent": "",
+            "plotlineId": "cp-murxx9t8-5523lvxpbh6",
+            "storyDate": "",
+            "storyEndDate": "",
+            "miceLinks": [],
+            "ideaIds": [],
+            "archived": false,
+            "goal": "Zirconium wish",
+            "stakes": "",
+            "tension": "Obsidian tension",
+            "development": "Marigold development",
+            "turn": "Cobalt turn",
+            "reaction": "Vermilion reaction",
+            "purpose": "",
+            "readerExpectation": "",
+            "entry": "",
+            "exit": "",
+            "ideaNotes": "",
+            "sceneKind": "open",
+            "beats": [],
+            "ensemble": [],
+            "sources": {
+              "continuityVersion": 1,
+              "ensembleVersion": 2,
+              "factionIds": [],
+              "rolePlotIds": [
+                "cp-murxx9t8-5523lvxpbh6"
+              ],
+              "characters": [
+                "cp-murxxa0r-mai0zglggb"
+              ],
+              "cast": [
+                "cp-murxxa0r-mai0zglggb"
+              ],
+              "entities": [],
+              "connection": "",
+              "connections": [],
+              "range": false,
+              "timeline": true,
+              "momentId": "",
+              "miceId": "",
+              "miceIds": []
+            },
+            "ensembleSnapshot": {
+              "roles": [],
+              "factions": [],
+              "connections": []
+            },
+            "sourceHash": "b12rvf",
+            "parentHash": "",
+            "extraParents": [],
+            "createdAt": "2026-10-03T05:17:27.458Z",
+            "updatedAt": "2026-10-03T05:17:27.458Z",
+            "pressure": "",
+            "route": "author",
+            "routeLabel": "Author scene",
+            "why": "Written by the author.",
+            "assumptions": [],
+            "blockSources": [],
+            "knowledge": [],
+            "factionIds": [],
+            "kept": false
+          }
+        ],
+        "basis": "",
+        "revision": 0,
+        "ensemble": [],
+        "extraParents": [],
+        "outcome": "varied",
+        "circumstance": "any",
+        "thread": "",
+        "plotlineId": "cp-murxx9t8-5523lvxpbh6",
+        "momentId": "",
+        "miceId": "",
+        "miceRole": "advance",
+        "miceLinks": [],
+        "factionIds": []
+      }
+    }
+  ]
+}

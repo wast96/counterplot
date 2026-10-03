@@ -67,6 +67,9 @@ Opening `index.html` directly does not provide the API and will remain on the co
 | `POST /api/auth/login` | Authenticate and create a session |
 | `GET /api/auth/session` | Return the current account |
 | `POST /api/auth/logout` | Revoke the current session |
+| `GET /api/auth/recovery` | Count unused recovery codes |
+| `POST /api/auth/recovery` | Rotate eight recovery codes after password confirmation |
+| `POST /api/auth/reset` | Use one recovery code to reset a password and revoke sessions |
 | `GET /api/workspace` | Load the latest workspace |
 | `PUT /api/workspace` | Save with optimistic revision checking |
 | `GET /api/workspace?revision=N` | Load one historical revision |
@@ -78,7 +81,7 @@ The server retains the latest 100 workspace revisions. Conflicting saves return 
 
 - Export a JSON backup before first enabling account sync and periodically afterward.
 - D1 is the authoritative cross-device copy. IndexedDB is only a per-browser recovery queue.
-- Registration currently does not verify ownership of the supplied email address and there is no automated password reset. Use invite-only registration until those features are added.
+- Registration does not verify ownership of the supplied email address. Recovery uses saved one-time codes, not email ownership. Accounts without saved codes cannot use automatic recovery. Consider invite-only registration when email ownership matters.
 - Never log passwords, cookies, registration codes, peppers, or complete workspace JSON.
 
 ## Development checks
@@ -94,10 +97,30 @@ npm run test:browser
 The browser suite tests the local edition with fresh workspaces on desktop and mobile, including the scene canvas, free prose and unfinished drafts, idea exploration, development beats, legacy saves, and JSON/Markdown exports. It does not need Cloudflare credentials or a running server. To use an existing Chromium installation, set `CHROMIUM_PATH` to its executable path when running `npm run test:browser`.
 
 
-## Scene workshop
+## Writing and planning
 
-Storyline’s writing and exploration buttons, character/connection scene actions, and MICE thread exploration open one Scene workshop. Its five sections are **Set the scene**, **Build tension**, **Find the turn**, **Show the outcome**, and **Let it land**. All writing prompts are optional; a partial plan or prose-only scene can be added to Storyline. **Save unfinished draft** keeps an edit separate for later.
+Storyline opens a page-sized writing workspace. A scene can contain prose alone and needs no character or viewpoint. Planning is optional; the writing-first preference and last section are remembered on the device. **Read scenes** shows the manuscript in reading order. Search includes every scene craft field, development beats, archived scenes, and unfinished edits.
 
-Scene Explorer is an optional question panel inside the workshop. Questions use the opening, immediate aim, participants, and preceding consequence. Prompt variations support attempts, discoveries, relationship moments, and aftermaths without rewriting any field. Keeping a question adds it to the possibilities scratchpad, not to the scene’s events. It is a local craft aid, not an AI prose generator.
+Scene Explorer offers three contextual questions at a time, using explicit character blocks, linked world material, and scene context. Questions never become events automatically. Quiet observation, ambiguity, atmosphere, repetition, and incomplete endings are supported. Earlier rule-based alternatives and pinned-block what-if comparisons remain under World's **Earlier exploration tools**.
 
-Story range has been retired from the interface. Existing range values and earlier Explorer suggestions remain in backups; earlier suggestions can be opened in the new workshop from Storyline. Existing scenes and unfinished edits keep their original text. New craft fields and development beats are optional extensions to the existing workspace format and are included in JSON and Markdown exports.
+**Outline** supports ordinary beats without requiring MICE. Existing MICE threads, closures, multi-plot membership, and evidence links remain editable through optional controls. **Changes after this scene** queues changes to character blocks, life status, plot roles, relationships, faction state, knowledge, World conditions, and reader disclosure. One transaction applies the queue; one Undo restores it. Reader-only changes do not create story-time moments or grant character knowledge.
+
+## Compatibility and recovery
+
+Workspace schema 3 permits scenes with no viewpoint. Schemas 1 and 2 are validated on a copy and upgraded without replacing historical source snapshots or unknown metadata. A pre-upgrade browser copy is retained when storage permits. Existing JSON backups, portable HTML, historical character states, pins, unfinished drafts, and source links remain supported. Portable HTML uses the local edition and its own storage namespace.
+
+Clients send `X-Counterplot-Writer: 3`. The API rejects older writers and schema downgrades with HTTP 426 once an account has saved schema 3. Reloading the deployed application enables the current writer. First-save conflicts without a common base preserve both projects or versions.
+
+Account recovery codes are generated only after current-password confirmation. Only hashes are stored in D1. Rotation invalidates the old set; reset atomically consumes one code, changes the password, and revokes all sessions without modifying workspaces. Save the codes outside Counterplot. There is no email reset service.
+
+`migrations/0002_recovery_codes.sql` adds only the recovery-code table. Recovery endpoints also provision that same table idempotently through the existing D1 binding on first use, allowing Git-connected Pages deployments without a separate migration credential. For managed deployments, apply the migration with the project's existing Wrangler/D1 configuration. Existing story tables are unchanged.
+
+## Extended verification
+
+`ALL_BROWSERS=1 npm run test:browser` adds Firefox and WebKit (install their Playwright binaries and system dependencies first). Responsive checks cover widths 320, 390, 768, 1024, and 1440. The compatibility fixture includes historical states, private knowledge, reader appearances, pins, source snapshots, MICE links, and unfinished edits.
+
+The account browser test is skipped unless `TEST_SERVER_URL` points to an **isolated local** Pages server with a disposable D1 database initialized with migration 0001. Use HTTPS (`wrangler pages dev --local-protocol=https`) when testing WebKit: it correctly requires a secure connection for session cookies. The test accepts the local development certificate. It creates synthetic accounts and exercises migration 0002, recovery rotation, single use, session revocation, and preservation of writing. Run it with:
+
+```sh
+TEST_SERVER_URL=http://localhost:8791 npm run test:browser -- browser-tests/account.spec.js
+```
