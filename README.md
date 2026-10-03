@@ -91,4 +91,13 @@ npx playwright install chromium
 npm run test:browser
 ```
 
-The browser suite tests the local edition with fresh workspaces on desktop and mobile, including Storyline's first-scene guide, scene creation, and Scene Explorer navigation. It does not need Cloudflare credentials or a running server. To use an existing Chromium installation, set `CHROMIUM_PATH` to its executable path when running `npm run test:browser`.
+The browser suite tests the local edition with fresh workspaces on desktop and mobile, including the scene canvas, free prose and unfinished drafts, idea exploration, development beats, legacy saves, and JSON/Markdown exports. It does not need Cloudflare credentials or a running server. To use an existing Chromium installation, set `CHROMIUM_PATH` to its executable path when running `npm run test:browser`.
+
+
+## Scene workshop
+
+Storyline’s writing and exploration buttons, character/connection scene actions, and MICE thread exploration open one Scene workshop. Its five sections are **Set the scene**, **Build tension**, **Find the turn**, **Show the outcome**, and **Let it land**. All writing prompts are optional; a partial plan or prose-only scene can be added to Storyline. **Save unfinished draft** keeps an edit separate for later.
+
+Scene Explorer is an optional question panel inside the workshop. Questions use the opening, immediate aim, participants, and preceding consequence. Prompt variations support attempts, discoveries, relationship moments, and aftermaths without rewriting any field. Keeping a question adds it to the possibilities scratchpad, not to the scene’s events. It is a local craft aid, not an AI prose generator.
+
+Story range has been retired from the interface. Existing range values and earlier Explorer suggestions remain in backups; earlier suggestions can be opened in the new workshop from Storyline. Existing scenes and unfinished edits keep their original text. New craft fields and development beats are optional extensions to the existing workspace format and are included in JSON and Markdown exports.
