@@ -1,3 +1,4 @@
+import {sceneField} from './helpers/scene-ui.js';
 import {test,expect} from '@playwright/test';
 import {readFile} from 'node:fs/promises';
 import AxeBuilder from '@axe-core/playwright';
@@ -29,7 +30,7 @@ test('Master-only work stays visible after reload and plot/palette controls stay
 
 test('retired Explorer draft payloads and written possibilities survive editing, export and import',async({page})=>{
  const fixture=structuredClone(rich);const draft=fixture.projects[0].drafts.find(d=>d.kind==='scene');draft.ideasOpen=true;draft.ideaQuestions=[['open','An old prompt','context','Keep this exact old question.']];draft.draft.ideaNotes='My saved possibility, not an event.';
- await local(page);await page.evaluate(w=>counterplotBridge.replace(w),fixture);await action(page,'drafts').click();await action(page,'resume-draft').click();await expect(page.locator('#scene-ideas')).toHaveCount(0);await expect(page.locator('[data-draft=ideaNotes]')).toHaveValue('My saved possibility, not an event.');await page.locator('[data-draft=ideaNotes]').fill('My saved possibility, not an event.\nAnother uncertain image.');await action(page,'save-scene-draft').click();await action(page,'export').click();const pending=page.waitForEvent('download');await action(page,'export-json').click();const exported=JSON.parse(await readFile(await(await pending).path(),'utf8'));expect(exported.projects[0].drafts.find(d=>d.kind==='scene').ideaQuestions).toEqual(draft.ideaQuestions);
+ await local(page);await page.evaluate(w=>counterplotBridge.replace(w),fixture);await action(page,'drafts').click();await action(page,'resume-draft').click();await expect(page.locator('#scene-ideas')).toHaveCount(0);await expect(page.locator('[data-draft=ideaNotes]')).toHaveValue('My saved possibility, not an event.');await (await sceneField(page,'ideaNotes')).fill('My saved possibility, not an event.\nAnother uncertain image.');await action(page,'save-scene-draft').click();await action(page,'export').click();const pending=page.waitForEvent('download');await action(page,'export-json').click();const exported=JSON.parse(await readFile(await(await pending).path(),'utf8'));expect(exported.projects[0].drafts.find(d=>d.kind==='scene').ideaQuestions).toEqual(draft.ideaQuestions);
  await action(page,'import').click();await page.locator('#import-file').setInputFiles({name:'preserved.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(exported))});await action(page,'confirm-import').click();const restored=await page.evaluate(()=>counterplotDiagnostics.snapshot());expect(restored.projects.at(-1).drafts.find(d=>d.kind==='scene').draft.ideaNotes).toContain('Another uncertain image.');
 });
 
@@ -38,7 +39,7 @@ test('main pages and scene planning remain accessible at narrow and landscape wi
  for(const [width,height] of [[320,640],[768,1024],[844,390],[1440,1000]]){
   await page.setViewportSize({width,height});
   for(const n of ['story','characters','connections','structure','world']){await page.locator(`[data-nav=${n}]`).first().click();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),n+' overflow '+width).toBe(true);const result=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(result.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)})),n+' accessibility '+width).toEqual([]);}
-  await page.locator('[data-nav=story]').click();await action(page,'edit-scene').click();await page.locator('.scene-planning>summary').click();await page.locator('[data-draft=ideaNotes]').fill('A possibility without an answer.');await expect(page.locator('[data-draft=ideaNotes]')).toBeFocused();await expect(action(page,'save-scene')).toBeVisible();await page.keyboard.press('Escape');
+  await page.locator('[data-nav=story]').click();await action(page,'edit-scene').click();await (await sceneField(page,'ideaNotes')).fill('A possibility without an answer.');await expect(page.locator('[data-draft=ideaNotes]')).toBeFocused();await expect(action(page,'save-scene')).toBeVisible();await page.keyboard.press('Escape');
  }
  await page.screenshot({path:info.outputPath('workspace-desktop.png')});
 });

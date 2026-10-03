@@ -1,0 +1,193 @@
+{
+  "density": {
+    "height": 46828,
+    "viewport": 1000,
+    "cards": 180
+  },
+  "reading": {
+    "height": 1627534,
+    "viewport": 1000
+  },
+  "long": [
+    {
+      "nav": "story",
+      "width": 320,
+      "scrollWidth": 320
+    },
+    {
+      "nav": "characters",
+      "width": 320,
+      "scrollWidth": 320
+    },
+    {
+      "nav": "connections",
+      "width": 320,
+      "scrollWidth": 320
+    },
+    {
+      "nav": "world",
+      "width": 320,
+      "scrollWidth": 320
+    },
+    {
+      "nav": "structure",
+      "width": 320,
+      "scrollWidth": 320,
+      "end": 248.953125,
+      "palette": {
+        "position": "fixed",
+        "rect": {
+          "x": 14,
+          "y": 553,
+          "width": 292,
+          "height": 75,
+          "top": 553,
+          "right": 306,
+          "bottom": 628,
+          "left": 14
+        }
+      }
+    },
+    {
+      "nav": "story",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "nav": "characters",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "nav": "connections",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "nav": "world",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "nav": "structure",
+      "width": 768,
+      "scrollWidth": 768,
+      "end": 638.21875,
+      "palette": {
+        "position": "fixed",
+        "rect": {
+          "x": 298,
+          "y": 916.5,
+          "width": 392,
+          "height": 85.5,
+          "top": 916.5,
+          "right": 690,
+          "bottom": 1002,
+          "left": 298
+        }
+      }
+    },
+    {
+      "nav": "story",
+      "width": 844,
+      "scrollWidth": 844
+    },
+    {
+      "nav": "characters",
+      "width": 844,
+      "scrollWidth": 844
+    },
+    {
+      "nav": "connections",
+      "width": 844,
+      "scrollWidth": 844
+    },
+    {
+      "nav": "world",
+      "width": 844,
+      "scrollWidth": 844
+    },
+    {
+      "nav": "structure",
+      "width": 844,
+      "scrollWidth": 844,
+      "end": 4.28125,
+      "palette": {
+        "position": "fixed",
+        "rect": {
+          "x": 336,
+          "y": 306,
+          "width": 392,
+          "height": 62,
+          "top": 306,
+          "right": 728,
+          "bottom": 368,
+          "left": 336
+        }
+      }
+    },
+    {
+      "nav": "story",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "nav": "characters",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "nav": "connections",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "nav": "world",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "nav": "structure",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "end": 672,
+      "palette": {
+        "position": "fixed",
+        "rect": {
+          "x": 647,
+          "y": 892.5,
+          "width": 392,
+          "height": 85.5,
+          "top": 892.5,
+          "right": 1039,
+          "bottom": 978,
+          "left": 647
+        }
+      }
+    }
+  ],
+  "zoom": {
+    "width": 1440,
+    "scrollWidth": 1547,
+    "overflow": [
+      {
+        "tag": "BUTTON",
+        "cls": "plotline-tab",
+        "text": "+\nAdd plot",
+        "left": 1265.296875,
+        "right": 1545.296875,
+        "width": 280
+      },
+      {
+        "tag": "STRONG",
+        "cls": "",
+        "text": "Add plot",
+        "left": 1295.296875,
+        "right": 1515.296875,
+        "width": 220
+      }
+    ]
+  },
+  "chronologyPalette": 0,
+  "overflowElements": []
+}

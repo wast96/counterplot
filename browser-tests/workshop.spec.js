@@ -1,3 +1,4 @@
+import {sceneField} from './helpers/scene-ui.js';
 import { test, expect } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 const source=await readFile(new URL('../index.html',import.meta.url),'utf8');
@@ -20,7 +21,7 @@ test('a character-free scene supports writing, persistence, reading, continuatio
  await create(page);let w=await page.evaluate(()=>counterplotDiagnostics.snapshot());expect(w.projects[0].characters).toHaveLength(0);expect(w.projects[0].scenes[0].focus).toBe('');expect(w.schema).toBe(3);
  await expect(page.locator('.story-start')).toHaveCount(0);
  await page.locator('[data-mode="reading"]').click();await expect(page.locator('.manuscript-prose')).toContainText('The tide returns.');
- await page.reload();await action(page,'continue-scene').click();await page.locator('[data-draft="notes"]').fill('The bell rings again.');await action(page,'save-scene').click();
+ await page.reload();await expect(page.locator('.manuscript-prose')).toContainText('The tide returns.');await page.locator('[data-mode=sequence]').click();await action(page,'continue-scene').click();await (await sceneField(page,'notes')).fill('The bell rings again.');await action(page,'save-scene').click();
  w=await page.evaluate(()=>counterplotDiagnostics.snapshot());expect(w.projects[0].scenes[1].parent).toBe(w.projects[0].scenes[0].id);
  await action(page,'search').click();await page.locator('[data-global-search]').fill('tide returns');await expect(page.locator('.search-result')).toHaveCount(1);await page.locator('.search-result').click();await expect(page.locator('[data-draft="notes"]')).toBeFocused();
 });

@@ -1,0 +1,57 @@
+{
+  "offline": {
+    "status": "Connection unavailable · local writing retained",
+    "visible": "STORYLINE\nYour story\nWrite another scene\n?\nSequence\nRead scenes\nOther views\nAll characters\n1 scene\n01\nA Plot\nA disputed ending\n\nOffline version: the boat leaves.\n\nPreview\nMove…\nContinue →\nChanges after this scene →\nCOUNTERPLOT / A STORY WORKSHOP\nYOUR CHOICES. YOUR WORDS. YOUR WORK."
+  },
+  "conflict": {
+    "projects": [
+      {
+        "title": "",
+        "version": "Main draft",
+        "notes": [
+          "Other device: the boat sinks."
+        ]
+      },
+      {
+        "title": "",
+        "version": "Main draft · preserved device version",
+        "notes": [
+          "Offline version: the boat leaves."
+        ]
+      }
+    ],
+    "notice": "Both versions were preserved. Open Projects & versions to compare the device version with the other saved version.Open versionsDismiss"
+  },
+  "afterReload": [
+    [
+      "Other device: the boat sinks."
+    ],
+    [
+      "Offline version: the boat leaves."
+    ]
+  ],
+  "history": "Saved revisions.\n\nRestore a saved copy as additional project versions. Your current work stays intact.\n\nBack\nRevision 4 · 10/3/2026, 4:45:52 PM\nRevision 3 · 10/3/2026, 4:45:52 PM\nRevision 2 · 10/3/2026, 4:45:50 PM\nRevision 1 · 10/3/2026, 4:45:50 PM",
+  "recovered": {
+    "beforeCount": 2,
+    "projects": [
+      {
+        "version": "Main draft",
+        "notes": [
+          "Other device: the boat sinks."
+        ]
+      },
+      {
+        "version": "Main draft · preserved device version",
+        "notes": [
+          "Offline version: the boat leaves."
+        ]
+      },
+      {
+        "version": "Main draft · recovered revision 2",
+        "notes": [
+          "Original: the boat stays."
+        ]
+      }
+    ]
+  }
+}
