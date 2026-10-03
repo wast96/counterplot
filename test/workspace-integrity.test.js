@@ -57,3 +57,12 @@ test('legacy workspace extensions cannot collide with the chunk envelope',async(
  assert.deepEqual((await(await get(request(env,a,'/api/workspace'))).json()).workspace,w);
  }finally{env.raw.close();}
 });
+
+test('archived outline branches round trip with links, and inconsistent archive states are rejected',async()=>{
+ const env=testDatabase();try{const a=await account(env,'archive');const w=structuredClone(fixture);for(const n of w.projects[0].structure)n.archived=true;
+ assert.equal((await put(request(env,a,'/api/workspace','PUT',{workspace:w,revision:0,writeId:'archive'}))).status,200);
+ assert.deepEqual((await(await get(request(env,a,'/api/workspace'))).json()).workspace,w);
+ w.projects[0].structure[1].archived=false;
+ assert.equal((await put(request(env,a,'/api/workspace','PUT',{workspace:w,revision:1,writeId:'invalid-archive'}))).status,400);
+ }finally{env.raw.close();}
+});
