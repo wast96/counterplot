@@ -1,0 +1,221 @@
+{
+  "format": "counterplot",
+  "schema": 2,
+  "id": "cp-murx2cf8-2klgoaxve54",
+  "active": "cp-murx2cf7-p690mc5ix1q",
+  "projects": [
+    {
+      "id": "cp-murx2cf7-p690mc5ix1q",
+      "title": "",
+      "version": "Main draft",
+      "createdAt": "2026-10-03T04:53:23.683Z",
+      "updatedAt": "2026-10-03T04:53:24.262Z",
+      "characters": [
+        {
+          "id": "cp-murx2clv-3unxce581kz",
+          "name": "",
+          "identity": "",
+          "notes": "",
+          "archived": false,
+          "lifeStatus": "alive",
+          "lifeChanges": [],
+          "blocks": [],
+          "prominence": {
+            "opening": "",
+            "changes": [],
+            "checkpoints": []
+          }
+        }
+      ],
+      "castOrder": [
+        "cp-murx2clv-3unxce581kz"
+      ],
+      "connections": [],
+      "entities": [],
+      "scenes": [
+        {
+          "id": "cp-murx2cmq-npnr32dhsu",
+          "title": "The old letter",
+          "focus": "cp-murx2clv-3unxce581kz",
+          "partner": "",
+          "context": "A courier waits at the gate.",
+          "action": "Delivers the letter.",
+          "gain": "",
+          "cost": "",
+          "response": "",
+          "after": "The recipient knows the secret.",
+          "next": "",
+          "notes": "Legacy prose. Keep these exact words.",
+          "arc": "Not yet interpreted",
+          "status": "Planned",
+          "parent": "",
+          "plotlineId": "cp-murx2cf7-uu8vpk1til",
+          "storyDate": "",
+          "storyEndDate": "",
+          "miceLinks": [],
+          "ideaIds": [],
+          "archived": false,
+          "ensemble": [],
+          "sources": {
+            "continuityVersion": 1,
+            "ensembleVersion": 2,
+            "factionIds": [],
+            "rolePlotIds": [
+              "cp-murx2cf7-uu8vpk1til"
+            ],
+            "characters": [
+              "cp-murx2clv-3unxce581kz"
+            ],
+            "cast": [
+              "cp-murx2clv-3unxce581kz"
+            ],
+            "entities": [],
+            "connection": "",
+            "connections": [],
+            "range": true,
+            "timeline": true,
+            "momentId": "",
+            "miceId": "",
+            "miceIds": []
+          },
+          "ensembleSnapshot": {
+            "roles": [],
+            "factions": [],
+            "connections": []
+          },
+          "sourceHash": "14o2nj7",
+          "parentHash": "",
+          "extraParents": [],
+          "createdAt": "2026-10-03T04:53:24.261Z",
+          "updatedAt": "2026-10-03T04:53:24.261Z",
+          "pressure": "",
+          "route": "author",
+          "routeLabel": "Author scene",
+          "why": "Written by the author.",
+          "assumptions": [],
+          "blockSources": [],
+          "knowledge": [],
+          "factionIds": []
+        }
+      ],
+      "plotlines": [
+        {
+          "id": "cp-murx2cf7-uu8vpk1til",
+          "label": "A",
+          "title": "Main plot",
+          "cast": [],
+          "notes": ""
+        }
+      ],
+      "world": {
+        "setting": "",
+        "reality": "undecided",
+        "tones": [],
+        "notes": "",
+        "range": {
+          "audience": "children",
+          "mood": "warm",
+          "violence": "none"
+        }
+      },
+      "drafts": [
+        {
+          "id": "legacy-draft",
+          "kind": "scene",
+          "editing": true,
+          "draft": {
+            "id": "cp-murx2cmq-npnr32dhsu",
+            "title": "Legacy unfinished edit",
+            "focus": "cp-murx2clv-3unxce581kz",
+            "partner": "",
+            "context": "A courier waits at the gate.",
+            "action": "Delivers the letter.",
+            "gain": "",
+            "cost": "",
+            "response": "",
+            "after": "The recipient knows the secret.",
+            "next": "",
+            "notes": "Unfinished legacy words.",
+            "arc": "Not yet interpreted",
+            "status": "Planned",
+            "parent": "",
+            "plotlineId": "cp-murx2cf7-uu8vpk1til",
+            "storyDate": "",
+            "storyEndDate": "",
+            "miceLinks": [],
+            "ideaIds": [],
+            "archived": false,
+            "ensemble": [],
+            "sources": {
+              "continuityVersion": 1,
+              "ensembleVersion": 2,
+              "factionIds": [],
+              "rolePlotIds": [
+                "cp-murx2cf7-uu8vpk1til"
+              ],
+              "characters": [
+                "cp-murx2clv-3unxce581kz"
+              ],
+              "cast": [
+                "cp-murx2clv-3unxce581kz"
+              ],
+              "entities": [],
+              "connection": "",
+              "connections": [],
+              "range": true,
+              "timeline": true,
+              "momentId": "",
+              "miceId": "",
+              "miceIds": []
+            },
+            "ensembleSnapshot": {
+              "roles": [],
+              "factions": [],
+              "connections": []
+            },
+            "sourceHash": "14o2nj7",
+            "parentHash": "",
+            "extraParents": [],
+            "createdAt": "2026-10-03T04:53:24.261Z",
+            "updatedAt": "2026-10-03T04:53:24.261Z",
+            "pressure": "",
+            "route": "author",
+            "routeLabel": "Author scene",
+            "why": "Written by the author.",
+            "assumptions": [],
+            "blockSources": [],
+            "knowledge": [],
+            "factionIds": []
+          },
+          "updatedAt": "2026-10-03T04:53:24.302Z"
+        }
+      ],
+      "moments": [],
+      "structure": [],
+      "lab": {
+        "focus": "",
+        "partner": "",
+        "pressure": "",
+        "context": "",
+        "from": "",
+        "wantId": "",
+        "methodId": "",
+        "valueId": "",
+        "suggestions": [],
+        "basis": "",
+        "revision": 0,
+        "ensemble": [],
+        "extraParents": [],
+        "outcome": "varied",
+        "circumstance": "any",
+        "thread": "",
+        "plotlineId": "cp-murx2cf7-uu8vpk1til",
+        "momentId": "",
+        "miceId": "",
+        "miceRole": "advance",
+        "miceLinks": [],
+        "factionIds": []
+      }
+    }
+  ]
+}
