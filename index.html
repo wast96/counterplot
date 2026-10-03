@@ -4188,6 +4188,23 @@ body.has-inline-mice-editor .mice-palette{position:relative;left:auto;bottom:aut
   #main.page-structure .mice-palette{position:relative;left:auto;bottom:auto;transform:none;margin:20px auto 22px;width:fit-content;max-width:100%;z-index:1}
 }
 
+
+/* Storyline: keep the first useful actions and causal guide in view. */
+.story-start{padding:28px;background:var(--sheet);border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:4px;margin-bottom:28px}
+.story-start h2,.story-example h2{font-family:var(--serif);font-weight:400;font-size:clamp(23px,3vw,30px);margin:10px 0 24px}
+.story-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;list-style:none;padding:0;margin:0 0 26px}
+.story-steps li{display:flex;gap:12px;align-items:flex-start}
+.story-step-number{font-family:var(--mono);font-size:13px;color:var(--accent);padding-top:3px}
+.story-steps h3{font-size:16px;margin:0 0 8px}
+.story-steps p{font-size:14px;line-height:1.6;color:var(--muted);margin:0}
+.story-start-actions{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:26px}
+.story-start>.tiny-note{margin:14px 0 0;line-height:1.6}
+.story-example{padding:0 28px 24px}
+.story-example h2{font-size:24px;margin-bottom:18px}
+.story-example dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin:0 0 18px}
+.story-example dt{font-size:13px;font-weight:600;margin-bottom:8px}
+.story-example dd{margin:0;font-size:14px;line-height:1.6;color:var(--muted)}
+@media(max-width:700px){.story-start{padding:20px}.story-steps,.story-example dl{grid-template-columns:1fr;gap:20px}.story-example{padding:0 20px 20px}.story-start-actions{flex-direction:column}.story-start-actions .button{width:100%}}
 </style>
 </head>
 <body>
@@ -5456,9 +5473,11 @@ const CounterplotEnsemble = (() => {
         const all = p().scenes.filter(s => ui.showArchivedScenes || !s.archived);
         const visible = all.filter(s => !ui.storyFilter || s.focus === ui.storyFilter || (ui.storyMode!=='arc'&&(s.partner === ui.storyFilter || s.ensemble?.some(x=>x.id===ui.storyFilter)))).filter(s=>!ui.reviewOnly||isStale(s));
         const review = all.filter(s => isStale(s)).length;
-        let out = heading('04 / STORYLINE', 'Follow what follows.', 'A sequence of choices, not a stack of unrelated events.', `<button class="button secondary compact" data-action="compose-path">Build a story path</button><button class="button secondary compact" data-action="new-blank-scene">+ Write a scene</button><button class="button compact" data-action="open-scene-explorer">Explore a next move ↗</button>`);
-        if (!p().scenes.length)
-            return out + `<div class="split"><section class="empty-panel"><div class="eyebrow">THE STORY IS STILL YOURS TO START</div><h2>A choice leaves<br>something different.</h2><p>Keep a scene from MICE, or write one yourself. Continue from its changed situation to build a chain of consequences. You can begin a separate thread whenever the story needs one.</p><button class="button" data-action="open-scene-explorer">Try your first scene ↗</button></section><aside class="margin-column"><section class="margin-section"><div class="eyebrow">CAUSE IS NOT THE SAME AS ORDER</div><h3>“And then” is optional.<br>“Because” is useful.</h3><p>Continue from any kept scene to preserve its causal link. Moving a scene changes its reading order, not what caused it.</p><p>Character arcs are read from choices. No character is required to learn a lesson.</p></section></aside></div>`;
+        const firstScene = !p().scenes.length;
+        let out = heading('04 / STORYLINE', 'Turn a scene into a story.', 'Start with one choice. Show what changes. Let that change lead to the next scene.', `<button class="button secondary compact" data-action="compose-path">Build a story path</button>`);
+        out += `<section class="story-start" aria-labelledby="story-start-title"><div class="eyebrow">${firstScene ? 'YOUR FIRST SCENE STARTS HERE' : 'ONE SCENE AT A TIME'}</div><h2 id="story-start-title">Three small steps. A story that moves.</h2><div class="story-start-actions"><button class="button" data-action="new-blank-scene">${firstScene ? 'Write my first scene' : 'Write another scene'} <span aria-hidden="true">↗</span></button><button class="button secondary" data-action="open-scene-explorer">Explore scene ideas <span aria-hidden="true">↗</span></button></div><ol class="story-steps"><li><span class="story-step-number" aria-hidden="true">01</span><div><h3>Add a scene</h3><p>Write a choice someone makes, or explore a few ideas. A rough sentence is enough.</p></div></li><li><span class="story-step-number" aria-hidden="true">02</span><div><h3>Name what changes</h3><p>What is different because of that choice? An option, a relationship, or a belief can shift.</p></div></li><li><span class="story-step-number" aria-hidden="true">03</span><div><h3>Follow the consequence</h3><p>After adding your scene, choose “Continue from this consequence” to explore what happens because of it.</p></div></li></ol><p class="tiny-note">Write opens a blank scene form. Explore opens Scene Explorer in MICE threads. No outline or biography needed.</p></section>`;
+        if (firstScene)
+            return out + `<section class="story-example" aria-labelledby="story-example-title"><div><div class="eyebrow">A SMALL EXAMPLE</div><h2 id="story-example-title">A choice. A change. A next move.</h2></div><dl><div><dt>The choice</dt><dd>A courier delivers a letter they were told to destroy.</dd></div><div><dt>What changes</dt><dd>The recipient learns a secret; the courier loses their employer’s trust.</dd></div><div><dt>What follows</dt><dd>Now the courier must decide who can help them get home.</dd></div></dl><p class="tiny-note">Your scenes will appear here when you add them. Start wherever your story needs to begin.</p></section>`;
         out += `<div class="timeline-toolbar"><div class="inline-actions"><div class="segmented" role="group" aria-label="Storyline view"><button class="${ui.storyMode === 'sequence' ? 'active' : ''}" data-action="story-mode" data-mode="sequence" aria-pressed="${ui.storyMode === 'sequence'}">Sequence</button><button class="${ui.storyMode === 'arc' ? 'active' : ''}" data-action="story-mode" data-mode="arc" aria-pressed="${ui.storyMode === 'arc'}">Character choices</button><button class="${ui.storyMode==='chronology'?'active':''}" data-action="story-mode" data-mode="chronology" aria-pressed="${ui.storyMode==='chronology'}">Chronology</button><button class="${ui.storyMode==='threads'?'active':''}" data-action="story-mode" data-mode="threads" aria-pressed="${ui.storyMode==='threads'}">Plotlines</button></div><select data-filter="story" aria-label="Filter scenes by character">${charOptions(ui.storyFilter, 'All characters', true)}</select><button class="review-filter ${ui.reviewOnly?'active':''}" data-action="toggle-review-filter" aria-pressed="${!!ui.reviewOnly}">Needs review <span>${review}</span></button></div><span class="tiny-note">${visible.length} ${visible.length === 1 ? 'scene' : 'scenes'}${review ? ' · ' + review + ' to review' : ''} · Reading order</span></div>`;
         if (!visible.length)
             out += `<div class="empty-inset">${ui.reviewOnly?'No scenes in this view need review. Your scenes are still here.':'No scenes match this person yet.'} <button class="text-button" data-action="clear-story-filters">Show all scenes →</button></div>`;
@@ -5601,7 +5620,7 @@ const CounterplotEnsemble = (() => {
         const old = scene(id);
         if (!old && !activeChars().length) {
             ui.modal = { kind: 'needs-person' };
-            modal({ title: 'Whose choice is this?', description: 'Create one blank character so the scene has a viewpoint. A name and biography are not required.', body: '<div class="empty-inset">The story can still begin anywhere.</div>', foot: '<button class="button secondary compact" data-action="close-modal">Back</button><button class="button compact" data-action="add-character">Create a character ↗</button>' });
+            modal({ title: 'Whose choice is this?', description: 'Create one blank character so the scene has a viewpoint. A name and biography are not required.', body: '<div class="empty-inset">The story can still begin anywhere.</div>', foot: '<button class="button secondary compact" data-action="close-modal">Back</button><button class="button compact" data-action="add-character" data-next="scene">Create a character ↗</button>' });
             return;
         }
         const c = current() || activeChars()[0];
@@ -5800,7 +5819,7 @@ const CounterplotEnsemble = (() => {
         'sync-details':()=>window.counterplotSync?.details(), 'add-path-step':()=>{ui.modal.draft.steps.push({pressure:'discovery',route:0});ui.modal.draft.preview=[];ui.modal.dirty=true;stashDraft();renderPath();}, 'remove-path-step':el=>{ui.modal.draft.steps.splice(Number(el.dataset.index),1);ui.modal.draft.preview=[];ui.modal.dirty=true;stashDraft();renderPath();},
 
         'close-modal': () => closeModal(), 'undo': () => undo(), 'redo': () => redo(), 'focus': () => document.body.classList.toggle('is-focused'), 'help': () => window.CounterplotGuide?.open(ui.page), 'search': () => showSearch(), 'projects': () => showProjects(), 'export': () => showExport(),
-        'add-character': () => addCharacter(),
+        'add-character': el => {addCharacter();if(el?.dataset.next==='scene'){go('story');showScene();}else if(el?.dataset.next==='explorer'){p().lab.focus=ui.selected;miceUI.sceneOpen=true;go('structure');}},
         'select-character': el => { const c = char(el.dataset.id); if (!c)
             return; if (c.archived)
             ui.showArchived = true; closeModal(); go('characters', c.id); },
@@ -6564,8 +6583,8 @@ const CounterplotEnsemble = (() => {
         if(!miceUI.sceneOpen)return '';
         const lab=p().lab,thread=storyNode(lab.miceId);if(!lab.plotlineId||!plotline(lab.plotlineId))lab.plotlineId=activeStructurePlotId()||nodePrimaryPlotId(thread)||plotlines()[0]?.id||'';const focus=personAt(lab.focus),pressure=PRESSURES.find(x=>x.id===lab.pressure),suggestions=lab.suggestions||[],outdated=!!suggestions.length&&lab.basis!==liveLabBasis(),parent=scene(lab.from),facts=visibleFacts(lab.focus,lab.momentId||''),hidden=hiddenFactCount(lab.focus,lab.momentId||'');
         const active=personAt(lab.focus)||activeChars()[0]||null;
-        let out=`<section class="mice-scene-explorer" id="mice-scene-explorer" aria-label="Scene Explorer"><header class="mice-scene-head"><div><span class="eyebrow">SCENE EXPLORER${thread?' · '+esc(CounterplotStory.types[thread.type].name.toUpperCase()):''}</span><h2>${thread?esc(nodeTitle(thread).slice(0,120)):'Test a choice without leaving the outline.'}</h2><p>${thread?'Build a scene that serves this thread. Keeping it links the scene back here.':'Choose a person and a situation. Keep only the route that earns its place.'}</p></div><div class="inline-actions"><button class="text-button" data-action="new-blank-scene">Write my own scene</button><button class="icon-btn" data-action="close-scene-explorer" aria-label="Close Scene Explorer" title="Close Scene Explorer">×</button></div></header>`;
-        if(!activeChars().length)return out+`<div class="empty-inset">Create one character first. A name is optional; a single want or method is enough.</div></section>`;
+        let out=`<section class="mice-scene-explorer" id="mice-scene-explorer" aria-label="Scene Explorer" tabindex="-1"><header class="mice-scene-head"><div><span class="eyebrow">SCENE EXPLORER${thread?' · '+esc(CounterplotStory.types[thread.type].name.toUpperCase()):''}</span><h2>${thread?esc(nodeTitle(thread).slice(0,120)):'Test a choice without leaving the outline.'}</h2><p>${thread?'Build a scene that serves this thread. Keeping it links the scene back here.':'Choose a person and a situation. Keep only the route that earns its place.'}</p></div><div class="inline-actions"><button class="text-button" data-action="new-blank-scene">Write my own scene</button><button class="icon-btn" data-action="close-scene-explorer" aria-label="Close Scene Explorer" title="Close Scene Explorer">×</button></div></header>`;
+        if(!activeChars().length)return out+`<div class="empty-inset"><p>Scene ideas start with someone making a choice. Create a blank character first; a name and biography are optional.</p><button class="button" data-action="add-character" data-next="explorer">Create a character ↗</button></div></section>`;
         if(parent)out+=`<div class="cause-banner compact"><div><span class="eyebrow">FOLLOWS</span><strong>${esc(parent.title)}</strong><p>${esc(parent.after)}</p></div><button class="text-button" data-action="clear-cause">Start independently ×</button></div>`;
         out+=rangeSummary();
         out+=`<div class="mice-scene-core"><label class="field"><span class="field-label">Whose choice?</span><select data-lab="focus">${charOptions(lab.focus,'Choose a character',true)}</select></label><label class="field"><span class="field-label">Who else is here?</span><select data-lab="partner">${options(p().characters.filter(c=>c.id!==lab.focus).map(c=>[c.id,cname(c)+(c.archived?' (archived)':'')]),lab.partner,'Solo scene')}</select></label><label class="field"><span class="field-label">What changes the situation?</span><select data-lab="pressure">${scenePressureOptions(lab.pressure)}</select></label></div>`;
@@ -6679,7 +6698,7 @@ const CounterplotEnsemble = (() => {
     Object.assign(actions,{
         'new-thread':el=>{if(ui.page==='structure')ui.structureMode='structure';miceOpenComposer(el?.dataset.parent??ui.threadFocus??'','C');},
         'new-beat':el=>{if(ui.page==='structure')ui.structureMode='structure';miceOpenComposer(el?.dataset.parent??ui.threadFocus??'','beat');},
-        'open-scene-explorer':()=>{if(!activeChars().length)return notify('Create one character first.');if(ui.page==='structure')ui.structureMode='structure';const preferred=ui.page==='structure'?char(enLeadId(plotline(activeStructurePlotId()))):null;if(!p().lab.focus)p().lab.focus=preferred?.id||current()?.id||activeChars()[0].id;miceUI.sceneOpen=!miceUI.sceneOpen;render();if(miceUI.sceneOpen)requestAnimationFrame(()=>$('#mice-scene-explorer')?.scrollIntoView({block:'start',behavior:'smooth'}));},
+        'open-scene-explorer':()=>{const alreadyHere=ui.page==='structure';ui.structureMode='structure';const preferred=alreadyHere?char(enLeadId(plotline(activeStructurePlotId()))):null;if(!p().lab.focus)p().lab.focus=preferred?.id||current()?.id||activeChars()[0]?.id||'';miceUI.sceneOpen=alreadyHere?!miceUI.sceneOpen:true;go('structure');if(miceUI.sceneOpen)requestAnimationFrame(()=>{const explorer=$('#mice-scene-explorer');explorer?.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});explorer?.focus({preventScroll:true});});},
         'close-scene-explorer':()=>{miceUI.sceneOpen=false;ui.variant=null;ui.baseline=[];render();},
         'mice-new-pick':el=>{if(Date.now()<miceUI.suppressClick)return;const type=el.dataset.type;if(!['C','M','I','E','beat'].includes(type))return;miceUI.move='';miceUI.newType=miceUI.newType===type?'':type;render();},
         'mice-cancel-new':()=>{miceUI.newType='';render();},
