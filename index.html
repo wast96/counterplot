@@ -3514,8 +3514,6 @@ dialog{overflow:hidden}#dialog-content{display:flex;flex-direction:column;max-he
 .mice-arrange-tools {display:flex;flex-wrap:wrap;align-items:center;gap:9px;background:var(--paper);padding:12px;margin:9px -3px 3px;border-radius:3px;}
 .mice-arrange-tools .button {font-size:10px;padding:7px 9px;}
 .mice-arrange-tools .text-button {font-size:11px;}
-.mice-remove-confirm {background:var(--accent-soft);border-left:2px solid var(--accent);padding:12px;margin-top:10px;}
-.mice-remove-confirm p {font-size:12px;margin:0 0 10px;}
 .mice-empty {padding:40px 28px;border:1px dashed var(--line);background:var(--sheet);}
 .mice-empty h2 {font:32px var(--serif);margin:8px 0;}
 .mice-empty p {max-width:490px;line-height:1.65;color:var(--muted);}
@@ -4339,6 +4337,14 @@ body:has(.mice-palette) .toast{bottom:calc(120px + var(--notice-height,0px));max
 #main.page-structure .plotline-strip{gap:8px;margin:14px 0 0;padding:0 0 6px;align-items:stretch}#main.page-structure .plotline-tab{min-width:140px;padding:10px 14px;min-height:62px;border-radius:2px}#main.page-structure .plotline-tab strong{font-size:18px;line-height:1.35;margin:3px 0}#main.page-structure .plotline-tab small{font-size:11px}#main.page-structure .plotline-tab .plot-letter{font-size:9px}#main.page-structure .plotline-summary{padding:10px 14px;margin:0;border:0;background:transparent;min-height:44px;display:flex;justify-content:space-between;gap:16px;align-items:center}#main.page-structure .plotline-summary p{margin:0;font-size:12px;overflow-wrap:anywhere}#main.page-structure .plotline-summary.master-summary{justify-content:flex-end}#main.page-structure .summary-actions{display:flex;gap:16px;flex-shrink:0}#main.page-structure .mice-board-toolbar{padding:10px 0;margin:0 0 16px;gap:12px}#main.page-structure .mice-board-toolbar p{font-size:12px;margin:0}#main.page-structure .mice-root-drop{min-height:12px}
 @media(max-width:760px){.world-controls{gap:12px;margin-bottom:18px}.world-controls>.field,.world-controls .world-time-controls{flex:1 1 0;max-width:none}.world-controls .field-label,.world-controls .time-selector>span{font-size:11px}.world-controls select{padding-inline:8px;font-size:13px}#main.page-structure .plotline-summary{padding:10px 12px;flex-wrap:wrap}#main.page-structure .plotline-summary .summary-actions{margin-left:auto}.filter-pair{flex:1 1 180px}}
 
+
+
+/* Deletion is visible on each piece and reachable from the protected floating tray. */
+.mice-delete-control{display:inline-flex;align-items:center;gap:6px;flex-shrink:0;min-height:36px;padding:6px 9px;border:1px solid var(--line);border-radius:4px;background:transparent;color:var(--accent);font-size:12px;cursor:pointer}
+.mice-delete-control:hover,.mice-trash:hover,.mice-trash.mice-drop-target{background:var(--accent-soft);border-color:var(--accent)}
+.mice-trash{color:var(--accent);cursor:pointer;touch-action:manipulation}.mice-trash:active{cursor:pointer}.mice-trash:focus-visible,.mice-delete-control:focus-visible{outline:2px solid var(--sage-dark);outline-offset:2px}.mice-trash:disabled{opacity:.45;cursor:default}.mice-trash svg{width:22px;height:22px}.mice-delete-control svg{width:16px;height:16px}
+#main.page-structure .mice-palette{width:452px}
+.mice-delete-selection{max-height:160px;overflow:auto;overflow-wrap:anywhere;line-height:1.6}
 </style>
 </head>
 <body>
@@ -5181,7 +5187,7 @@ const CounterplotEnsemble = (() => {
     const emptyLab = () => ({ focus: '', partner: '', pressure: '', context: '', from: '', wantId: '', methodId: '', valueId: '', suggestions: [], basis: '', revision: 0, ensemble: [], extraParents: [], outcome: 'varied', circumstance: 'any', thread: '', plotlineId: '', momentId: '', miceId: '', miceRole: 'advance', miceLinks: [] });
     const newProject = () => { const plot={id:uid(),label:'A',title:'Main plot',cast:[],notes:''}; return { id: uid(), title: '', version: 'Main draft', createdAt: now(), updatedAt: now(), characters: [], castOrder:[], connections: [], entities: [], scenes: [], plotlines:[plot], world: { setting: '', reality: 'undecided', tones: [], notes: '', range: {...DEFAULT_RANGE} }, drafts: [], moments: [], structure: [], lab: {...emptyLab(),plotlineId:plot.id} }; };
     const newWorkspace = () => { const a = newProject(); return { format: 'counterplot', schema: 3, id: uid(), active: a.id, projects: [a] }; };
-    const NAV = [['story','Storyline'],['characters','Characters'],['connections','Connections'],['structure','Outline'],['world','World']];
+    const NAV = [['characters','Characters'],['world','World'],['connections','Connections'],['structure','Outline'],['story','Storyline']];
     let preferences={};try{preferences=JSON.parse(localStorage.getItem('counterplot.preferences.v1')||'{}');}catch{}
     function savePreference(key,value){preferences[key]=value;try{localStorage.setItem('counterplot.preferences.v1',JSON.stringify(preferences));}catch{}}
     let embedded = null;
@@ -6842,12 +6848,12 @@ const CounterplotEnsemble = (() => {
     document.addEventListener('change',event=>{if(event.target.hasAttribute('data-connection-moment')){ui.viewMoment=event.target.value;render();}if(event.target.hasAttribute('data-world-moment')){ui.viewMoment=event.target.value;render();}});
 
     // Direct MICE editing. Uses the existing schema, validation, save, review and undo paths.
-    const miceUI={project:'',composer:null,details:new Set(),tools:'',remove:'',move:'',newType:'',drag:null,paletteDrag:null,sceneOpen:false,editGroup:null,suppressClick:0,autoFoldSeen:new Set()};
+    const miceUI={project:'',composer:null,details:new Set(),tools:'',move:'',newType:'',drag:null,paletteDrag:null,sceneOpen:false,editGroup:null,suppressClick:0,autoFoldSeen:new Set()};
     const MICE_STATUS=[['open','Opening only'],['planned','Closing planned'],['resolved','Resolved in outline'],['open-ended','Left open on purpose']];
     function miceBeforeRender(){
         if(miceUI.drag)miceCancelDrag();
         if(miceUI.paletteDrag)miceCancelPaletteDrag();
-        if(miceUI.project!==workspace.active){miceUI.project=workspace.active;miceUI.composer=null;miceUI.details=new Set();miceUI.tools='';miceUI.remove='';miceUI.move='';miceUI.newType='';miceUI.sceneOpen=false;miceUI.autoFoldSeen=new Set();ui.foldedThreads=new Set();}
+        if(miceUI.project!==workspace.active){miceUI.project=workspace.active;miceUI.composer=null;miceUI.details=new Set();miceUI.tools='';miceUI.move='';miceUI.newType='';miceUI.sceneOpen=false;miceUI.autoFoldSeen=new Set();ui.foldedThreads=new Set();}
         if(ui.page!=='structure'){miceUI.move='';miceUI.newType='';}
         if(miceUI.move&&!storyNode(miceUI.move))miceUI.move='';
         const c=miceUI.composer;
@@ -6861,6 +6867,25 @@ const CounterplotEnsemble = (() => {
         return `<label class="mice-editable ${extra}"><span class="mice-edge-label">${esc(label)}</span><textarea rows="1" data-mice-field="${field}" data-id="${n.id}" maxlength="${field==='notes'?100000:30000}" aria-label="${esc(label+' · '+nodeTitle(n).slice(0,90))}" placeholder="${esc(placeholder)}" spellcheck="true">${esc(n[field]||'')}</textarea></label>`;
     }
     function miceType(n){return `<label class="mice-type-control type-${n.type}"><span class="mice-mark type-${n.type}" aria-hidden="true">${n.type==='beat'?'·':n.type}</span>${n.type==='beat'?'<span>Beat</span>':`<select data-mice-field="type" data-id="${n.id}" aria-label="Thread type · ${esc(nodeTitle(n).slice(0,80))}">${options(Object.entries(CounterplotStory.types).filter(([k])=>k!=='beat').map(([k,v])=>[k,v.name]),n.type)}</select>`}</label>`;}
+    const MICE_TRASH_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7"/></svg>';
+    function miceDeleteButton(n,label='Delete'){return `<button type="button" class="mice-delete-control" data-action="mice-remove-ask" data-id="${n.id}" aria-label="Delete ${esc(nodeTitle(n).slice(0,90))}">${MICE_TRASH_ICON}<span>${label}</span></button>`;}
+    function miceConfirmRemoval(id=''){
+        const n=storyNode(id);if(id&&!n)return notify('That block is no longer in the outline.');
+        ui.modal={kind:'mice-delete',project:workspace.active,draft:{id}};
+        modal({eyebrow:'OUTLINE / DELETE ONE BLOCK',title:n?'Delete this '+(n.type==='beat'?'beat':'thread')+'?':'Delete an outline block',
+            description:'Only the chosen block is deleted (both opening and closing for a thread). Nested pieces move up one level. Scenes and character history stay; links to the deleted block are removed. Undo can bring it back.',
+            body:(n?'':`<label class="field"><span class="field-label">Block to delete</span><select data-mice-delete-choice data-autofocus><option value="">Choose a block…</option>${CounterplotStory.ordered(p()).map(({node},i)=>`<option value="${node.id}">${esc((i+1)+'. '+CounterplotStory.types[node.type].name+' · '+nodeTitle(node).slice(0,140))}</option>`).join('')}</select></label>`)+`<p class="mice-delete-selection" id="mice-delete-selection" role="region" aria-label="Selected block" tabindex="0" aria-live="polite">${n?esc(nodeTitle(n)):''}</p>`,
+            foot:`<button class="button secondary compact" data-action="close-modal" ${n?'data-autofocus':''}>Cancel</button><button class="button rust compact" data-action="mice-remove" ${n?'':'disabled'}>Delete block</button>`});
+    }
+    function miceRemoveSelected(){
+        const m=ui.modal;if(m?.kind!=='mice-delete'||m.project!==workspace.active)return;
+        const n=storyNode(m.draft.id);if(!n)return formError('Choose a block that is still in the outline.');
+        const parent=n.parentId;
+        if(transact('Delete outline block, preserve inner pieces',pr=>CounterplotStory.removeFrame(pr,n.id),{renderNow:false})===false)return;
+        closeModal();miceUI.tools='';miceUI.move='';miceUI.newType='';if(ui.threadFocus===n.id)ui.threadFocus=parent;
+        render();const target=$('#thread-'+parent+' .mice-delete-control')||$('.mice-delete-control')||$('.mice-trash');target?.focus({preventScroll:true});
+        notify('Block deleted. Nested pieces, scenes and character history are preserved. Undo is available.');
+    }
     function miceHandle(n){return `<button type="button" class="mice-handle" data-mice-handle="${n.id}" data-action="mice-pick-move" data-id="${n.id}" aria-label="Move ${esc(nodeTitle(n).slice(0,90))}. Drag, or click to choose a spot." aria-describedby="mice-move-help" title="Drag to move · click to choose a spot"><svg width="14" height="22" viewBox="0 0 14 22" aria-hidden="true">${[5,11,17].map(y=>`<circle cx="4" cy="${y}" r="1.5"/><circle cx="10" cy="${y}" r="1.5"/>`).join('')}</svg></button>`;}
     function miceMoveChoices(n){
         if(!miceUI.move&&!miceUI.newType)return '';if(miceUI.move){const banned=CounterplotStory.descendants(p(),miceUI.move);banned.add(miceUI.move);if(banned.has(n.id))return '<div class="mice-cannot-drop">This piece moves with the selected branch.</div>';}
@@ -6875,21 +6900,20 @@ const CounterplotEnsemble = (() => {
 
     function miceArrange(n){
         if(miceUI.tools!==n.id)return '';const view=structureViewFor(ui.structurePlotline||MASTER_PLOT),vn=CounterplotStory.node(view,n.id)||n,siblings=CounterplotStory.nodes(view).filter(x=>x.parentId===vn.parentId),i=siblings.findIndex(x=>x.id===n.id),previous=siblings[i-1];
-        return `<div class="mice-arrange-tools" role="group" aria-label="Arrange this branch"><button class="button secondary compact" data-action="mice-step" data-id="${n.id}" data-way="up" ${i>0?'':'disabled'}>↑ Earlier</button><button class="button secondary compact" data-action="mice-step" data-id="${n.id}" data-way="down" ${i>=0&&i<siblings.length-1?'':'disabled'}>↓ Later</button><button class="button secondary compact" data-action="mice-step" data-id="${n.id}" data-way="out" ${vn.parentId?'':'disabled'}>← One level out</button><button class="button secondary compact" data-action="mice-step" data-id="${n.id}" data-way="in" ${previous&&previous.type!=='beat'?'':'disabled'}>→ Inside previous</button><button class="text-button" data-action="mice-pick-move" data-id="${n.id}">Choose any spot</button><button class="text-button danger" data-action="mice-remove-ask" data-id="${n.id}">${n.type==='beat'?'Remove beat':'Remove frame'}</button></div>`;
+        return `<div class="mice-arrange-tools" role="group" aria-label="Arrange this branch"><button class="button secondary compact" data-action="mice-step" data-id="${n.id}" data-way="up" ${i>0?'':'disabled'}>↑ Earlier</button><button class="button secondary compact" data-action="mice-step" data-id="${n.id}" data-way="down" ${i>=0&&i<siblings.length-1?'':'disabled'}>↓ Later</button><button class="button secondary compact" data-action="mice-step" data-id="${n.id}" data-way="out" ${vn.parentId?'':'disabled'}>← One level out</button><button class="button secondary compact" data-action="mice-step" data-id="${n.id}" data-way="in" ${previous&&previous.type!=='beat'?'':'disabled'}>→ Inside previous</button><button class="text-button" data-action="mice-pick-move" data-id="${n.id}">Choose any spot</button></div>`;
     }
-    function miceRemoval(n){return miceUI.remove===n.id?`<div class="mice-remove-confirm" role="group" aria-label="Confirm removal"><p><strong>${n.type==='beat'?'Remove this beat?':'Remove the frame, not its contents?'}</strong> ${n.type==='beat'?'Linked scenes and character history stay.':'Inner pieces move up one level. Scenes and character history stay.'} Undo can bring it back.</p><div class="inline-actions"><button class="button secondary compact" data-action="mice-remove-cancel">Keep it</button><button class="button compact danger" data-action="mice-remove" data-id="${n.id}">${n.type==='beat'?'Remove beat':'Remove frame only'}</button></div></div>`:'';}
     function micePlotBadges(n){const ids=nodePlotIds(n),primary=nodePrimaryPlotId(n);if(!ids.length)return `<span class="mice-plot-badge master-only">MASTER ONLY</span>`;return `<span class="mice-plot-badges">${ids.map(id=>`<span class="mice-plot-badge ${id===primary?'primary':''}" title="${id===primary?'Primary plot':'Also appears in this plot'}">${esc(plotline(id)?.label||'?')} PLOT</span>`).join('')}</span>`;}
     function miceTitleEditor(n){const beat=n.type==='beat';return `<label class="mice-title-edit ${beat?'beat-title':''}"><span class="sr-only">${beat?'Beat':'Thread'} title</span><input data-mice-field="title" data-id="${n.id}" value="${esc(n.title||'')}" maxlength="1000" placeholder="${beat?'Optional beat title…':'Add a working title…'}" aria-label="${beat?'Beat':'Thread'} title · ${esc((n.opening||CounterplotStory.types[n.type].name).slice(0,90))}"></label>`;}
     function miceNodeOpen(n,depth,folded,descCount,povClass=''){
         const isBeat=n.type==='beat',name=CounterplotStory.types[n.type].name;
         const meta=[n.characterId&&n.characterId!==n.povId?'About · '+cname(n.characterId):'',n.targetId?tname(n.targetId):''].filter(Boolean).join(' · ');
         const foldedClose=folded&&!isBeat?`<div class="mice-folded-summary"><div class="mice-folded-count">${descCount} inner ${descCount===1?'piece':'pieces'} folded away</div><div class="mice-folded-close">${miceText(n,'closing','CLOSES',CounterplotStory.types[n.type].close)}</div></div>`:'';
-        return `<section class="mice-branch type-${n.type} ${isBeat?'is-beat':''} ${folded?'is-folded':''} ${povClass}" data-mice-branch="${n.id}" style="--nest-space:${depth<3?'18px':depth<6?'14px':depth<10?'11px':'8px'}" data-depth="${depth}"><div class="mice-node type-${n.type} ${isBeat?'is-beat':''}" id="thread-${n.id}" data-mice-edge="${isBeat?'beat':'open'}" data-id="${n.id}">${miceMoveChoices(n)}<header>${miceHandle(n)}${miceType(n)}${micePlotBadges(n)}<span class="mice-linked-meta" data-mice-meta="${n.id}">${esc(meta)}${n.povId?`<span class="pov-tag">POV · ${esc(cname(n.povId))}</span>`:''}${n.storyDate?`<span class="story-date-tag">${esc(formatStoryDate(n.storyDate,n.storyEndDate||''))}</span>`:''}</span>${n.__viewLifted?'<span class="mice-view-lift" title="Its canonical parent is hidden in this plot lens">Lifted in this view</span>':''}${depth>4?`<span class="mice-layer">Layer ${depth+1}</span>`:''}${!isBeat?`<button class="mice-fold" data-action="fold-thread" data-id="${n.id}" aria-label="${folded?'Expand':'Collapse'} ${esc(nodeTitle(n).slice(0,80))}" aria-expanded="${!folded}" title="${folded?'Expand':'Collapse'} this thread"><span class="fold-icon" aria-hidden="true">⌄</span><span class="fold-label">${folded?'Expand':'Collapse'}</span></button>`:''}</header>${miceTitleEditor(n)}${miceText(n,'opening',isBeat?'BEAT':'OPENS',isBeat?'What happens?':CounterplotStory.types[n.type].open,'thread-opening')}${foldedClose}<footer class="mice-node-actions"><div class="inline-actions">${!isBeat&&!folded?`<button class="text-button" data-action="new-thread" data-parent="${n.id}">+ Inside</button><button class="text-button" data-action="new-beat" data-parent="${n.id}">+ Beat</button>`:''}<button class="text-button" data-action="mice-details" data-id="${n.id}" aria-controls="mice-details-${n.id}" aria-expanded="${miceUI.details.has(n.id)}">${miceUI.details.has(n.id)?'Hide details':'Details'}</button></div><div class="inline-actions"><button class="text-button" data-action="thread-lab" data-id="${n.id}">Write scene ↗</button>${!isBeat?`<button class="text-button" data-action="focus-thread" data-id="${n.id}">Focus</button>`:''}<button class="text-button" data-action="mice-arrange" data-id="${n.id}" aria-expanded="${miceUI.tools===n.id}">Arrange <span aria-hidden="true">⌄</span></button></div></footer>${miceArrange(n)}${miceRemoval(n)}${miceDetails(n)}</div>${isBeat?'':`<div class="mice-children" data-mice-container="${n.id}" ${folded?'hidden':''}>`}`;
+        return `<section class="mice-branch type-${n.type} ${isBeat?'is-beat':''} ${folded?'is-folded':''} ${povClass}" data-mice-branch="${n.id}" style="--nest-space:${depth<3?'18px':depth<6?'14px':depth<10?'11px':'8px'}" data-depth="${depth}"><div class="mice-node type-${n.type} ${isBeat?'is-beat':''}" id="thread-${n.id}" data-mice-edge="${isBeat?'beat':'open'}" data-id="${n.id}">${miceMoveChoices(n)}<header>${miceHandle(n)}${miceType(n)}${micePlotBadges(n)}<span class="mice-linked-meta" data-mice-meta="${n.id}">${esc(meta)}${n.povId?`<span class="pov-tag">POV · ${esc(cname(n.povId))}</span>`:''}${n.storyDate?`<span class="story-date-tag">${esc(formatStoryDate(n.storyDate,n.storyEndDate||''))}</span>`:''}</span>${n.__viewLifted?'<span class="mice-view-lift" title="Its canonical parent is hidden in this plot lens">Lifted in this view</span>':''}${depth>4?`<span class="mice-layer">Layer ${depth+1}</span>`:''}${!isBeat?`<button class="mice-fold" data-action="fold-thread" data-id="${n.id}" aria-label="${folded?'Expand':'Collapse'} ${esc(nodeTitle(n).slice(0,80))}" aria-expanded="${!folded}" title="${folded?'Expand':'Collapse'} this thread"><span class="fold-icon" aria-hidden="true">⌄</span><span class="fold-label">${folded?'Expand':'Collapse'}</span></button>`:''}${miceDeleteButton(n)}</header>${miceTitleEditor(n)}${miceText(n,'opening',isBeat?'BEAT':'OPENS',isBeat?'What happens?':CounterplotStory.types[n.type].open,'thread-opening')}${foldedClose}<footer class="mice-node-actions"><div class="inline-actions">${!isBeat&&!folded?`<button class="text-button" data-action="new-thread" data-parent="${n.id}">+ Inside</button><button class="text-button" data-action="new-beat" data-parent="${n.id}">+ Beat</button>`:''}<button class="text-button" data-action="mice-details" data-id="${n.id}" aria-controls="mice-details-${n.id}" aria-expanded="${miceUI.details.has(n.id)}">${miceUI.details.has(n.id)?'Hide details':'Details'}</button></div><div class="inline-actions"><button class="text-button" data-action="thread-lab" data-id="${n.id}">Write scene ↗</button>${!isBeat?`<button class="text-button" data-action="focus-thread" data-id="${n.id}">Focus</button>`:''}<button class="text-button" data-action="mice-arrange" data-id="${n.id}" aria-expanded="${miceUI.tools===n.id}">Arrange <span aria-hidden="true">⌄</span></button></div></footer>${miceArrange(n)}${miceDetails(n)}</div>${isBeat?'':`<div class="mice-children" data-mice-container="${n.id}" ${folded?'hidden':''}>`}`;
     }
 
     function miceNodeClose(n,folded){
         const changes=p().characters.flatMap(c=>[...(c.changes||[]).filter(x=>moments().some(m=>m.id===x.momentId&&m.nodeId===n.id&&m.edge==='close')).map(x=>({c,x,life:false})),...(c.lifeChanges||[]).filter(x=>moments().some(m=>m.id===x.momentId&&m.nodeId===n.id&&m.edge==='close')).map(x=>({c,x,life:true}))]);
-        return `</div><section class="mice-ending type-${n.type}" data-thread-end="${n.id}" data-mice-edge="close" data-id="${n.id}" ${folded?'hidden':''}><div class="mice-close-top"><span class="mice-mark type-${n.type}" aria-hidden="true">↳</span><span class="mice-ending-name">${esc(CounterplotStory.types[n.type].name)} closing</span>${n.storyDate?`<span class="story-date-tag">${esc(formatStoryDate(n.storyDate,n.storyEndDate||''))}</span>`:''}<label class="mice-status"><span class="sr-only">Closing status</span><select data-mice-field="status" data-id="${n.id}" aria-label="Closing status · ${esc(nodeTitle(n).slice(0,80))}">${options(MICE_STATUS,n.status)}</select></label></div><div class="mice-closing-title" data-mice-closing-title="${n.id}" ${n.title?'':'hidden'}>${esc(n.title||'')}</div>${miceText(n,'closing','CLOSES',CounterplotStory.types[n.type].close)}<div class="mice-edge-links" data-mice-scenes="${n.id}">${miceSceneLinks(n)}</div>${changes.map(({c,x,life})=>`<p class="thread-change">${esc(cname(c))}: ${life?'marked '+x.status:(x.operation==='retire'?'retires a block':esc(btext(x.block)))}</p>`).join('')}<div class="inline-actions mice-ending-actions">${n.characterId||activeChars().length?`<button class="text-button" data-action="thread-character-change" data-id="${n.id}">Record block change here →</button><button class="text-button" data-action="thread-life-change" data-id="${n.id}">Record life status here →</button>`:''}</div></section></section>`;
+        return `</div><section class="mice-ending type-${n.type}" data-thread-end="${n.id}" data-mice-edge="close" data-id="${n.id}" ${folded?'hidden':''}><div class="mice-close-top"><span class="mice-mark type-${n.type}" aria-hidden="true">↳</span><span class="mice-ending-name">${esc(CounterplotStory.types[n.type].name)} closing</span>${n.storyDate?`<span class="story-date-tag">${esc(formatStoryDate(n.storyDate,n.storyEndDate||''))}</span>`:''}<label class="mice-status"><span class="sr-only">Closing status</span><select data-mice-field="status" data-id="${n.id}" aria-label="Closing status · ${esc(nodeTitle(n).slice(0,80))}">${options(MICE_STATUS,n.status)}</select></label></div><div class="mice-closing-title" data-mice-closing-title="${n.id}" ${n.title?'':'hidden'}>${esc(n.title||'')}</div>${miceText(n,'closing','CLOSES',CounterplotStory.types[n.type].close)}<div class="mice-edge-links" data-mice-scenes="${n.id}">${miceSceneLinks(n)}</div>${changes.map(({c,x,life})=>`<p class="thread-change">${esc(cname(c))}: ${life?'marked '+x.status:(x.operation==='retire'?'retires a block':esc(btext(x.block)))}</p>`).join('')}<div class="inline-actions mice-ending-actions">${miceDeleteButton(n,'Delete thread')}${n.characterId||activeChars().length?`<button class="text-button" data-action="thread-character-change" data-id="${n.id}">Record block change here →</button><button class="text-button" data-action="thread-life-change" data-id="${n.id}">Record life status here →</button>`:''}</div></section></section>`;
     }
     function miceSceneLinks(n){return [n.openSceneId?`<button class="text-button" data-action="jump-scene" data-id="${n.openSceneId}">Opening scene: ${esc(scene(n.openSceneId)?.title||'Untitled')} ↗</button>`:'',n.closeSceneId?`<button class="text-button" data-action="jump-scene" data-id="${n.closeSceneId}">Closing scene: ${esc(scene(n.closeSceneId)?.title||'Untitled')} ↗</button>`:''].join('');}
     function miceComposerMarkup(){
@@ -6904,7 +6928,7 @@ const CounterplotEnsemble = (() => {
 
     function renderMicePalette(){
         const items=[['M','Milieu'],['I','Inquiry'],['C','Character'],['E','Event']],button=([type,label],mark=type)=>`<button type="button" class="mice-palette-item type-${type} ${miceUI.newType===type?'selected':''}" data-mice-new-type="${type}" data-action="mice-new-pick" data-type="${type}" aria-pressed="${miceUI.newType===type}" title="Drag to add ${type==='beat'?'a beat':'a '+label+' thread'} · click to choose a spot"><span>${mark}</span><small>${label}</small></button>`;
-        return `<div class="mice-palette" role="toolbar" aria-label="Add MICE thread or beat"><div class="mice-palette-items">${items.map(item=>button(item)).join('')}<span class="mice-palette-separator" aria-hidden="true"></span>${button(['beat','Beat'],'B')}</div><div class="mice-palette-hint">${miceUI.newType?`Adding ${esc(CounterplotStory.types[miceUI.newType].name)} · choose a spot below · Esc cancels`:'Drag to add · click to choose a spot'}</div></div>`;
+        return `<div class="mice-palette" role="toolbar" aria-label="MICE threads, beats and trash"><div class="mice-palette-items">${items.map(item=>button(item)).join('')}<span class="mice-palette-separator" aria-hidden="true"></span>${button(['beat','Beat'],'B')}<button type="button" class="mice-palette-item mice-trash" data-action="mice-trash" aria-label="Delete an outline block" title="Choose a block to delete, or drag a block here" ${CounterplotStory.nodes(p()).length?'':'disabled'}>${MICE_TRASH_ICON}<small>Trash</small></button></div><div class="mice-palette-hint">${miceUI.newType?`Adding ${esc(CounterplotStory.types[miceUI.newType].name)} · choose a spot below · Esc cancels`:'Drag to add · click to choose a spot'}</div></div>`;
     }
     function renderMiceChronology(){
         const plotFilter=ui.chronologyPlot||'all',povFilter=ui.structurePov||'';
@@ -7013,15 +7037,15 @@ const CounterplotEnsemble = (() => {
         'mice-compose-save':miceSaveComposer,
         'mice-composer-close':()=>{const c=miceUI.composer;miceStashComposer();miceUI.composer=null;render();if(c?.dirty)notify('Unfinished text kept in drafts. Resume it from the notice above.');},
         'mice-details':el=>{const id=el.dataset.id,show=!miceUI.details.has(id);if(show)miceUI.details.add(id);else miceUI.details.delete(id);document.body.classList.toggle('has-inline-mice-editor',!!(miceUI.composer||miceUI.details.size));let box=$('#mice-details-'+id);if(box){if(show){box.outerHTML=miceDetails(storyNode(id));box=$('#mice-details-'+id);}else{box.hidden=true;box.replaceChildren();}}el.textContent=show?'Hide details':'Details';el.setAttribute('aria-expanded',String(show));$$('textarea',box).forEach(miceFit);},
-        'mice-arrange':el=>{miceUI.tools=miceUI.tools===el.dataset.id?'':el.dataset.id;miceUI.remove='';render();focusRenderedView(()=>$(`#thread-${el.dataset.id} [data-action="mice-arrange"]`)?.focus({preventScroll:true}));},
+        'mice-arrange':el=>{miceUI.tools=miceUI.tools===el.dataset.id?'':el.dataset.id;render();focusRenderedView(()=>$(`#thread-${el.dataset.id} [data-action="mice-arrange"]`)?.focus({preventScroll:true}));},
         'mice-step':el=>miceStep(el.dataset.id,el.dataset.way),
         'mice-pick-move':el=>{if(Date.now()<miceUI.suppressClick)return;miceUI.newType='';miceUI.move=el.dataset.id;miceUI.tools='';render();requestAnimationFrame(()=>$('.mice-move-banner')?.scrollIntoView({block:'nearest',behavior:'instant'}));},
         'move-thread-dialog':el=>{actions['mice-pick-move'](el);},
         'mice-cancel-move':()=>{const id=miceUI.move;miceUI.move='';render();miceReveal(id);},
         'mice-place':el=>miceApplyPlace(miceUI.move,el.dataset.anchor||'',el.dataset.position),
-        'mice-remove-ask':el=>{miceUI.remove=el.dataset.id;render();requestAnimationFrame(()=>$('.mice-remove-confirm')?.scrollIntoView({block:'nearest',behavior:'instant'}));},
-        'mice-remove-cancel':()=>{const id=miceUI.remove;miceUI.remove='';render();focusRenderedView(()=>$(`#thread-${id} [data-action="mice-arrange"]`)?.focus({preventScroll:true}));},
-        'mice-remove':el=>{const n=storyNode(el.dataset.id);if(!n)return;const parent=n.parentId;if(transact('Remove frame, preserve inner pieces',pr=>CounterplotStory.removeFrame(pr,n.id),{renderNow:false})===false)return;miceUI.remove='';miceUI.tools='';render();if(parent)miceReveal(parent);notify('Removed. Inner pieces, scenes and character history are preserved. Undo is available.');},
+        'mice-remove-ask':el=>miceConfirmRemoval(el.dataset.id),
+        'mice-trash':()=>{if(Date.now()<miceUI.suppressClick)return;miceConfirmRemoval();},
+        'mice-remove':miceRemoveSelected,
         'fold-all-threads':()=>{ui.foldedThreads=new Set(CounterplotStory.nodes(p()).filter(n=>n.type!=='beat').map(n=>n.id));miceUI.composer=null;render();},
         'mice-guide':()=>window.CounterplotGuide?.open('structure')
     });
@@ -7032,10 +7056,10 @@ const CounterplotEnsemble = (() => {
         if(el.hasAttribute('data-mice-field')&&el.matches('input,textarea')){miceEdit(el);miceFit(el);}
         if(el.hasAttribute('data-mice-compose')&&miceUI.composer){const c=miceUI.composer;c.draft[el.dataset.miceCompose]=el.value;c.dirty=true;c.error='';const error=$('.mice-composer-error');if(error)error.hidden=true;miceStashComposer();miceFit(el);}
     });
-    document.addEventListener('change',event=>{const el=event.target;if(el.hasAttribute('data-mice-plot')){const n=storyNode(el.dataset.id),pid=el.dataset.micePlot;if(!n||!plotline(pid))return;transact(el.checked?'Show thread in plot':'Hide thread from plot',()=>{n.plotlineIds??=(n.plotlineId?[n.plotlineId]:[]);if(el.checked){if(!n.plotlineIds.includes(pid))n.plotlineIds.push(pid);if(!n.plotlineId)n.plotlineId=pid;}else{n.plotlineIds=n.plotlineIds.filter(x=>x!==pid);if(n.plotlineId===pid)n.plotlineId=n.plotlineIds[0]||'';}},{renderNow:true});return;}if(el.matches('select[data-mice-field]'))miceEdit(el);});
+    document.addEventListener('change',event=>{const el=event.target;if(el.hasAttribute('data-mice-delete-choice')&&ui.modal?.kind==='mice-delete'){ui.modal.draft.id=el.value;$('#mice-delete-selection').textContent=el.value?nodeTitle(storyNode(el.value)):'';$('[data-action=mice-remove]',$('#dialog')).disabled=!storyNode(el.value);return;}if(el.hasAttribute('data-mice-plot')){const n=storyNode(el.dataset.id),pid=el.dataset.micePlot;if(!n||!plotline(pid))return;transact(el.checked?'Show thread in plot':'Hide thread from plot',()=>{n.plotlineIds??=(n.plotlineId?[n.plotlineId]:[]);if(el.checked){if(!n.plotlineIds.includes(pid))n.plotlineIds.push(pid);if(!n.plotlineId)n.plotlineId=pid;}else{n.plotlineIds=n.plotlineIds.filter(x=>x!==pid);if(n.plotlineId===pid)n.plotlineId=n.plotlineIds[0]||'';}},{renderNow:true});return;}if(el.matches('select[data-mice-field]'))miceEdit(el);});
     document.addEventListener('keydown',event=>{
         if(window.CounterplotGuide?.isOpen())return;
-        if(event.key==='Escape'&&(miceUI.drag||miceUI.paletteDrag||miceUI.move||miceUI.newType)){event.preventDefault();event.stopImmediatePropagation();if(miceUI.drag)miceCancelDrag(true);else if(miceUI.paletteDrag)miceCancelPaletteDrag(true);else if(miceUI.move)actions['mice-cancel-move']();else actions['mice-cancel-new']();return;}
+        if(event.key==='Escape'&&!$('#dialog').open&&(miceUI.drag||miceUI.paletteDrag||miceUI.move||miceUI.newType)){event.preventDefault();event.stopImmediatePropagation();if(miceUI.drag)miceCancelDrag(true);else if(miceUI.paletteDrag)miceCancelPaletteDrag(true);else if(miceUI.move)actions['mice-cancel-move']();else actions['mice-cancel-new']();return;}
         if(miceUI.drag&&event.key==='Tab')miceCancelDrag(true);
         if(event.key==='Escape'&&event.target.closest('#mice-composer')){event.preventDefault();event.stopImmediatePropagation();actions['mice-composer-close']();return;}
         const handle=event.target.closest('[data-mice-handle]');
@@ -7048,6 +7072,7 @@ const CounterplotEnsemble = (() => {
         d.branch?.classList.remove('mice-lifted');document.body.classList.remove('mice-dragging');d.ghost?.remove();d.line?.remove();$$('.mice-drop-target').forEach(e=>e.classList.remove('mice-drop-target'));if(d.active)miceUI.suppressClick=Date.now()+450;if(announce)notify('Move canceled. Nothing changed.');}
     function miceDragSignature(){return JSON.stringify(CounterplotStory.nodes(p()).map(n=>[n.id,n.parentId]));}
     function miceProposalAt(x,y,d){
+        const trash=document.elementFromPoint(x,y)?.closest('.mice-trash');if(trash&&!d.newType&&!trash.disabled)return {where:'trash',element:trash,label:'Delete this block · confirmation next · keep nested pieces'};
         const board=$('.mice-board');if(!board)return null;const r=board.getBoundingClientRect();if(x<r.left-6||x>r.right+6)return null;
         const hit=document.elementFromPoint(x,y);if(!hit||d.branch?.contains(hit))return null;
         const root=hit.closest('[data-mice-root]');if(root)return {anchor:'',where:root.dataset.miceRoot,element:root,label:root.dataset.miceRoot==='start'?'At the start · outside all threads':'At the end · outside all threads'};
@@ -7068,6 +7093,7 @@ const CounterplotEnsemble = (() => {
         d.ghost.style.left=Math.max(8,Math.min(innerWidth-d.ghost.offsetWidth-8,d.x+18))+'px';d.ghost.style.top=Math.max(8,Math.min(innerHeight-d.ghost.offsetHeight-8,d.y+16))+'px';
         d.ghost.querySelector('small').textContent=proposal?proposal.label:(d.newType?'Drop on a thread, between branches, or an outer-level target':'Move to another piece or an outer-level drop area');
         $$(' .mice-drop-target').forEach(e=>e.classList.remove('mice-drop-target'));d.line.hidden=!proposal;if(!proposal)return;
+        if(proposal.where==='trash'){proposal.element.classList.add('mice-drop-target');d.line.hidden=true;return;}
         let rect=proposal.element.getBoundingClientRect(),top=rect.top,left=rect.left,width=rect.width;
         if(proposal.where==='inside'){
             proposal.element.classList.add('mice-drop-target');const end=$(`[data-thread-end="${proposal.anchor}"]`);const endRect=end?.getBoundingClientRect();
@@ -7080,7 +7106,7 @@ const CounterplotEnsemble = (() => {
         // The label is carried with the pointer even when the exact insertion line is offscreen.
     }
     function miceDragTick(){const d=miceUI.drag||miceUI.paletteDrag;if(!d?.active)return;const header=$('.topbar')?.getBoundingClientRect().bottom||0,rail=$('#rail')?.getBoundingClientRect(),bottom=rail&&rail.top>innerHeight/2?rail.top:innerHeight;let delta=0;
-        if(d.y<header+55)delta=-Math.ceil(Math.max(2,(header+55-d.y)/4));else if(d.y>bottom-55)delta=Math.ceil(Math.max(2,(d.y-bottom+55)/4));
+        if(d.proposal?.where==='trash')delta=0;else if(d.y<header+55)delta=-Math.ceil(Math.max(2,(header+55-d.y)/4));else if(d.y>bottom-55)delta=Math.ceil(Math.max(2,(d.y-bottom+55)/4));
         if(delta){window.scrollBy({top:Math.max(-22,Math.min(22,delta)),behavior:'instant'});micePaintDrag(d);}d.raf=requestAnimationFrame(miceDragTick);
     }
     document.addEventListener('pointerdown',event=>{
@@ -7097,7 +7123,7 @@ const CounterplotEnsemble = (() => {
     },{passive:false});
     document.addEventListener('pointerup',event=>{
         const d=miceUI.drag;if(!d||event.pointerId!==d.pointerId)return;const proposal=d.proposal,active=d.active,valid=d.project===workspace.active&&d.signature===miceDragSignature();miceCancelDrag();
-        if(active){event.preventDefault();if(!valid)notify('The outline changed during the move. Nothing was moved; try again.');else if(proposal)miceApplyPlace(d.id,proposal.anchor,proposal.where);else notify('No drop made. The branch stayed where it was.');}
+        if(active){event.preventDefault();if(!valid)notify('The outline changed during the move. Nothing was moved; try again.');else if(proposal?.where==='trash')miceConfirmRemoval(d.id);else if(proposal)miceApplyPlace(d.id,proposal.anchor,proposal.where);else notify('No drop made. The branch stayed where it was.');}
     });
     document.addEventListener('pointercancel',event=>{if(miceUI.drag?.pointerId===event.pointerId)miceCancelDrag(true);});
     document.addEventListener('lostpointercapture',event=>{if(miceUI.drag?.pointerId===event.pointerId)miceCancelDrag(true);});
@@ -8707,13 +8733,13 @@ window.CounterplotGuideData = {
         {
           "id": "structure-14",
           "title": "Remove a frame, keep its contents",
-          "selector": "[data-action=\"mice-arrange\"]",
+          "selector": ".mice-delete-control",
           "body": [
-            "Open Arrange, then Remove frame. A note on the page asks you to confirm.",
+            "Use Delete on a block, or Trash after Beat on the floating bar. You can also drag a block handle onto Trash. Confirm the named block before deletion.",
             "Only that frame is removed. Its inner pieces move up one level. Saved scenes and character history remain.",
-            "Remove beat works the same way for one beat. The top Undo button can bring it back."
+            "Deleting a beat works the same way. Undo brings the block and its links back."
           ],
-          "missing": "Create a piece to see its Arrange controls.",
+          "missing": "Create a piece to see its Delete button.",
           "tip": "",
           "example": ""
         },
