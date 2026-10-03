@@ -4,11 +4,13 @@
   "type": "module",
   "scripts": {
     "test": "node --test test/*.test.js",
-    "check": "node scripts/check.mjs",
-    "test:browser": "playwright test"
+    "check": "node scripts/generate-runtime.mjs --check && node scripts/check.mjs",
+    "test:browser": "playwright test",
+    "generate": "node scripts/generate-runtime.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",
-    "@playwright/test": "1.63.0"
+    "@playwright/test": "1.63.0",
+    "acorn": "^8.15.0"
   }
 }

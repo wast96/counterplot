@@ -27,7 +27,8 @@ async function openScene(page, ideas = false) {
 }
 async function saveScene(page, title = 'The letter') {
   await page.locator('[data-draft="title"]').fill(title);
-  await page.getByRole('button', { name: 'Add scene', exact: false }).click();
+  await page.locator('[data-action=save-scene]').click();
+  if(await page.locator('[data-nav=structure].active').count())await page.locator('[data-nav=story]').click();
   await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible();
 }
 
@@ -59,7 +60,7 @@ test('the canvas develops setup before tension, turn, outcome and reaction; cont
   expect(workspace.projects[0].scenes[1].parent).toBe(workspace.projects[0].scenes[0].id);
   await page.getByRole('button', { name: 'Edit scene The letter', exact: true }).click();
   await page.locator('.scene-planning>summary').click();await page.locator('[data-draft="turn"]').fill('A different name is on the arrest notice.');
-  await page.getByRole('button', { name: 'Save scene', exact: false }).click();
+  await page.locator('[data-action=save-scene]').click();
   const stale = await page.evaluate(() => counterplotDiagnostics.staleSceneIds());
   expect(stale).toContain(workspace.projects[0].scenes[1].id);
 });
@@ -75,7 +76,7 @@ test('authored possibilities remain separate, resumable and independent of plann
   await expect(page.locator('[data-draft="goal"]')).toHaveValue(fields.goal);
   await expect(page.locator('[data-draft="action"]')).toHaveValue('');
   await expect(page.locator('[data-draft="after"]')).toHaveValue('');
-  await page.getByRole('button', { name: 'Save unfinished draft' }).click();
+  await page.keyboard.press('Escape');
   await page.getByRole('button', { name: 'Resume or discard' }).click();
   await page.locator('[data-action="resume-draft"]').click();
   await expect(page.locator('[data-draft="sceneKind"]')).toHaveValue('aftermath');
@@ -87,7 +88,7 @@ test('authored possibilities remain separate, resumable and independent of plann
 
 test('free prose and incomplete scenes can be saved, edited and recovered after reload', async ({ page }) => {
   await openScene(page);
-  await page.getByRole('button', { name: 'Planning first',exact:true }).click();await page.getByRole('button', { name: 'Write freely first',exact:true }).click();
+  await expect(page.locator('[data-action=scene-write-first]')).toHaveCount(0);
   expect((await page.locator('.scene-canvas-section h3').allTextContents())[0]).toBe('Write freely');
   await page.locator('[data-draft="notes"]').fill('The cup was still warm. She did not move it.');
   await saveScene(page, 'A quiet morning');
@@ -97,7 +98,7 @@ test('free prose and incomplete scenes can be saved, edited and recovered after 
   await expect(page.locator('[data-draft="notes"]')).toHaveValue('The cup was still warm. She did not move it.');
   await expect(page.locator('[data-draft="action"]')).toHaveValue('');
   await page.locator('.scene-planning>summary').click();await page.locator('[data-draft="reaction"]').fill('Grief felt like waiting.');
-  await page.getByRole('button', { name: 'Save scene', exact: false }).click();
+  await page.locator('[data-action=save-scene]').click();
   await expect(page.locator('.scene-card')).toContainText('Grief felt like waiting.');
 });
 
@@ -128,7 +129,7 @@ test('legacy scenes, unfinished edits and retired range values survive loading a
   await expect(page.locator('[data-draft="context"]')).toHaveValue('A courier waits at the gate.');
   await expect(page.locator('[data-draft="notes"]')).toHaveValue('Legacy prose. Keep these exact words.');
   await page.locator('.scene-planning>summary').click();await page.locator('[data-draft="goal"]').fill('Get inside before the gates close.');
-  await page.getByRole('button', { name: 'Save scene', exact: false }).click();
+  await page.locator('[data-action=save-scene]').click();
   await page.getByRole('button', { name: 'Resume or discard' }).click();
   await page.locator('[data-action="resume-draft"]').click();
   await expect(page.locator('[data-draft="notes"]')).toHaveValue('Unfinished legacy words.');
@@ -198,7 +199,7 @@ test('participants and scene approach survive saving without generated agendas',
     p.characters.push({...structuredClone(p.characters[0]),id:'ivo',name:'Ivo'});
     counterplotBridge.replace(data);
   }, structuredClone(legacy));
-  await page.getByRole('button', { name: 'Write another scene' }).click();
+  await page.locator('[data-action=new-blank-scene]').first().click();
   await page.locator('.scene-metadata summary').click();await page.locator('[data-draft="partner"]').selectOption('ivo');
   if(!await page.locator('.scene-planning').evaluate(e=>e.open))await page.locator('.scene-planning>summary').click();
   await page.locator('[data-draft="goal"]').fill('Borrow a room without exposing Ivo.');
@@ -212,7 +213,7 @@ test('a MICE thread carries its opening and link into the unified workshop', asy
   await openScene(page);
   await page.keyboard.press('Escape');
   await page.locator('[data-nav="structure"]').click();
-  await page.getByRole('button', { name: 'New thread', exact: false }).click();
+  await page.getByRole('button', { name: 'Create a MICE thread', exact: true }).click();
   await page.locator('[data-mice-compose="opening"]').fill('A courier wants to stop hiding from her employer.');
   await page.locator('[data-mice-compose="title"]').fill('The courier’s courage');
   await page.getByRole('button', { name: 'Add thread', exact: false }).click();

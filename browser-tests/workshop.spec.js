@@ -25,12 +25,12 @@ test('a character-free scene supports writing, persistence, reading, continuatio
  await action(page,'search').click();await page.locator('[data-global-search]').fill('tide returns');await expect(page.locator('.search-result')).toHaveCount(1);await page.locator('.search-result').click();await expect(page.locator('[data-draft="notes"]')).toBeFocused();
 });
 
-test('writing preferences and unfinished text survive navigation without placeholder characters',async({page})=>{
+test('ordinary prose saves across navigation and reload without separate unfinished versions',async({page})=>{
  await action(page,'new-blank-scene').click();await page.locator('[data-draft="notes"]').fill('Do not lose this unfinished paragraph.');
- await action(page,'scene-write-first').click();await page.locator('[data-nav="world"]').first().click();
- await action(page,'drafts').click();await action(page,'resume-draft').click();await expect(page.locator('[data-draft="notes"]')).toHaveValue('Do not lose this unfinished paragraph.');
- await action(page,'save-scene').click();await page.reload();await action(page,'edit-scene').click();expect(await page.locator('.scene-canvas-section h3').first().innerText()).toBe('Opening');
- await action(page,'scene-write-first').click();await action(page,'save-scene').click();await page.reload();await action(page,'edit-scene').click();expect(await page.locator('.scene-canvas-section h3').first().innerText()).toBe('Write freely');
+ await page.locator('[data-nav="world"]').first().click();await page.locator('[data-nav="story"]').first().click();
+ await action(page,'edit-scene').click();await expect(page.locator('[data-draft="notes"]')).toHaveValue('Do not lose this unfinished paragraph.');
+ await action(page,'save-scene').click();await page.reload();await action(page,'edit-scene').click();expect(await page.locator('.scene-canvas-section h3').first().innerText()).toBe('Write freely');
+ expect(await page.evaluate(()=>counterplotDiagnostics.snapshot().projects[0].drafts.length)).toBe(0);
 });
 
 test('every scene craft field and development beat is searchable and opens its matching field',async({page})=>{
@@ -97,7 +97,7 @@ test('reader-only outcomes create no story moment and reject duplicate queued re
 
 test('page and scene guides open and keyboard-close without losing unfinished prose',async({page})=>{
  for(const name of ['story','characters','connections','structure','world']){await page.locator(`[data-nav="${name}"]`).first().click();await action(page,'help').click();await expect(page.locator('#page-guide')).toBeVisible();await page.locator('[data-guide=start]').click();await page.keyboard.press('Escape');await expect(page.locator('#page-guide')).not.toBeVisible();}
- await page.locator('[data-nav=story]').first().click();await action(page,'new-blank-scene').click();await page.locator('[data-draft=notes]').fill('Keep this while showing help.');await page.locator('[data-guide-form]').click();await expect(page.locator('#page-guide')).toBeVisible();await page.keyboard.press('Escape');await expect(page.locator('[data-draft=notes]')).toHaveValue('Keep this while showing help.');await page.keyboard.press('Escape');await action(page,'drafts').click();await action(page,'resume-draft').click();await expect(page.locator('[data-draft=notes]')).toHaveValue('Keep this while showing help.');
+ await page.locator('[data-nav=story]').first().click();await action(page,'new-blank-scene').click();await page.locator('[data-draft=notes]').fill('Keep this while showing help.');await page.locator('[data-guide-form]').click();await expect(page.locator('#page-guide')).toBeVisible();await page.keyboard.press('Escape');await expect(page.locator('[data-draft=notes]')).toHaveValue('Keep this while showing help.');await page.keyboard.press('Escape');await action(page,'edit-scene').click();await expect(page.locator('[data-draft=notes]')).toHaveValue('Keep this while showing help.');
 });
 
 test('character changes preserve block details and failed outcome batches leave history intact',async({page})=>{
