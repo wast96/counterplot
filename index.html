@@ -5636,7 +5636,7 @@ const CounterplotEnsemble = (() => {
     function positionSceneEditor(){const mobile=matchMedia('(max-width:760px)').matches;const compact=innerHeight<=500;const top=compact?0:mobile?$('#navigation').getBoundingClientRect().bottom:$('.topbar').getBoundingClientRect().bottom;document.documentElement.style.setProperty('--scene-top',top+'px');document.documentElement.style.setProperty('--scene-left',(mobile||compact?0:$('#rail').getBoundingClientRect().right)+'px');}
     new ResizeObserver(positionSceneEditor).observe($('#mobile-tools'));window.addEventListener('resize',positionSceneEditor);
     function modal({ eyebrow = 'COUNTERPLOT / WORKSHOP', title, description = '', body = '', foot = '' }) {
-        const d = $('#dialog'), focusTicket={};ui.dialogFocusTicket=focusTicket;
+        const d = $('#dialog');
         const editor=ui.modal?.kind==='scene';if(d.open&&((d.dataset.sceneEditor==='true')!==editor))d.close();d.dataset.sceneEditor=String(editor);document.body.classList.toggle('scene-editor-open',editor);d.setAttribute('aria-modal',String(!editor));
         d.dataset.guideContext=ui.modal?.kind||'form';
         if (!d.open)
@@ -5644,7 +5644,7 @@ const CounterplotEnsemble = (() => {
         $('#dialog-content').innerHTML = `<header class="dialog-head"><div class="eyebrow">${esc(eyebrow)}</div><h2 id="dialog-title">${title}</h2>${description ? `<p>${description}</p>` : ''}<button class="page-help form-help" data-guide-form aria-label="Help with this form" title="Help with this form">?</button><button class="icon-btn dialog-close" data-action="close-modal" aria-label="Close dialog">×</button></header><div class="dialog-body">${body}<div class="form-error" id="modal-error" role="alert"></div></div>${foot ? `<footer class="dialog-foot">${foot}</footer>` : ''}`;
         if(editor){window.scrollTo(0,0);positionSceneEditor();}if (!d.open){if(editor)d.show();else d.showModal();}
         d.scrollTop = 0;
-        requestAnimationFrame(() => { if(ui.dialogFocusTicket!==focusTicket||!d.open||$('#page-guide[open]'))return;const focused=document.activeElement;if(focused&&d.contains(focused)&&focused.matches('input,textarea,select'))return;const first = $('[data-autofocus]', d) || $('input:not([type=checkbox]):not([type=hidden]), select, .dialog-close', d); if (first) {
+        focusRenderedView(() => { if(!d.open)return;const focused=document.activeElement;if(focused&&d.contains(focused)&&focused.matches('input,textarea,select'))return;const first = $('[data-autofocus]', d) || $('input:not([type=checkbox]):not([type=hidden]), select, .dialog-close', d); if (first) {
             first.focus({ preventScroll: true });
             if (first.matches('input[data-select-all]'))
                 first.select();
@@ -5759,7 +5759,7 @@ const CounterplotEnsemble = (() => {
         ui.modal = { kind: 'scene', editing: !!old, ideasOpen: ideas, writingFirst: true, returnTo:ui.page!=='story'?{page:ui.page,selected:ui.selected}:null, baseScene:old?clone(old):null, editGroup:uid(), draft: d };
         try{if(window.history.state?.counterplotScene!==d.id)window.history.pushState({counterplotScene:d.id,projectId:workspace.active},'','#story');}catch{} ui.page='story';
         renderSceneDialog();
-        if(ideas)afterRenderFocus(()=>{const setup=$('#scene-setup');setup?.scrollIntoView({block:'start'});setup?.focus({preventScroll:true});});
+        if(ideas)focusRenderedView(()=>{const setup=$('#scene-setup');setup?.scrollIntoView({block:'start'});setup?.focus({preventScroll:true});});
     }
     function sceneField(d, key, label, placeholder = '', rows = 2) {
         return `<label class="field"><span class="field-label">${esc(label)}</span><textarea data-draft="${key}" rows="${rows}" maxlength="${key==='notes'?1000000:100000}" placeholder="${esc(placeholder)}">${esc(d[key] || '')}</textarea></label>`;
@@ -5809,7 +5809,7 @@ const CounterplotEnsemble = (() => {
         renderSceneDialog();
         $$('details',$('#dialog')).forEach(d=>{if(expanded.has(d.id||d.querySelector('summary')?.textContent))d.open=true;});
         const body=$('#dialog .dialog-body'); if(body)body.scrollTop=scroll;
-        if(selector)afterRenderFocus(()=>{const el=$(selector,$('#dialog'));for(let n=el?.parentElement;n;n=n.parentElement)if(n.tagName==='DETAILS')n.open=true;el?.scrollIntoView({block:'nearest'});el?.focus({preventScroll:true});});
+        if(selector)focusRenderedView(()=>{const el=$(selector,$('#dialog'));for(let n=el?.parentElement;n;n=n.parentElement)if(n.tagName==='DETAILS')n.open=true;el?.scrollIntoView({block:'nearest'});el?.focus({preventScroll:true});});
     }
     function showReviewBase(id) { const s = scene(id); if (!s)
         return; ui.modal = { kind: 'review', scene: id }; const currentBlocks = personAt(s.focus,s.momentId||'')?.blocks.filter(b => b.kind !== 'secret') || []; modal({ eyebrow: 'REVIEW / PRESERVE THE SCENE, CHECK THE PREMISE', title: 'Does the scene still follow?', description: 'The wording below has not been rewritten. Compare its original ingredients with the current person, world, and preceding consequence.', body: `<div class="review-diff"><strong>${esc(s.title)}</strong>\n${esc(s.action)}\n\nWhat is different: ${esc(s.after)}</div><div class="fields-2" style="margin-top:22px"><div><h3 class="small-heading">When the scene was made</h3>${s.blockSources?.length ? s.blockSources.map(b => `<div class="source-block"><strong>${esc(b.kind)}</strong>${esc(b.text)}</div>`).join('') : '<p class="tiny-note">No generated block snapshot. This was an author-created scene.</p>'}</div><div><h3 class="small-heading">At this scene’s story moment</h3><p class="tiny-note">${esc(momentName(s.momentId||''))}</p>${currentBlocks.map(b => `<div class="source-block"><strong>${esc(KINDS[b.kind].label)}</strong>${esc(btext(b))}</div>`).join('') || '<p class="tiny-note">No building blocks recorded.</p>'}</div></div>${s.parent ? `<div class="callout neutral"><strong>Current preceding consequence:</strong> ${esc(scene(s.parent)?.after || 'No longer available.')}${scene(s.parent) && isStale(scene(s.parent)) ? '<br>The preceding scene also needs review. Review it before confirming this one.' : ''}</div>` : ''}<p class="tiny-note">Reviewing acknowledges the current character, connection, world, and causal assumptions. It does not prove the scene is plausible or overwrite its words.</p>`, foot: `<button class="text-button" data-action="edit-scene" data-id="${s.id}">Edit the scene instead</button><button class="button compact" data-action="confirm-review" data-id="${s.id}" ${s.parent && scene(s.parent) && isStale(scene(s.parent)) ? 'disabled' : ''}>This scene still follows ✓</button>` }); }
@@ -5842,7 +5842,7 @@ const CounterplotEnsemble = (() => {
     function generate() { const lab = p().lab; if (!char(lab.focus))
         return notify('Choose a viewpoint character first.'); if (!lab.pressure)
         return ui.modal?.kind==='legacy-explorer'?formError('Choose a situation before comparing choices.'):showPressure(); if (lab.partner === lab.focus)
-        return notify('Choose a different counterpart, or a solo scene.'); const issues=CounterplotNarrative.problems(p(),personAt(lab.focus),labBlock(personAt(lab.focus),'method'),lab.pressure); if(issues.length)return notify(issues.join(' ')); const revision = lab.revision; const routes = makeRoutes({ variant: ui.variant, revision }); transact('Explore three scene choices', project => { project.lab.suggestions = routes; project.lab.revision = revision + 1; project.lab.basis = liveLabBasis(ui.variant); }); if(ui.modal?.kind==='legacy-explorer')showLegacyExplorer(); afterRenderFocus(() => $('.routes-header')?.scrollIntoView({ block: 'start', behavior: 'smooth' })); }
+        return notify('Choose a different counterpart, or a solo scene.'); const issues=CounterplotNarrative.problems(p(),personAt(lab.focus),labBlock(personAt(lab.focus),'method'),lab.pressure); if(issues.length)return notify(issues.join(' ')); const revision = lab.revision; const routes = makeRoutes({ variant: ui.variant, revision }); transact('Explore three scene choices', project => { project.lab.suggestions = routes; project.lab.revision = revision + 1; project.lab.basis = liveLabBasis(ui.variant); }); if(ui.modal?.kind==='legacy-explorer')showLegacyExplorer(); focusRenderedView(() => $('.routes-header')?.scrollIntoView({ block: 'start', behavior: 'smooth' })); }
     function keepRoute(id, allowAlternative = false) {
         const lab = p().lab, s = lab.suggestions.find(x => x.id === id);
         if (!s || s.kept)
@@ -5997,7 +5997,7 @@ const CounterplotEnsemble = (() => {
 
         'account':()=>window.counterplotSync?.details(), 'close-modal': () => closeModal(), 'undo': () => undo(), 'redo': () => redo(), 'focus': () => document.body.classList.toggle('is-focused'), 'help': () => window.CounterplotGuide?.open(ui.page), 'search': () => showSearch(), 'projects': () => showProjects(), 'export': () => showExport(),
         'develop-legacy-scene':el=>{const earlier=p().lab.suggestions.find(s=>s.id===el.dataset.id);if(earlier)showScene('',{...clone(earlier),id:uid(),kept:false});},
-        'search-open-scene':el=>{const field=el.dataset.field;closeModal();showScene(el.dataset.id,{skipUnfinished:true});afterRenderFocus(()=>{const target=field==='beats'?$('.scene-beats'):document.querySelector('[data-draft="'+field+'"]');if(target){for(let n=target.parentElement;n;n=n.parentElement)if(n.tagName==='DETAILS')n.open=true;target.scrollIntoView({block:'center'});target.focus?.();}});},
+        'search-open-scene':el=>{const field=el.dataset.field;closeModal();showScene(el.dataset.id,{skipUnfinished:true});focusRenderedView(()=>{const target=field==='beats'?$('.scene-beats'):document.querySelector('[data-draft="'+field+'"]');if(target){for(let n=target.parentElement;n;n=n.parentElement)if(n.tagName==='DETAILS')n.open=true;target.scrollIntoView({block:'center'});target.focus?.();}});},
         'legacy-explorer':()=>{stashDraft();closeModal();showLegacyExplorer();},
         'scene-guide':()=>window.CounterplotGuide?.openForm?.(),
         'scene-write-first':()=>{ui.modal.writingFirst=!ui.modal.writingFirst;savePreference('writingFirst',ui.modal.writingFirst);redrawSceneWorkshop(ui.modal.writingFirst?'[data-draft="notes"]':'#scene-setup');},
@@ -6240,7 +6240,7 @@ const CounterplotEnsemble = (() => {
         }
     } });
     $('#dialog').addEventListener('close', () => { stashDraft(); if ($('#dialog').open)
-        return; document.body.classList.remove('scene-editor-open');ui.modal = null;if($('#dialog').dataset.sceneEditor==='true'){restorePosition();return;} const previous = ui.opener; if (previous?.isConnected && previous !== document.body && !$('#dialog').contains(previous))
+        return; document.body.classList.remove('scene-editor-open');ui.modal = null;const active=document.activeElement;if(active&&active!==document.body&&!$('#dialog').contains(active))return;if($('#dialog').dataset.sceneEditor==='true'){restorePosition();return;} const previous = ui.opener; if (previous?.isConnected && previous !== document.body && !$('#dialog').contains(previous))
         previous.focus({ preventScroll: true });
     else
         $('#main').focus({ preventScroll: true }); });
@@ -6658,8 +6658,8 @@ const CounterplotEnsemble = (() => {
         else if(k==='entity-state'){const e=entity(owner),x=e?.stateChanges?.find(v=>v.id===id);ui.worldFilter='all';ui.viewMoment=x?.momentId||'';go('world');if(e&&x)showEntityStateChange(owner,id);}
         else if(k==='entity'){ui.worldMode='material';ui.worldFilter='all';go('world');revealTarget('entity-'+id);}
     }
-    function afterRenderFocus(callback){const origin=document.activeElement;requestAnimationFrame(()=>{if(document.activeElement!==origin||$('#page-guide[open]'))return;callback();});}
-    function revealTarget(id){afterRenderFocus(()=>{const el=document.getElementById(id);if(!el)return;el.scrollIntoView({block:'center',behavior:'instant'});el.classList.add('link-arrival');el.setAttribute('tabindex','-1');el.focus({preventScroll:true});setTimeout(()=>el.classList.remove('link-arrival'),1800);});}
+    function focusRenderedView(callback){if(!$('#page-guide[open]'))callback();}
+    function revealTarget(id){focusRenderedView(()=>{const el=document.getElementById(id);if(!el)return;el.scrollIntoView({block:'center',behavior:'instant'});el.classList.add('link-arrival');el.setAttribute('tabindex','-1');el.focus({preventScroll:true});setTimeout(()=>el.classList.remove('link-arrival'),1800);});}
     function sceneChangeSummary(s){
         const ids=new Set(moments().filter(m=>m.sceneId===s.id).map(m=>m.id)),parts=[];
         const people=p().characters.filter(c=>(c.changes||[]).some(x=>ids.has(x.momentId))||(c.lifeChanges||[]).some(x=>ids.has(x.momentId)));
@@ -6856,7 +6856,7 @@ const CounterplotEnsemble = (() => {
         miceUI.composer={project:workspace.active,draft:d,editing:!!record?.editing,draftId:record?.id||'',dirty:!!record,error:''};
         if(d.parentId){ui.foldedThreads?.delete(d.parentId);for(const a of CounterplotStory.ancestors(p(),d.parentId))ui.foldedThreads?.delete(a.id);}
         if(ui.threadFocus&&d.parentId!==ui.threadFocus&&!CounterplotStory.descendants(p(),ui.threadFocus).has(d.parentId))ui.threadFocus='';
-        closeModal();ui.page='structure';historyReplaceHash('structure');render();afterRenderFocus(()=>{$('#mice-composer')?.scrollIntoView({block:'center',behavior:'instant'});$('[data-mice-compose="opening"]')?.focus({preventScroll:true});});
+        closeModal();ui.page='structure';historyReplaceHash('structure');render();focusRenderedView(()=>{$('#mice-composer')?.scrollIntoView({block:'center',behavior:'instant'});$('[data-mice-compose="opening"]')?.focus({preventScroll:true});});
     }
     function miceSaveComposer(){
         const c=miceUI.composer;if(!c)return;const d=clone(c.draft);d.plotlineIds??=(d.plotlineId?[d.plotlineId]:[]);
@@ -6865,7 +6865,7 @@ const CounterplotEnsemble = (() => {
         const ok=transact(c.editing?'Save recovered thread edit':'Add nested '+(d.type==='beat'?'beat':'thread'),pr=>{pr.structure||=[];const i=c.editing?pr.structure.findIndex(n=>n.id===d.id):-1;if(i>=0)pr.structure[i]=d;else pr.structure.push(d);pr.drafts=(pr.drafts||[]).filter(x=>x.id!==c.draftId);},{renderNow:false});
         if(ok===false)return;miceUI.composer=null;miceUI.autoFoldSeen.add(d.id);ui.foldedThreads?.delete(d.id);render();miceReveal(d.id,true);notify((d.type==='beat'?'Beat':'Thread')+' added. Drag its dots to move it.');
     }
-    function miceReveal(id,edit=false){afterRenderFocus(()=>{const el=$('#thread-'+id);if(!el)return;el.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});el.classList.add('mice-arrived');setTimeout(()=>el.classList.remove('mice-arrived'),1100);if(edit)$('[data-mice-field="opening"]',el)?.focus({preventScroll:true});else $('[data-mice-handle]',el)?.focus({preventScroll:true});});}
+    function miceReveal(id,edit=false){focusRenderedView(()=>{const el=$('#thread-'+id);if(!el)return;el.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});el.classList.add('mice-arrived');setTimeout(()=>el.classList.remove('mice-arrived'),1100);if(edit)$('[data-mice-field="opening"]',el)?.focus({preventScroll:true});else $('[data-mice-handle]',el)?.focus({preventScroll:true});});}
     function miceApplyPlace(id,anchor,where){
         if(!storyNode(id))return notify('That piece is no longer in this project.');
         const original=JSON.stringify(CounterplotStory.ordered(p()).map(x=>[x.node.id,x.node.parentId]));
@@ -6892,18 +6892,18 @@ const CounterplotEnsemble = (() => {
         'mice-cancel-new':()=>{miceUI.newType='';render();},
         'mice-create-place':el=>miceCreatePlace(miceUI.newType,el.dataset.anchor||'',el.dataset.position),
         'edit-thread':el=>{closeModal();ui.threadFocus='';miceUI.autoFoldSeen.add(el.dataset.id);ui.foldedThreads?.delete(el.dataset.id);for(const a of CounterplotStory.ancestors(p(),el.dataset.id))ui.foldedThreads?.delete(a.id);ui.page='structure';render();miceReveal(el.dataset.id,true);},
-        'mice-compose-type':el=>{const c=miceUI.composer;if(!c)return;c.draft.type=el.dataset.type;c.dirty=true;miceStashComposer();render();afterRenderFocus(()=>$('[data-mice-compose="opening"]')?.focus({preventScroll:true}));},
+        'mice-compose-type':el=>{const c=miceUI.composer;if(!c)return;c.draft.type=el.dataset.type;c.dirty=true;miceStashComposer();render();focusRenderedView(()=>$('[data-mice-compose="opening"]')?.focus({preventScroll:true}));},
         'mice-compose-save':miceSaveComposer,
         'mice-composer-close':()=>{const c=miceUI.composer;miceStashComposer();miceUI.composer=null;render();if(c?.dirty)notify('Unfinished text kept in drafts. Resume it from the notice above.');},
         'mice-details':el=>{const id=el.dataset.id,show=!miceUI.details.has(id);if(show)miceUI.details.add(id);else miceUI.details.delete(id);document.body.classList.toggle('has-inline-mice-editor',!!(miceUI.composer||miceUI.details.size));let box=$('#mice-details-'+id);if(box){if(show){box.outerHTML=miceDetails(storyNode(id));box=$('#mice-details-'+id);}else{box.hidden=true;box.replaceChildren();}}el.textContent=show?'Hide details':'Details';el.setAttribute('aria-expanded',String(show));$$('textarea',box).forEach(miceFit);},
-        'mice-arrange':el=>{miceUI.tools=miceUI.tools===el.dataset.id?'':el.dataset.id;miceUI.remove='';render();afterRenderFocus(()=>$(`#thread-${el.dataset.id} [data-action="mice-arrange"]`)?.focus({preventScroll:true}));},
+        'mice-arrange':el=>{miceUI.tools=miceUI.tools===el.dataset.id?'':el.dataset.id;miceUI.remove='';render();focusRenderedView(()=>$(`#thread-${el.dataset.id} [data-action="mice-arrange"]`)?.focus({preventScroll:true}));},
         'mice-step':el=>miceStep(el.dataset.id,el.dataset.way),
         'mice-pick-move':el=>{if(Date.now()<miceUI.suppressClick)return;miceUI.newType='';miceUI.move=el.dataset.id;miceUI.tools='';render();requestAnimationFrame(()=>$('.mice-move-banner')?.scrollIntoView({block:'nearest',behavior:'instant'}));},
         'move-thread-dialog':el=>{actions['mice-pick-move'](el);},
         'mice-cancel-move':()=>{const id=miceUI.move;miceUI.move='';render();miceReveal(id);},
         'mice-place':el=>miceApplyPlace(miceUI.move,el.dataset.anchor||'',el.dataset.position),
         'mice-remove-ask':el=>{miceUI.remove=el.dataset.id;render();requestAnimationFrame(()=>$('.mice-remove-confirm')?.scrollIntoView({block:'nearest',behavior:'instant'}));},
-        'mice-remove-cancel':()=>{const id=miceUI.remove;miceUI.remove='';render();afterRenderFocus(()=>$(`#thread-${id} [data-action="mice-arrange"]`)?.focus({preventScroll:true}));},
+        'mice-remove-cancel':()=>{const id=miceUI.remove;miceUI.remove='';render();focusRenderedView(()=>$(`#thread-${id} [data-action="mice-arrange"]`)?.focus({preventScroll:true}));},
         'mice-remove':el=>{const n=storyNode(el.dataset.id);if(!n)return;const parent=n.parentId;if(transact('Remove frame, preserve inner pieces',pr=>CounterplotStory.removeFrame(pr,n.id),{renderNow:false})===false)return;miceUI.remove='';miceUI.tools='';render();if(parent)miceReveal(parent);notify('Removed. Inner pieces, scenes and character history are preserved. Undo is available.');},
         'fold-all-threads':()=>{ui.foldedThreads=new Set(CounterplotStory.nodes(p()).filter(n=>n.type!=='beat').map(n=>n.id));miceUI.composer=null;render();},
         'mice-guide':()=>window.CounterplotGuide?.open('structure')
@@ -7304,7 +7304,7 @@ const CounterplotEnsemble = (() => {
       modal({eyebrow:'YOUR CAST / ONE MOMENT, ALL SIDES',title:'See who is in play.',description:'Roles belong to plots. Faction badges distinguish membership from allegiance. Your arrangement changes only display order.',body:`<div class="en-context-row">${enTimeControls()}<label class="en-time-label"><span>Plot context</span><select data-en-cast-plot>${plotOptions(ui.castPlot||'','All plots')}</select></label></div><input data-en-cast-search value="${esc(query)}" placeholder="Find a person, faction, or role…" aria-label="Find in cast"><div class="en-full-cast">${people.map(c=>enFullCastRow(c)).join('')||'<p class="empty-inset">No matching people.</p>'}</div><p class="field-help">Drag the six dots, or use the move controls. Filtering never changes the saved order. All plots keeps simultaneous roles visible.</p>`,foot:'<button class="button secondary compact" data-action="add-character">+ Character</button><button class="button compact" data-action="close-modal">Back to work</button>'});
     }
     function enFullCastRow(c){const i=p().castOrder.indexOf(c.id);return `<article class="en-cast-full-row" data-en-cast-id="${c.id}"><button class="en-drag" draggable="true" data-en-drag="${c.id}" aria-label="Drag to reorder ${esc(cname(c))}" title="Drag to reorder">⠿</button><div class="en-cast-detail"><button class="en-title-button" data-action="select-character" data-id="${c.id}">${esc(cname(c))}${c.archived?' · archived':''}</button><p>${esc(CounterplotEnsemble.prominenceAt(p(),c,enTime())||c.identity||'')}</p><div class="en-cast-tags">${enPlotChips(c.id)}</div><div class="en-cast-tags">${enAssociationChips(c.id,enTime(),99)}</div><button class="text-button" data-action="en-character-roles" data-id="${c.id}">Story roles →</button></div><div class="en-order-actions"><button class="icon-btn" data-action="en-cast-move" data-id="${c.id}" data-dir="-1" ${i===0?'disabled':''} aria-label="Move ${esc(cname(c))} up">↑</button><button class="icon-btn" data-action="en-cast-move" data-id="${c.id}" data-dir="1" ${i===p().castOrder.length-1?'disabled':''} aria-label="Move ${esc(cname(c))} down">↓</button></div></article>`;}
-    function enMoveCast(cid,delta=0,before=''){const query=ui.modal?.kind==='en-cast'?ui.modal.query||'':'';const ok=transact('Arrange the cast',pr=>{const i=pr.castOrder.indexOf(cid);if(i<0)return;if(before){if(before===cid)return;pr.castOrder.splice(i,1);const j=pr.castOrder.indexOf(before);pr.castOrder.splice(j<0?pr.castOrder.length:j,0,cid);}else{const j=i+delta;if(j>=0&&j<pr.castOrder.length)[pr.castOrder[i],pr.castOrder[j]]=[pr.castOrder[j],pr.castOrder[i]];}});if(ok){enShowCast(query);afterRenderFocus(()=>$(`[data-en-cast-id="${cid}"] .en-drag`)?.focus());}}
+    function enMoveCast(cid,delta=0,before=''){const query=ui.modal?.kind==='en-cast'?ui.modal.query||'':'';const ok=transact('Arrange the cast',pr=>{const i=pr.castOrder.indexOf(cid);if(i<0)return;if(before){if(before===cid)return;pr.castOrder.splice(i,1);const j=pr.castOrder.indexOf(before);pr.castOrder.splice(j<0?pr.castOrder.length:j,0,cid);}else{const j=i+delta;if(j>=0&&j<pr.castOrder.length)[pr.castOrder[i],pr.castOrder[j]]=[pr.castOrder[j],pr.castOrder[i]];}});if(ok){enShowCast(query);focusRenderedView(()=>$(`[data-en-cast-id="${cid}"] .en-drag`)?.focus());}}
     function enCharacterStrip(c){const prominence=CounterplotEnsemble.prominenceAt(p(),c,enTime());if(!prominence&&!enPlotChips(c.id,enTime(),'')&&!enAssociationChips(c.id))return '';return `<section class="en-character-strip" aria-label="Story position at selected moment"><div><span class="eyebrow">IN THE STORY · ${esc(enMomentText(enTime()))}</span><div class="en-cast-tags">${prominence?`<span class="en-chip">${esc(prominence)}</span>`:''}${enPlotChips(c.id,enTime(),'')}</div><div class="en-cast-tags">${enAssociationChips(c.id)}</div></div><button class="text-button" data-action="en-character-roles" data-id="${c.id}">Story roles & ties →</button></section>`;}
     function enRenderStoryRoles(c){
       const prominence=CounterplotEnsemble.prominenceAt(p(),c,enTime());let out=heading('01 / STORY ROLES',esc(cname(c))+', in the story.','Structural position, not psychological growth. Different plots can ask this person to play different parts.',`<button class="button compact" data-action="en-role" data-character="${c.id}">+ Plot role</button>`)+characterToolbar(c);
