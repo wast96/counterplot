@@ -56,3 +56,9 @@ test('offline writing survives reload with split recovery checkpoints and legacy
  await page.evaluate(async base=>{const pending=counterplotDiagnostics.snapshot();pending.projects[0].scenes[0].notes='Retained from the legacy recovery format.';await new Promise((resolve,reject)=>{const req=indexedDB.open('counterplot-private-v2',1);req.onsuccess=()=>{const db=req.result,tx=db.transaction('workspaces','readwrite'),slot='cache-owner:'+sessionStorage.getItem('counterplot.tab');tx.objectStore('workspaces').put({owner:'cache-owner',slot,base,revision:1,pending,inflight:null},slot);tx.oncomplete=()=>{db.close();resolve()};tx.onerror=()=>reject(tx.error);};});},w);
  await page.reload();await expect(page.locator('.sync-panel')).toBeHidden();expect(await page.evaluate(()=>counterplotDiagnostics.snapshot().projects[0].scenes[0].notes)).toBe('Retained from the legacy recovery format.');
 });
+
+test('deferred Outline focus respects a writer moving to a different field',async({page})=>{
+ await local(page);await page.clock.install();await page.clock.pauseAt(new Date(Date.now()+1000));await page.locator('[data-nav=structure]').click();await action(page,'new-thread').click();
+ await page.locator('[data-mice-compose=opening]').fill('A quiet beginning.');await page.locator('[data-mice-compose=title]').focus();await page.clock.runFor(100);await expect(page.locator('[data-mice-compose=title]')).toBeFocused();await page.keyboard.type('The unhurried title');
+ await action(page,'mice-compose-save').click();const n=await page.evaluate(()=>counterplotDiagnostics.snapshot().projects[0].structure.at(-1));expect(n.title).toBe('The unhurried title');expect(n.opening).toBe('A quiet beginning.');
+});
