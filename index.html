@@ -4344,6 +4344,7 @@ body:has(.mice-palette) .toast{bottom:calc(120px + var(--notice-height,0px));max
 .mice-delete-control:hover,.mice-trash:hover,.mice-trash.mice-drop-target{background:var(--accent-soft);border-color:var(--accent)}
 .mice-trash{color:var(--accent);cursor:pointer;touch-action:manipulation}.mice-trash:active{cursor:pointer}.mice-trash:focus-visible,.mice-delete-control:focus-visible{outline:2px solid var(--sage-dark);outline-offset:2px}.mice-trash:disabled{opacity:.45;cursor:default}.mice-trash svg{width:22px;height:22px}.mice-delete-control svg{width:16px;height:16px}
 #main.page-structure .mice-palette{width:452px}
+.mice-delete-selection{max-height:160px;overflow:auto;overflow-wrap:anywhere;line-height:1.6}
 </style>
 </head>
 <body>
@@ -6871,9 +6872,9 @@ const CounterplotEnsemble = (() => {
     function miceConfirmRemoval(id=''){
         const n=storyNode(id);if(id&&!n)return notify('That block is no longer in the outline.');
         ui.modal={kind:'mice-delete',project:workspace.active,draft:{id}};
-        modal({eyebrow:'OUTLINE / DELETE ONE BLOCK',title:n?'Delete “'+esc(nodeTitle(n))+'”?':'Delete an outline block',
+        modal({eyebrow:'OUTLINE / DELETE ONE BLOCK',title:n?'Delete this '+(n.type==='beat'?'beat':'thread')+'?':'Delete an outline block',
             description:'Only the chosen block is deleted (both opening and closing for a thread). Nested pieces move up one level. Scenes and character history stay; links to the deleted block are removed. Undo can bring it back.',
-            body:n?'':`<label class="field"><span class="field-label">Block to delete</span><select data-mice-delete-choice data-autofocus><option value="">Choose a block…</option>${CounterplotStory.ordered(p()).map(({node})=>`<option value="${node.id}">${esc(CounterplotStory.types[node.type].name+' · '+nodeTitle(node))}</option>`).join('')}</select></label>`,
+            body:(n?'':`<label class="field"><span class="field-label">Block to delete</span><select data-mice-delete-choice data-autofocus><option value="">Choose a block…</option>${CounterplotStory.ordered(p()).map(({node},i)=>`<option value="${node.id}">${esc((i+1)+'. '+CounterplotStory.types[node.type].name+' · '+nodeTitle(node).slice(0,140))}</option>`).join('')}</select></label>`)+`<p class="mice-delete-selection" id="mice-delete-selection" role="region" aria-label="Selected block" tabindex="0" aria-live="polite">${n?esc(nodeTitle(n)):''}</p>`,
             foot:`<button class="button secondary compact" data-action="close-modal" ${n?'data-autofocus':''}>Cancel</button><button class="button rust compact" data-action="mice-remove" ${n?'':'disabled'}>Delete block</button>`});
     }
     function miceRemoveSelected(){
@@ -7055,7 +7056,7 @@ const CounterplotEnsemble = (() => {
         if(el.hasAttribute('data-mice-field')&&el.matches('input,textarea')){miceEdit(el);miceFit(el);}
         if(el.hasAttribute('data-mice-compose')&&miceUI.composer){const c=miceUI.composer;c.draft[el.dataset.miceCompose]=el.value;c.dirty=true;c.error='';const error=$('.mice-composer-error');if(error)error.hidden=true;miceStashComposer();miceFit(el);}
     });
-    document.addEventListener('change',event=>{const el=event.target;if(el.hasAttribute('data-mice-delete-choice')&&ui.modal?.kind==='mice-delete'){ui.modal.draft.id=el.value;$('[data-action=mice-remove]',$('#dialog')).disabled=!storyNode(el.value);return;}if(el.hasAttribute('data-mice-plot')){const n=storyNode(el.dataset.id),pid=el.dataset.micePlot;if(!n||!plotline(pid))return;transact(el.checked?'Show thread in plot':'Hide thread from plot',()=>{n.plotlineIds??=(n.plotlineId?[n.plotlineId]:[]);if(el.checked){if(!n.plotlineIds.includes(pid))n.plotlineIds.push(pid);if(!n.plotlineId)n.plotlineId=pid;}else{n.plotlineIds=n.plotlineIds.filter(x=>x!==pid);if(n.plotlineId===pid)n.plotlineId=n.plotlineIds[0]||'';}},{renderNow:true});return;}if(el.matches('select[data-mice-field]'))miceEdit(el);});
+    document.addEventListener('change',event=>{const el=event.target;if(el.hasAttribute('data-mice-delete-choice')&&ui.modal?.kind==='mice-delete'){ui.modal.draft.id=el.value;$('#mice-delete-selection').textContent=el.value?nodeTitle(storyNode(el.value)):'';$('[data-action=mice-remove]',$('#dialog')).disabled=!storyNode(el.value);return;}if(el.hasAttribute('data-mice-plot')){const n=storyNode(el.dataset.id),pid=el.dataset.micePlot;if(!n||!plotline(pid))return;transact(el.checked?'Show thread in plot':'Hide thread from plot',()=>{n.plotlineIds??=(n.plotlineId?[n.plotlineId]:[]);if(el.checked){if(!n.plotlineIds.includes(pid))n.plotlineIds.push(pid);if(!n.plotlineId)n.plotlineId=pid;}else{n.plotlineIds=n.plotlineIds.filter(x=>x!==pid);if(n.plotlineId===pid)n.plotlineId=n.plotlineIds[0]||'';}},{renderNow:true});return;}if(el.matches('select[data-mice-field]'))miceEdit(el);});
     document.addEventListener('keydown',event=>{
         if(window.CounterplotGuide?.isOpen())return;
         if(event.key==='Escape'&&!$('#dialog').open&&(miceUI.drag||miceUI.paletteDrag||miceUI.move||miceUI.newType)){event.preventDefault();event.stopImmediatePropagation();if(miceUI.drag)miceCancelDrag(true);else if(miceUI.paletteDrag)miceCancelPaletteDrag(true);else if(miceUI.move)actions['mice-cancel-move']();else actions['mice-cancel-new']();return;}

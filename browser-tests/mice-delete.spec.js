@@ -63,3 +63,11 @@ test('Escape cancels a trash confirmation even while an add or move operation is
 test('dragging a new palette piece onto Trash does not create or delete anything',async({page})=>{
  const before=await snapshot(page),h=await page.locator('[data-mice-new-type=I]').boundingBox(),t=await action(page,'mice-trash').boundingBox();await page.mouse.move(h.x+h.width/2,h.y+h.height/2);await page.mouse.down();await page.mouse.move(t.x+t.width/2,t.y+t.height/2,{steps:10});await page.mouse.up();await expect(page.locator('#dialog')).toBeHidden();expect(await snapshot(page)).toEqual(before);
 });
+
+test('long unbroken block names keep both confirmation paths and Cancel reachable on small screens',async({page})=>{
+ const w=structuredClone(rich);w.projects[0].structure[0].title='X'.repeat(1000);await page.evaluate(w=>counterplotBridge.replace(w),w);await page.setViewportSize({width:320,height:640});
+ for(const picker of [false,true]){
+  if(picker){await action(page,'mice-trash').click();await page.locator('[data-mice-delete-choice]').selectOption(parent);}else await page.locator(`#thread-${parent} > header .mice-delete-control`).click();
+  await expect(page.locator('#mice-delete-selection')).toHaveText('X'.repeat(1000));for(const b of [action(page,'mice-remove'),page.getByRole('button',{name:'Cancel',exact:true})]){const box=await b.boundingBox();expect(box.y).toBeGreaterThanOrEqual(0);expect(box.y+box.height).toBeLessThanOrEqual(640);}expect(await page.locator('#dialog').evaluate(e=>e.scrollWidth<=e.clientWidth)).toBe(true);expect((await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze()).violations).toEqual([]);await page.keyboard.press('Escape');
+ }
+});
