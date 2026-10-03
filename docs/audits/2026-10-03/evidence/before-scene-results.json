@@ -1,0 +1,77 @@
+{
+  "errors": [],
+  "notice": {
+    "text": "Account recovery is not configured. Open Account to save recovery codes. Dismiss",
+    "notice": {
+      "x": 442.875,
+      "y": 846,
+      "width": 554.25,
+      "height": 66,
+      "top": 846,
+      "right": 997.125,
+      "bottom": 912,
+      "left": 442.875
+    },
+    "prose": {
+      "x": 403,
+      "y": 326.796875,
+      "width": 880,
+      "height": 593,
+      "top": 326.796875,
+      "right": 1283,
+      "bottom": 919.796875,
+      "left": 403
+    },
+    "overlap": true
+  },
+  "unchangedRefresh": {
+    "same": true,
+    "feedback": [
+      "",
+      "Account recovery is not configured. Open Account to save recovery codes. Dismiss"
+    ],
+    "focused": "<details class=\"scene-ideas\" id=\"scene-ideas\" tabindex=\"-1\" open=\"\"><summary>Scene Explorer · questions to try</summary><p class=\"field-help\">Questions use your selected context. Keep, combine, or rew"
+  },
+  "changedRefresh": {
+    "visible": [
+      "Use the opening detailIn this opening—“The empty room smells of rain and burnt sugar.”—which concrete detail could this scene act on, misunderstand, or notice differently? What response would that invite?Keep this question",
+      "Notice without resolvingWhich detail deserves attention even if nobody acts on it? What can remain unexplained?Keep this question",
+      "An atmosphere to inhabitWhich sound, texture, rhythm, or absence gives this passage its atmosphere?Keep this question"
+    ],
+    "all": [
+      "Use the opening detailIn this opening—“The empty room smells of rain and burnt sugar.”—which concrete detail could this scene act on, misunderstand, or notice differently? What response would that invite?Keep this question",
+      "Notice without resolvingWhich detail deserves attention even if nobody acts on it? What can remain unexplained?Keep this question",
+      "An atmosphere to inhabitWhich sound, texture, rhythm, or absence gives this passage its atmosphere?Keep this question",
+      "Return with a differenceWhat image, phrase, or gesture could recur? Could its meaning shift—or deliberately stay the same?Keep this question",
+      "Hold the uncertaintyWhat could remain uncertain when this passage ends? Consider leaving room for incompatible interpretations.Keep this question",
+      "A smaller attemptFor this scene, pursuing “Keep the last warm cup untouched.”: what is the smallest visible step they could try? Who or what answers it, and how does that answer change their next move?Keep this question",
+      "Success with a new obligationFor this scene, pursuing “Keep the last warm cup untouched.”: suppose one part works. What specific obligation or changed expectation could that success create? It need not become a punishment.Keep this question",
+      "An option closesFor this scene, pursuing “Keep the last warm cup untouched.”: which available option could close during this scene? What causes it to close, and which different option remains?Keep this question",
+      "A detail that does not fitWhat could this scene actually observe here that does not fit their present explanation? Name the detail first; keep its meaning open.Keep this question",
+      "Test an explanationWhat small test could this scene make with the information they have? What result would support their explanation, and what would challenge it?Keep this question",
+      "The reader knows moreWhat could the reader know or suspect while this scene does not? Which ordinary detail becomes charged by that difference?Keep this question",
+      "Two aims in one encounterWho could enter this scene’s situation with a different immediate aim? What would each person want from the same encounter?Keep this question",
+      "The unsaid thingWhat might this scene avoid saying or admitting here? What small action could make that silence noticeable?Keep this question",
+      "A changed invitationWhat modest offer, refusal, or changed boundary could alter this scene’s closeness to someone? Leave room for an incomplete answer.Keep this question",
+      "Let the feeling disagreeWhat might this scene feel that does not match what they expected to feel? How could that show up in a small physical action?Keep this question",
+      "An ordinary task, differentlyWhat ordinary task could this scene repeat here? What small difference would carry the residue of what happened, without inventing a new threat?Keep this question",
+      "Make room for reliefWhat could this scene finally rest from, enjoy, or grieve? What changes in their attention or understanding even if the external problem remains?Keep this question"
+    ],
+    "feedback": [
+      "",
+      "Account recovery is not configured. Open Account to save recovery codes. Dismiss"
+    ]
+  },
+  "kept": "In this opening—“The empty room smells of rain and burnt sugar.”—which concrete detail could this scene act on, misunderstand, or notice differently? What response would that invite?",
+  "keptTwice": "In this opening—“The empty room smells of rain and burnt sugar.”—which concrete detail could this scene act on, misunderstand, or notice differently? What response would that invite?\n\nIn this opening—“The empty room smells of rain and burnt sugar.”—which concrete detail could this scene act on, misunderstand, or notice differently? What response would that invite?",
+  "reading": "The room after the rain\nThe cup was still warm. No one moved it.\n\nOutside, rain rehearsed the same unfinished phrase.\nOpen scene",
+  "reopened": {
+    "prose": "The cup was still warm. No one moved it.\n\nOutside, rain rehearsed the same unfinished phrase.",
+    "context": "The empty room smells of rain and burnt sugar."
+  },
+  "resumed": "The cup was still warm. No one moved it.\n\nOutside, rain rehearsed the same unfinished phrase.\n\nUNFINISHED AUDIT SENTENCE",
+  "secondDevice": [
+    "The cup was still warm. No one moved it.\n\nOutside, rain rehearsed the same unfinished phrase.\n\nUNFINISHED AUDIT SENTENCE"
+  ],
+  "axe": []
+}

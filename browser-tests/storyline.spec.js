@@ -18,7 +18,7 @@ const fields = {
 };
 
 async function openScene(page, ideas = false) {
-  await page.getByRole('button', { name: ideas ? 'Explore scene ideas' : 'Write my first scene', exact: true }).click();
+  await page.getByRole('button', { name: 'Write my first scene', exact: true }).click();
   if (await page.locator('[data-action="add-character"][data-next="scene"]').count()) {
     await page.getByRole('button', { name: 'Create a character' }).click();
   }
@@ -40,7 +40,7 @@ test.beforeEach(async ({ page }) => {
 test.afterEach(async ({ page }) => expect(page.testErrors).toEqual([]));
 
 test('the canvas develops setup before tension, turn, outcome and reaction; continuation uses the same editor', async ({ page }) => {
-  await expect(page.getByRole('region', { name: 'Three small steps. A story that moves.' }).getByRole('listitem')).toHaveCount(3);
+  await expect(page.getByRole('button', { name: 'Write my first scene' })).toBeVisible();
   await openScene(page);
   expect(await page.locator('.scene-canvas-section h3').allTextContents()).toEqual([
     'Write freely', 'Opening', 'Development', 'Turn or continuation', 'Outcome', 'Afterward'
@@ -52,7 +52,7 @@ test('the canvas develops setup before tension, turn, outcome and reaction; cont
   await page.getByRole('button', { name: 'Continue from this consequence' }).click();
   await expect(page.getByRole('heading', { name: 'Build this scene.' })).toBeVisible();
   await expect(page.locator('.cause-banner')).toContainText(fields.after);
-  await expect(page.locator('#scene-ideas')).toHaveAttribute('open', '');
+  await expect(page.locator('.scene-planning')).toHaveAttribute('open', '');
   await page.locator('[data-draft="context"]').fill('She reaches the old boarding house.');
   await saveScene(page, 'A safe room');
   const workspace = await page.evaluate(() => counterplotDiagnostics.snapshot());
@@ -64,29 +64,25 @@ test('the canvas develops setup before tension, turn, outcome and reaction; cont
   expect(stale).toContain(workspace.projects[0].scenes[1].id);
 });
 
-test('Explorer offers varied questions inside the canvas and keeps possibilities separate from writing', async ({ page }) => {
-  await openScene(page, true);
-  await expect(page).toHaveURL(/#story$/);
-  await expect(page.locator('#scene-ideas')).toHaveAttribute('open', '');
+test('authored possibilities remain separate, resumable and independent of planning prompts', async ({ page }) => {
+  await openScene(page);
+  await expect(page.locator('#scene-ideas')).toHaveCount(0);
   await page.locator('[data-draft="context"]').fill(fields.context);
   await page.locator('[data-draft="goal"]').fill(fields.goal);
-  await page.getByRole('button', { name: 'Refresh from this scene’s setup' }).click();
-  await expect(page.locator('.scene-idea:visible')).toHaveCount(3);await page.getByRole('button',{name:'Browse more questions'}).click();
-  await expect(page.locator('.scene-idea').first()).toContainText(fields.context);
-  await expect(page.locator('.scene-idea').filter({has:page.getByRole('heading',{name:'A smaller attempt',exact:true})})).toContainText(fields.goal);
-  await page.locator('.scene-idea').first().getByRole('button').click();
-  await expect(page.locator('[data-draft="ideaNotes"]')).toContainText(fields.context);
-  await expect(page.locator('[data-draft="action"]')).toHaveValue('');
-  await expect(page.locator('[data-draft="after"]')).toHaveValue('');
+  const possibilities='Perhaps the letter is empty. Or perhaps she never opens it.';
+  await page.locator('[data-draft="ideaNotes"]').fill(possibilities);
   await page.locator('[data-draft="sceneKind"]').selectOption('aftermath');
   await expect(page.locator('[data-draft="goal"]')).toHaveValue(fields.goal);
-  await expect(page.locator('.scene-idea:visible').first()).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Make room for relief' })).toBeVisible();
+  await expect(page.locator('[data-draft="action"]')).toHaveValue('');
+  await expect(page.locator('[data-draft="after"]')).toHaveValue('');
   await page.getByRole('button', { name: 'Save unfinished draft' }).click();
   await page.getByRole('button', { name: 'Resume or discard' }).click();
   await page.locator('[data-action="resume-draft"]').click();
   await expect(page.locator('[data-draft="sceneKind"]')).toHaveValue('aftermath');
-  await expect(page.locator('[data-draft="ideaNotes"]')).toHaveValue(/courier waits/);
+  await expect(page.locator('[data-draft="ideaNotes"]')).toHaveValue(possibilities);
+  await saveScene(page);await page.reload();
+  const scene=await page.evaluate(()=>counterplotDiagnostics.snapshot().projects[0].scenes[0]);
+  expect(scene.ideaNotes).toBe(possibilities);expect(scene.action).toBe('');expect(scene.after).toBe('');
 });
 
 test('free prose and incomplete scenes can be saved, edited and recovered after reload', async ({ page }) => {
@@ -147,9 +143,9 @@ test('World and MICE have no Story range; MICE opens the same scene workshop; in
   await expect(page.getByText('STORY RANGE', { exact: true })).toHaveCount(0);
   await expect(page.locator('[data-action="story-range"]')).toHaveCount(0);
   await page.locator('[data-nav="structure"]').click();
-  await page.getByRole('button', { name: 'Explore scene', exact: true }).click();
+  await page.getByRole('button', { name: 'Write scene', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Build this scene.' })).toBeVisible();
-  await expect(page.locator('#scene-ideas')).toHaveAttribute('open', '');
+  await expect(page.locator('.scene-planning')).toHaveAttribute('open', '');
   await page.locator('[data-draft="context"]').fill('A scene fragment.');
   await saveScene(page);
   const errors = await page.evaluate(() => {
@@ -196,23 +192,20 @@ test('unfinished scene content is validated as carefully as accepted scenes', as
   expect(rejected).toBe(true);
 });
 
-test('relationship questions use the selected participants and immediate aim without inventing an agenda', async ({ page }) => {
+test('participants and scene approach survive saving without generated agendas', async ({ page }) => {
   await page.evaluate(data => {
     const p = data.projects[0];p.characters[0].name = 'Mara';
     p.characters.push({...structuredClone(p.characters[0]),id:'ivo',name:'Ivo'});
     counterplotBridge.replace(data);
   }, structuredClone(legacy));
   await page.getByRole('button', { name: 'Write another scene' }).click();
-  await page.locator('.scene-metadata summary').click();await page.locator('[data-draft="partner"]').selectOption('ivo');if(!await page.locator('.scene-planning').evaluate(e=>e.open))await page.locator('.scene-planning>summary').click();
+  await page.locator('.scene-metadata summary').click();await page.locator('[data-draft="partner"]').selectOption('ivo');
+  if(!await page.locator('.scene-planning').evaluate(e=>e.open))await page.locator('.scene-planning>summary').click();
   await page.locator('[data-draft="goal"]').fill('Borrow a room without exposing Ivo.');
   await page.locator('[data-draft="sceneKind"]').selectOption('relationship');
-  await page.getByRole('button', { name: 'Explore scene ideas', exact: true }).last().click();
-  const question = page.locator('.scene-idea').filter({has:page.getByRole('heading', {name:'Two aims in one encounter'})});
-  await page.getByRole('button',{name:'Browse more questions'}).click();await expect(question).toContainText('Mara');
-  await expect(question).toContainText('Ivo');
-  await expect(question).toContainText('Borrow a room without exposing Ivo.');
-  await expect(question).not.toContainText('undefined');
-  await expect(question).toContainText('What does Ivo independently want?');
+  await saveScene(page,'The borrowed room');
+  const scene=await page.evaluate(()=>counterplotDiagnostics.snapshot().projects[0].scenes.at(-1));
+  expect(scene.partner).toBe('ivo');expect(scene.goal).toBe('Borrow a room without exposing Ivo.');expect(scene.sceneKind).toBe('relationship');expect(scene.action).toBe('');
 });
 
 test('a MICE thread carries its opening and link into the unified workshop', async ({ page }) => {
