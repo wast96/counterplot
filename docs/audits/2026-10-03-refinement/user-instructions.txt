@@ -1,0 +1,189 @@
+# PHASE 1: AUDIT — READ-ONLY
+
+Audit the current live site meticulously. Score each factor out of 5. They are ordered from most important to least important, so weight them subtly accordingly and state the weights clearly.
+
+When principles conflict, prioritize in this order: security, privacy, data integrity, and preservation of existing work; accessibility and functional correctness; usefulness and creative flexibility; intuitiveness and purposeful simplicity; satisfying feel and visual polish. Do not use this hierarchy to excuse avoidable compromises—first look for a solution that satisfies both goals.
+
+Before auditing, establish the baseline: identify the live deployment/version being evaluated and confirm that the repository/branch being inspected corresponds to it. If the live site and local/repository state differ materially, report the discrepancy and account for it rather than assuming they are equivalent.
+
+## 1. Usefulness
+
+Does this feel designed by storytellers, for storytellers? Does it meaningfully help someone build a story, develop material, and make creative decisions? Does its conception of storytelling reflect how storytellers actually think, discover, revise, explore, change their minds, and get stuck, rather than imposing a generic software/productivity model onto creative work?
+
+Audit common workflows for unnecessary ceremony or loss of creative context: extra clicks, modal hops, navigation backtracking, needless mode switching, repeated input, hidden information, lost position, closed context, or anything else that makes users reconstruct what they were doing. Prefer recognition over recall.
+
+## 2. Intuitiveness
+
+How easy is it to start as a total newcomer? Is every section understandable? Do labels, navigation, controls, affordances, hierarchy, and feedback make it clear what can be done, what is happening, and what happened?
+
+Assess the site against established UX/UI conventions and user expectations. Familiar things such as account pages, settings, navigation, forms, tabs, menus, dialogs, toggles, search, save states, destructive actions, and editable content should generally look and behave recognizably unless departing from convention creates a clear benefit. Equivalent things should behave consistently across the product.
+
+Fundamental behavior should not depend on hover, hidden gestures, unfamiliar icons, or experimentation to discover.
+
+Treat first-use, empty, loading, partial, error, and unusually dense states as real design states, not exceptions.
+
+## 3. Creative flexibility
+
+Can this help someone write any story? Does it unnecessarily push particular tropes, structures, character models, or methods? Can quiet, ambiguous, nonlinear, experimental, unconventional, and structurally unusual stories work naturally?
+
+Distinguish complexity inherent to storytelling from complexity created by the software. Use progressive disclosure intelligently: core functionality should be obvious and accessible, while advanced depth should be available without overwhelming everyone or being hidden behind obscure controls. Important or commonly useful functionality should not be hidden behind obscure collapsed sections, configuration, or discovery-dependent controls without a strong reason.
+
+## 4. Purposeful design
+
+How bullshit-free is the site? Is copy concise and useful? Does every feature, control, page, mode, setting, visualization, and workflow earn its place?
+
+Judge elements in the context of the whole product, not in isolation. Ask whether the product is actually better with something than without it, considering attention, screen space, cognitive load, learning burden, maintenance burden, duplication, and complexity.
+
+Treat removal as a valid form of improvement. Do not preserve something simply because it already exists. If something does not materially serve the product, seriously consider removing, consolidating, relocating, simplifying, demoting, automating, or replacing it with a stronger default or an existing pattern. Do not use preferences, toggles, explanatory UI, nested controls, or mini-app-like subsystems as substitutes for making good product decisions.
+
+Look for “UI about the UI”: controls, copy, or navigation primarily needed to explain or manage other interface elements rather than help the user work on their story.
+
+Before removing or substantially changing something, verify that it is not necessary for an important workflow, accessibility need, compatibility requirement, or existing user data.
+
+## 5. Satisfying design/feel
+
+Does using it feel satisfying and fun? Do placement, responsiveness, feedback, transitions, state changes, scrolling, dragging, typing, and navigation feel good? Does it support sustained creative concentration and make someone want to keep using it?
+
+Assess micro-interaction delight. Small actions should feel responsive, tactile, rewarding, and satisfying rather than merely functional. The question is not only whether the site avoids frustration; ask whether using it actually feels good.
+
+Assess both real and perceived performance, especially as projects become large or complex. Also judge cumulative friction: many individually minor annoyances can collectively make a workflow bad.
+
+## 6. Visually compelling
+
+Does it look good? Does it have a strong, coherent visual identity? Does it create a positive emotional response? Does it fuck hard design-wise?
+
+Assess whether the site feels like one coherent design system rather than separately designed screens. Visual hierarchy should reflect conceptual hierarchy; important actions and information should be easiest to perceive, while secondary material recedes appropriately. Watch for excessive containerization, repeated headings, unnecessary borders, competing calls to action, inconsistent controls, and pages that do not visually read as what they are supposed to be.
+
+Explicitly audit spatial relationships and visual collisions. Look for elements that crash into, crowd, overlap, visually attach to, or sit uncomfortably close to other elements, text, rules, controls, or container edges—even when nothing technically overlaps or becomes unusable. Check padding, margins, alignment, negative space, wrapping, and proximity so that every element feels deliberately placed rather than merely able to fit. Test these relationships across content lengths and viewport sizes, not just an ideal desktop state.
+
+Assess accessibility against WCAG 2.2 AA, including contrast, keyboard operation, focus visibility, labels, zoom/reflow, and target sizes. Do not claim compliance solely because an automated scanner passes.
+
+---
+
+For each score, give a thorough, sharply critical explanation of what is working and what is not. Be incisive without being unfair. Keep standards consistent; do not give something credit merely because it improves on an earlier version.
+
+Then present the weighted overall score out of 5.
+
+After scoring the six criteria, step back and assess the product holistically. Evaluate its information architecture, page structure, navigation, feature grouping, hierarchy, defaults, and mental model. Do not assume the current architecture or feature boundaries are correct merely because they already exist.
+
+Answer this broader question:
+
+**Does this feel like an exceptional environment for constructing stories, or merely a well-designed and well-engineered application for doing so?**
+
+Identify anything preventing it from becoming the former, even if it does not fit neatly into the six categories. Do not create another weighted score.
+
+# Separate assessment: Bug-freedom
+
+Score bug-freedom out of 5 independently of the six design criteria.
+
+Test thoroughly for:
+
+- Crashes, runtime errors, dead links, missing features, broken workflows, misleading or ineffective controls, and missing success/error/loading/unchanged-state feedback.
+- Layout and spatial failures, including elements that overlap, collide, crowd one another, run into text or controls, sit against container edges, clip, overflow, obscure content, or otherwise break the intended visual spacing and hierarchy; also test scrolling, focus, dialogs, fixed panels, zoom, responsive behavior, keyboard behavior, and browser Back/Forward.
+- Lost edits, incorrect saves, broken undo/redo, stale views, refresh/reopen failures, synchronization problems, imports/exports, migrations, historical-state problems, and regressions involving existing projects.
+- Performance problems, especially typing/input latency, navigation delay, scrolling/dragging jank, slow loading, and degradation in large projects.
+- Destructive actions such as deletion, clearing, resetting, overwriting, replacement, and unlinking. Check whether consequences are clear and recovery is possible where appropriate.
+- Cross-view consistency when the same underlying data appears in multiple places.
+- Authentication and account behavior, including sign-in/out, session expiration, recovery, interruption, reconnecting, and cross-device access.
+- Data-loss risks involving failed saves, interrupted sync, stale or conflicting state, simultaneous edits, account/session changes, refreshes, navigation away, migrations, recovery, and cross-device use. Work should never be silently discarded, overwritten, duplicated, or reverted.
+- Security and privacy issues reasonably testable from the application, including unauthorized access, broken authorization boundaries, exposure of private content or sensitive information, insecure session behavior, or actions available without expected permissions. Do not claim the site is secure merely because no obvious issue is found.
+
+Do not equate “the handler ran,” “the test passed,” or “there were no console errors” with “the feature works.” Verify real user-facing outcomes and underlying state where relevant.
+
+Use both hands-on user-facing testing and inspection of the relevant implementation, data flows, persistence model, migrations, and state logic where necessary. Neither code inspection nor UI testing alone is sufficient: observed behavior should be verified against underlying state when relevant, and apparently correct code should be verified through actual use.
+
+Exercise realistic sequences and edge cases: repeated clicks, changed and unchanged inputs, empty and populated projects, long content, unfinished workflows, refreshes, reopening, destructive actions, and failure paths.
+
+Test desktop, tablet, narrow mobile, landscape, zoom, keyboard navigation, and major supported browsers where practical, especially Safari, Chrome, and Firefox.
+
+Test realistically large, interconnected projects, not just empty or toy projects. Include many characters, scenes, threads, relationships, historical states, references, and long-form content. Look for performance degradation, visual overload, stale state, navigation problems, and assumptions that only hold for small projects.
+
+Test risky, destructive, authorization, synchronization, migration, and data-loss scenarios safely. Do not damage, expose, overwrite, delete, or deliberately corrupt real user data or compromise production availability. Use appropriate test data/accounts, local or isolated environments, or non-destructive verification where necessary, and clearly identify anything that could not be safely tested.
+
+For failure states, verify not only that errors are communicated but that users can understand what happened, preserve their work, recover, retry where appropriate, and continue without entering an ambiguous or broken state.
+
+For confirmed bugs, give reproduction steps, expected result, actual result, and practical impact. Distinguish confirmed findings from suspicions and untested areas.
+
+Do not offer solutions during Phase 1. Present the complete audit, weighted design score, holistic assessment, and separate bug-freedom score first.
+
+# PHASE 2: PLANNING — READ-ONLY
+
+Develop a detailed plan addressing every criticism and confirmed flaw from Phase 1.
+
+Be creative, specific, and rigorous. Double- and triple-check that each proposal solves the actual problem and is genuinely useful to storytellers. Avoid cosmetic activity, unnecessary features, or complexity masquerading as improvement.
+
+Do not treat the current product structure as fixed. The goal is not to polish everything that exists; it is to make the product as a whole better. You have permission to remove, consolidate, relocate, simplify, demote, redesign, or substantially rethink existing features, pages, navigation, modes, settings, defaults, and interface structures when that better serves the overall experience.
+
+Existing implementation is evidence of past decisions, not proof that those decisions remain correct. At the same time, do not change things for novelty’s sake. Preserve important workflows, accessibility, existing work, and data compatibility.
+
+**Preservation constraint:** On the Outline page, the MICE bar must remain floating/hovering at the bottom of the page. Do not dock it into the page, move it into another section, convert it into an inline panel, or otherwise change that fundamental placement/interaction model unless I explicitly instruct you to do so. Its visual design, spacing, behavior, and usability may still be improved as needed while preserving that floating-bottom model.
+
+For each planned change, explain:
+
+- What will change and why.
+- Which audit finding it addresses.
+- How the workflow will behave for the user.
+- Important edge cases and tradeoffs.
+- How existing projects, user data, references, historical states, and unfinished work stay safe.
+- How it will be verified.
+
+Maintain clear traceability from audit findings to planned changes. Every confirmed criticism or bug should either map to a specific planned action or be explicitly marked as intentionally not being changed, with the reason.
+
+Prefer systemic fixes over isolated patches when multiple problems share an underlying cause in the design system, information architecture, interaction model, shared component, or data flow.
+
+Follow established UX/UI conventions where they reduce cognitive load. Break them only deliberately and for a clearly better result.
+
+Before adding anything, ask whether the problem can instead be solved through removal, consolidation, automation, relocation, a stronger default, or an existing pattern. Do not add configuration where a product decision should be made.
+
+After planning the fixes, perform a simplification pass: ask what can be removed, combined, flattened, automated, given a better default, moved closer to where it is needed, or expressed through an existing pattern.
+
+The plan should improve creative usefulness, storyteller-native thinking, flexibility, purposeful simplicity, interaction pleasure, visual coherence, information architecture, accessibility, performance, security, privacy, and data safety—not merely technical correctness.
+
+Include plans for any confirmed authentication, account, synchronization, data-loss, security, or privacy problems, including how risky changes will be verified before deployment.
+
+Finish with a much shorter plain-language summary of what is changing, why, and how.
+
+The goal is to move the site as close as possible to 5/5 for the weighted design score and 5/5 for bug-freedom without sacrificing creative flexibility, storyteller-native usefulness, purposeful simplicity, satisfying interaction, accessibility, security, privacy, or existing work.
+
+Wait for my approval before implementation.
+
+# PHASE 3: IMPLEMENTATION — WRITE
+
+After approval, implement the approved plan meticulously.
+
+Verify that every approved item is implemented and that existing projects, user data, and working features still function correctly.
+
+Repeat thorough testing across:
+
+- Real outcomes of controls and workflows.
+- Layout and spatial relationships, including collisions, crowding, padding, alignment, edge spacing, wrapping, responsive behavior, keyboard behavior, accessibility, and major supported browsers.
+- Saving, recovery, undo/redo, synchronization, migrations, imports/exports, and data compatibility.
+- Authentication, account access, session expiration, recovery, and cross-device behavior.
+- Data-loss, conflicting-state, destructive-action, security, and privacy scenarios.
+- Performance with realistically large and interconnected projects.
+- Cross-view consistency.
+- Complete workflows and realistic failure paths.
+
+Do not rely solely on automated tests or absence of console errors. Reproduce the original problems and verify that they are actually resolved.
+
+Also verify the experiential goals. Changes intended to improve intuitiveness, simplify the product, reduce cognitive load, improve creative flexibility, preserve context, follow better UX/UI conventions, strengthen visual hierarchy, improve spatial composition, or make interactions more satisfying must actually do so from the user’s perspective.
+
+Verify that removals and simplifications genuinely reduce complexity without damaging important workflows, and that redesigned elements fit the broader information architecture, design system, and interaction model rather than solving one screen in isolation.
+
+Verify specifically that the Outline page’s MICE bar remains floating/hovering at the bottom after implementation.
+
+Do not retain a change merely because it was successfully implemented. If implementation reveals that an approved change introduces unnecessary complexity, damages another workflow, creates inconsistency, harms creative flexibility, or makes the experience worse, correct it while remaining faithful to the approved plan.
+
+Before concluding, reconcile the implementation against the approved plan item by item. Every approved item should be implemented and verified, or explicitly reported as incomplete with the reason.
+
+Then automatically:
+
+1. Publish the changes to GitHub.
+2. Create the pull request and verify relevant checks.
+3. Do not merge or deploy through failed required checks, unresolved critical regressions, known data-loss risks, security/privacy failures, or other blockers. Fix them first where they fall within the approved plan; if they cannot be safely resolved, stop before merge and report the blocker clearly.
+4. Merge the pull request.
+5. Delete the implementation branch.
+6. Verify the live deployment and report what was completed, how it was tested, and any remaining limitations.
+7. Re-present these instructions to me exactly as written in their latest incarnation, without making edits of your own, and make them easy to copy and paste.
+
+If I say “repeat” after Phase 3 concludes, restart the entire process at Phase 1 using the current live version and these latest instructions.

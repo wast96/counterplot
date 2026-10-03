@@ -124,6 +124,8 @@ export async function currentUser(request, env) {
 export async function requireUser(context) {
   const user = await currentUser(context.request, context.env);
   if (!user) throw json({ error: "Not signed in" }, 401);
+  const expected = context.request.headers.get('X-Counterplot-Owner');
+  if (expected && expected !== user.id) throw json({ error: 'The account changed. This tab’s work is retained for its original account.', code: 'account-changed' }, 403);
   return user;
 }
 

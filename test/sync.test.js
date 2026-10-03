@@ -29,11 +29,12 @@ test('common-base conflicts preserve versions and disjoint edits combine',()=>{
 
 test('old clients cannot overwrite an upgraded workspace',async()=>{
  const env=testDatabase(),base='https://counterplot.test';const reg=await register({env,request:new Request(base+'/api/auth/register',{method:'POST',headers:{Origin:base},body:JSON.stringify({email:'writer@example.test',password:'A strong long password'})})});
- const cookie=reg.headers.get('Set-Cookie').split(';')[0];
- const put=(schema,writer,revision,writeId)=>save({env,request:new Request(base+'/api/workspace',{method:'PUT',headers:{Origin:base,Cookie:cookie,...(writer?{'X-Counterplot-Writer':String(writer)}:{})},body:JSON.stringify({workspace:workspace('Words'),revision,writeId}).replace('"schema":3',`"schema":${schema}`)})});
- assert.equal((await put(3,3,0,'first')).status,200);
+ const cookie=reg.headers.get('Set-Cookie').split(';')[0],owner=(await reg.json()).user;
+ const fixture=JSON.parse(readFileSync(new URL('../browser-tests/fixtures/rich-v2-workspace.json',import.meta.url),'utf8'));fixture.schema=3;
+ const put=(schema,writer,revision,writeId)=>save({env,request:new Request(base+'/api/workspace',{method:'PUT',headers:{Origin:base,Cookie:cookie,'X-Counterplot-Owner':owner,...(writer?{'X-Counterplot-Writer':String(writer)}:{})},body:JSON.stringify({workspace:fixture,revision,writeId}).replace('"schema":3',`"schema":${schema}`)})});
+ assert.equal((await put(3,4,0,'first')).status,200);
  assert.equal((await put(2,null,1,'old')).status,426);
- assert.equal((await put(2,3,1,'downgrade')).status,426);
- assert.equal((await put(3,3,1,'new')).status,200);
+ assert.equal((await put(2,4,1,'downgrade')).status,426);
+ assert.equal((await put(3,4,1,'new')).status,200);
  assert.equal(env.raw.prepare('SELECT revision FROM workspaces').get().revision,2);env.raw.close();
 });
