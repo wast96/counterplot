@@ -1,0 +1,57 @@
+{
+  "offline": {
+    "status": "Offline / sign-in needed · not yet synced",
+    "visible": "STORYLINE\nTurn a scene into a story.\n\nStart with a moment. Develop what happens. Follow what changes.\n\n?\nWrite another scene\nRead scenes\nSequence\nCharacter choices\nChronology\nPlotlines\nAll characters\nNeeds review\n0\n1 scene · Reading order\n01\nIndependent entry point · no earlier scene linked\nNO VIEWPOINT\nPlanned\nA Plot\nA disputed ending\n\nWhat happens: Still being discovered. Open the scene to keep developing it.\n\nScene notes / prose\n\nOffline version: the boat leaves.\n\nMark on the page\n↑\n↓\nContinue from this consequence →\nChanges after this scene →\nCOUNTERPLOT / A STORY WORKSHOP\nYOUR CHOICES. YOUR WORDS. YOUR WORK."
+  },
+  "conflict": {
+    "projects": [
+      {
+        "title": "",
+        "version": "Main draft",
+        "notes": [
+          "Other device: the boat sinks."
+        ]
+      },
+      {
+        "title": "",
+        "version": "Main draft · preserved device version",
+        "notes": [
+          "Offline version: the boat leaves."
+        ]
+      }
+    ],
+    "notice": "Both versions were preserved. Open Projects & versions to compare the device version with the other saved version.Open versionsDismiss"
+  },
+  "afterReload": [
+    [
+      "Other device: the boat sinks."
+    ],
+    [
+      "Offline version: the boat leaves."
+    ]
+  ],
+  "history": "Saved revisions.\n\nRestore a saved copy as additional project versions. Your current work stays intact.\n\nBack\nRevision 4 · 10/3/2026, 7:41:56 AM\nRevision 3 · 10/3/2026, 7:41:55 AM\nRevision 2 · 10/3/2026, 7:41:54 AM\nRevision 1 · 10/3/2026, 7:41:53 AM",
+  "recovered": {
+    "beforeCount": 2,
+    "projects": [
+      {
+        "version": "Main draft",
+        "notes": [
+          "Other device: the boat sinks."
+        ]
+      },
+      {
+        "version": "Main draft · preserved device version",
+        "notes": [
+          "Offline version: the boat leaves."
+        ]
+      },
+      {
+        "version": "Main draft · recovered revision 2",
+        "notes": [
+          "Original: the boat stays."
+        ]
+      }
+    ]
+  }
+}

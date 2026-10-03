@@ -1,0 +1,73 @@
+{
+  "goalOnly": {
+    "visibleUnchanged": true,
+    "updatedHiddenQuestionCount": 3,
+    "status": [
+      "Saved on this device",
+      ""
+    ]
+  },
+  "characterContext": {
+    "url": "http://audit.test/#characters",
+    "sceneOpen": null,
+    "visibleCharacter": [
+      "Mara"
+    ]
+  },
+  "drafts": "UNFINISHED / NOT ACCEPTED INTO THE STORY\nPick up where you left off.\n\nClosing a form does not throw its words away. Keeping the edit is still an explicit choice.\n\n?\n×\nScene\n\nThe harbor at dawn\n\nResume →\nDiscard\nScene\n\nThe harbor at dawn\n\nResume →\nDiscard\nClose",
+  "resumed": "UNFINISHED BEFORE CHARACTER CONTEXT",
+  "stickyKinds": [
+    {
+      "kind": "want",
+      "overlap": [
+        "BelongBe accepted without pretending.",
+        "UnderstandMake sense of something unresolved."
+      ],
+      "hit": "BelongBe accepted without pretending."
+    },
+    {
+      "kind": "method",
+      "overlap": [
+        "Apply pressureMake refusal difficult or costly.",
+        "Follow the rulesSeek legitimacy and an established route."
+      ],
+      "hit": "Apply pressureMake refusal difficult or costly."
+    },
+    {
+      "kind": "value",
+      "overlap": [
+        "DignityRefuse to treat people as disposable.",
+        "SecurityBuild a life that is not always at risk."
+      ],
+      "hit": "DignityRefuse to treat people as disposable."
+    },
+    {
+      "kind": "boundary",
+      "overlap": [
+        "Hurt someone uninvolvedSuccess cannot be paid for by a bystander.",
+        "Lie to someone they loveAn intimate relationship needs honesty."
+      ],
+      "hit": "Hurt someone uninvolvedSuccess cannot be paid for by a bystander."
+    }
+  ],
+  "zoom": {
+    "viewport": [
+      1440,
+      1000
+    ],
+    "document": [
+      1547,
+      6455
+    ],
+    "dialog": {
+      "x": 0,
+      "y": -448,
+      "width": 1520,
+      "height": 1896,
+      "top": -448,
+      "right": 1520,
+      "bottom": 1448,
+      "left": 0
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "findings": {
+    "B1": "Sticky preset search is painted over and intercepted by cards in Want, Method, Value, Boundary.",
+    "B2": "Refresh gives no unchanged feedback; goal changes affect hidden questions while visible three remain unchanged.",
+    "B3": "Scene context action gap is zero; equivalent World action pair runs together.",
+    "B4": "Recovery notice obscures actual prose lines and mobile editor controls.",
+    "B5": "Opening Outline tools/palette is forgotten on plot switch or palette action.",
+    "B6": "Reload changes Master to A Plot, hiding Master-only work until lens is reopened.",
+    "B7": "No-viewpoint Explorer sentences give a scene human cognition.",
+    "B8": "Explorer muted text contrast 4.39:1; expected 4.5:1.",
+    "B9": "Legacy Explorer disclosure is 21px high with insufficient adjacent target spacing.",
+    "D1": "Account interface is undifferentiated full-screen connection/recovery console.",
+    "D2": "Explorer question cards do not justify their footprint or interaction cost.",
+    "D3": "Long repeated introductory and advisory copy competes with writing and character blocks.",
+    "D4": "Responsive shell, forms and action hierarchy spend too much vertical space on small screens.",
+    "D5": "Redraws, hidden actions and weak feedback disrupt satisfying interaction."
+  },
+  "plan": {
+    "status": "approved_by_user_yes_implemented",
+    "implementation_authorized": true,
+    "decisions": [
+      "Remove runtime Scene Explorer question panel and redundant entry points; retain authored possibilities, legacy drafts, scene approaches and context-bearing scene creation.",
+      "Make Outline MICE palette, plot lens and view switches visible and stable; restore per-project selected lens.",
+      "Use conventional Account dialog with grouped identity/status, recovery, saved-work actions; preserve unfinished editor on return.",
+      "Remove sticky preset search overlap with simpler normal-flow search; fix shared action spacing.",
+      "Keep routine recovery reminder in Account; reserve space for urgent save failures without covering writing.",
+      "Reduce repeated advisory copy, duplicate help and identity entry points; improve compact responsive layout while preserving all workflows.",
+      "Correct contrast, target size, focus visibility and motion behavior; verify interactive outcomes.",
+      "Preserve schema, unknown legacy metadata, histories, references, exports, recovery, conflict copies and optional storytelling structure.",
+      "After approval implement, test, push GitHub PR, checks, merge, delete branch, verify live, then re-present user instructions verbatim."
+    ],
+    "verification_limits": [
+      "Live authenticated paths blocked by unavailable registration code; user authorized local testing.",
+      "No native zoom/Firefox/Safari/screen-reader verification yet."
+    ]
+  }
+}

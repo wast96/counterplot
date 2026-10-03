@@ -1,0 +1,127 @@
+[
+  {
+    "width": 1440,
+    "height": 1000,
+    "overflow": false,
+    "prose": {
+      "x": 403,
+      "y": 318.796875,
+      "width": 880,
+      "height": 593,
+      "top": 318.796875,
+      "right": 1283,
+      "bottom": 911.796875,
+      "left": 403
+    },
+    "footer": {
+      "x": 246,
+      "y": 939,
+      "width": 1194,
+      "height": 61,
+      "top": 939,
+      "right": 1440,
+      "bottom": 1000,
+      "left": 246
+    }
+  },
+  {
+    "width": 768,
+    "height": 1024,
+    "overflow": false,
+    "prose": {
+      "x": 244,
+      "y": 309.796875,
+      "width": 500,
+      "height": 593,
+      "top": 309.796875,
+      "right": 744,
+      "bottom": 902.796875,
+      "left": 244
+    },
+    "footer": {
+      "x": 220,
+      "y": 963,
+      "width": 548,
+      "height": 61,
+      "top": 963,
+      "right": 768,
+      "bottom": 1024,
+      "left": 220
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "overflow": false,
+    "prose": {
+      "x": 14,
+      "y": 425.6875,
+      "width": 362,
+      "height": 490.75,
+      "top": 425.6875,
+      "right": 376,
+      "bottom": 916.4375,
+      "left": 14
+    },
+    "footer": {
+      "x": 0,
+      "y": 785.40625,
+      "width": 390,
+      "height": 58.59375,
+      "top": 785.40625,
+      "right": 390,
+      "bottom": 844,
+      "left": 0
+    }
+  },
+  {
+    "width": 320,
+    "height": 640,
+    "overflow": false,
+    "prose": {
+      "x": 14,
+      "y": 425.6875,
+      "width": 292,
+      "height": 490.75,
+      "top": 425.6875,
+      "right": 306,
+      "bottom": 916.4375,
+      "left": 14
+    },
+    "footer": {
+      "x": 0,
+      "y": 543.40625,
+      "width": 320,
+      "height": 96.59375,
+      "top": 543.40625,
+      "right": 320,
+      "bottom": 640,
+      "left": 0
+    }
+  },
+  {
+    "width": 844,
+    "height": 390,
+    "overflow": false,
+    "prose": {
+      "x": 244,
+      "y": 293.796875,
+      "width": 576,
+      "height": 593,
+      "top": 293.796875,
+      "right": 820,
+      "bottom": 886.796875,
+      "left": 244
+    },
+    "footer": {
+      "x": 220,
+      "y": 341,
+      "width": 624,
+      "height": 49,
+      "top": 341,
+      "right": 844,
+      "bottom": 390,
+      "left": 220
+    }
+  }
+]

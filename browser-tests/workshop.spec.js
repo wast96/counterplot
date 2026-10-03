@@ -64,7 +64,7 @@ test('populated screens and expanded MICE controls fit narrow widths',async({pag
  for(const width of [320,390,768,1024,1440]){
   await page.setViewportSize({width,height:844});
   for(const name of ['story','characters','connections','world','structure']){await page.locator(`[data-nav="${name}"]`).first().click();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`${name} at ${width}`).toBe(true);}
-  await page.getByText('MICE thread types',{exact:true}).click();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`expanded palette ${width}`).toBe(true);
+  await expect(page.locator('.mice-palette')).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`expanded palette ${width}`).toBe(true);
  }
  await page.setViewportSize({width:320,height:568});await page.locator('[data-nav="story"]').click();await action(page,'new-blank-scene').click();await expect(page.locator('[data-draft="notes"]')).toBeVisible();await expect(action(page,'save-scene')).toBeVisible();expect(await page.locator('#dialog').evaluate(d=>d.getBoundingClientRect().right<=innerWidth)).toBe(true);
 });
@@ -77,7 +77,7 @@ test('hosted portable export opens without a backend and retains the embedded pr
 
 test('first-save conflict through hosted client retains the unsynced local story',async({page})=>{
  let mode='offline';await page.route('http://fresh.test/**',r=>{const path=new URL(r.request().url()).pathname;if(path==='/api/auth/session')return r.fulfill({json:{user:'first-save',email:'first@example.test'}});if(path==='/api/auth/recovery')return r.fulfill({json:{remaining:8}});if(path==='/api/workspace'){if(r.request().method()==='GET')return r.fulfill({json:{workspace:null,revision:0}});return mode==='offline'?r.fulfill({status:503,json:{error:'Simulated outage'}}):r.fulfill({status:409,json:{workspace:rich,revision:1}});}return r.fulfill({contentType:'text/html',body:source});});
- await page.goto('http://fresh.test/');await create(page,'LOCAL WORDS BEFORE FIRST SAVE');await page.evaluate(()=>counterplotSync.flush());mode='conflict';await page.evaluate(()=>counterplotSync.flush());
+ await page.goto('http://fresh.test/');await create(page,'LOCAL WORDS BEFORE FIRST SAVE');await page.evaluate(()=>counterplotSync.flush());mode='conflict';await page.evaluate(()=>counterplotSync.flush());await expect.poll(()=>page.evaluate(id=>counterplotDiagnostics.snapshot().projects.some(p=>p.id===id),rich.projects[0].id)).toBe(true);
  const w=await page.evaluate(()=>counterplotDiagnostics.snapshot());expect(JSON.stringify(w)).toContain('LOCAL WORDS BEFORE FIRST SAVE');expect(w.projects.some(p=>p.id===rich.projects[0].id)).toBe(true);await expect(page.locator('.sync-live-notice')).toContainText('Both versions');
 });
 
@@ -106,5 +106,5 @@ test('character changes preserve block details and failed outcome batches leave 
 });
 
 test('browser Back closes the writing workspace and Forward restores unfinished text',async({page})=>{
- await page.locator('[data-nav=characters]').first().click();await page.locator('[data-nav=world]').first().click();await page.goBack();await expect(page.locator('[data-nav=characters]')).toHaveClass(/active/);await page.locator('[data-nav=story]').click();await action(page,'new-blank-scene').click();await page.locator('[data-draft=notes]').fill('Retained through browser history.');await page.goBack();await expect(page.locator('#dialog')).not.toBeVisible();await page.goForward();await expect(page.locator('[data-draft=notes]')).toHaveValue('Retained through browser history.');await action(page,'save-scene').click();expect(await page.evaluate(()=>counterplotDiagnostics.snapshot().projects[0].scenes[0].notes)).toBe('Retained through browser history.');
+ await page.locator('[data-nav=characters]').first().click();await page.locator('[data-nav=world]').first().click();await page.goBack();await expect(page.locator('[data-nav=characters]')).toHaveClass(/active/);await page.locator('[data-nav=story]').first().click();await action(page,'new-blank-scene').click();await page.locator('[data-draft=notes]').fill('Retained through browser history.');await page.goBack();await expect(page.locator('#dialog')).not.toBeVisible();await page.goForward();await expect(page.locator('[data-draft=notes]')).toHaveValue('Retained through browser history.');await action(page,'save-scene').click();expect(await page.evaluate(()=>counterplotDiagnostics.snapshot().projects[0].scenes[0].notes)).toBe('Retained through browser history.');
 });

@@ -101,7 +101,7 @@ The browser suite tests the local edition with fresh workspaces on desktop and m
 
 Storyline opens a page-sized writing workspace. A scene can contain prose alone and needs no character or viewpoint. Planning is optional; the writing-first preference and last section are remembered on the device. **Read scenes** shows the manuscript in reading order. Search includes every scene craft field, development beats, archived scenes, and unfinished edits.
 
-Scene Explorer offers three contextual questions at a time, using explicit character blocks, linked world material, and scene context. Questions never become events automatically. Quiet observation, ambiguity, atmosphere, repetition, and incomplete endings are supported. Earlier rule-based alternatives and pinned-block what-if comparisons remain under World's **Earlier exploration tools**.
+Scene planning keeps your own questions and possibilities beside the writing. Starting from a character, connection, or outline piece carries those story links into the same editor. Generated question cards have been retired; previously saved questions and notes remain in existing projects and exports. Quiet observation, ambiguity, atmosphere, repetition, and incomplete endings are supported. Earlier rule-based alternatives and pinned-block what-if comparisons remain under World's **Earlier exploration tools**.
 
 **Outline** supports ordinary beats without requiring MICE. Existing MICE threads, closures, multi-plot membership, and evidence links remain editable through optional controls. **Changes after this scene** queues changes to character blocks, life status, plot roles, relationships, faction state, knowledge, World conditions, and reader disclosure. One transaction applies the queue; one Undo restores it. Reader-only changes do not create story-time moments or grant character knowledge.
 
@@ -124,3 +124,5 @@ The account browser test is skipped unless `TEST_SERVER_URL` points to an **isol
 ```sh
 TEST_SERVER_URL=http://localhost:8791 npm run test:browser -- browser-tests/account.spec.js
 ```
+
+The [October 2026 workspace audit](docs/audits/2026-10-03/README.md) records the approved simplification, data-preservation checks, responsive evidence and verification limitations. Reproduce visual evidence with `node scripts/capture-workspace-audit.mjs`; run real isolated sync verification with `TEST_SERVER_URL=http://127.0.0.1:8790 node scripts/verify-local-sync.mjs`.

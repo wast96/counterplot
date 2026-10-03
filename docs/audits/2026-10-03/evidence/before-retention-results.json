@@ -1,0 +1,17 @@
+{
+  "before": [
+    "The songs at risk",
+    "An evening rehearsal",
+    "The stillness, kept only in Master"
+  ],
+  "afterReload": [
+    "The songs at risk",
+    "An evening rehearsal"
+  ],
+  "activeLens": "A PLOT\nMain plot\nNo protagonist assigned · 2 visible pieces",
+  "afterSelectingMaster": [
+    "The songs at risk",
+    "An evening rehearsal",
+    "The stillness, kept only in Master"
+  ]
+}

@@ -1,0 +1,115 @@
+# PHASE 1: AUDIT — READ-ONLY
+
+Audit the current live site meticulously. Score each of the following factors out of 5. They are ordered from most important to least important, so weight them subtly accordingly. State the weights clearly.
+
+1. Usefulness: Does this feel designed by storytellers, for storytellers? Does it meaningfully help someone put together a story, develop their material, and make creative decisions? Does its conception of storytelling feel grounded in how storytellers actually think, discover, revise, explore, change their minds, and get stuck, rather than imposing a software/productivity model onto creative work? A feature can technically function and still fail this criterion if it does not feel genuinely useful to the creative process.
+
+2. Intuitiveness: How easy is it to start as a total newcomer? Is every section understandable? Do labels, navigation, controls, and feedback make it clear what to do and what happened?
+
+3. Creative flexibility: Can this help someone write any story? Does it unnecessarily push particular tropes, structures, character models, or methods? Can quiet, ambiguous, nonlinear, experimental, unconventional, and structurally unusual stories work naturally?
+
+4. Purposeful design: How bullshit-free is the site? Is copy useful and concise? Are any sentences unnecessarily long, controls redundant, or features present without a clear purpose? Does every element earn its place? Do not judge an element only by whether it is useful in isolation. Ask whether the product is actually better with it than without it, given the attention, screen space, complexity, learning burden, maintenance burden, and cognitive load it adds. Be ruthless about unnecessary fat.
+
+5. Satisfying design/feel: Does using it feel satisfying and fun? Do placement, responsiveness, interaction feedback, and transitions feel good? Does it support sustained creative concentration and make someone want to return? Also assess micro-interaction delight. Do small actions feel unusually responsive, rewarding, tactile, and satisfying rather than merely functional? Is there enough positive feedback in the way controls respond, information moves, things open and close, states change, and work accumulates that someone actively wants to keep interacting with the tool and could enjoy spending hours inside it? The question is not merely whether the site avoids frustration. Ask whether using it actually feels good.
+
+6. Visually compelling: Does it look good? Does it have a strong, coherent visual identity? Does it create a positive emotional response? Does it fuck hard design-wise? Assess accessibility against WCAG 2.2 AA, including contrast, keyboard operation, focus visibility, labels, zoom/reflow, and target sizes. Do not claim compliance solely because an automated scanner passes.
+
+Give a thorough, sharply critical explanation for each score, identifying what is working and what is not. Be incisive and insightful without being unfair. Keep standards consistent; do not give improvements credit merely because they improve on an earlier version. Then present the weighted overall score out of 5.
+
+After scoring the six criteria, step back from the rubric and assess the product holistically. Ask whether there is anything materially affecting its quality that the individual criteria fail to capture.
+
+In particular, answer this broader question: Does this feel like an exceptional environment for constructing stories, or merely a well-designed and well-engineered application for doing so? Identify anything preventing it from becoming the former, even if that issue does not fit neatly into one of the six categories. Do not create an additional weighted score for this section.
+
+## Separate assessment: Bug-freedom
+
+Score bug-freedom out of 5, independently of the six criteria and their weighted overall score.
+
+Check thoroughly for:
+
+- Crashes, runtime errors, broken workflows, dead links, and missing or unreachable features.
+- Buttons and controls that are clickable but produce no meaningful or observable result.
+- Misleading controls whose actual behavior does not match their labels.
+- Missing success, error, loading, or unchanged-state feedback.
+- Elements that collide, overlap, run together, clip, overflow, or obscure writing and controls.
+- Problems with scrolling, fixed panels, dialogs, notices, keyboard focus, and browser Back/Forward.
+- Lost edits, incorrect saves, broken undo/redo, stale views, and inconsistent behavior after reopening or refreshing.
+- Regressions involving existing projects, historical states, references, imports, exports, and synchronization.
+
+Do not equate “the click handler ran” or “there were no console errors” with “the feature works.” Check the result from the user’s perspective and verify the underlying state when relevant. Exercise controls in realistic sequences, including repeated clicks, changed and unchanged inputs, empty and populated projects, long names and text, and reopening an unfinished workflow. Check desktop, tablet, narrow mobile, and landscape layouts, including zoom and keyboard navigation.
+
+---
+
+## ADDENDUM 1: SCENE EXPLORER
+
+Explicitly investigate these reported Scene Explorer problems:
+
+- “Refresh from this scene’s setup” appears to do nothing. Reproduce it with both unchanged and changed scene context. Determine whether the problem is behavior, stale content, inadequate feedback, misleading wording, or some combination.
+- “Open character context” runs into the context text to its left. Check spacing, wrapping, and collisions at different widths and with long character names.
+- Look for equivalent problems throughout the site rather than treating these as isolated exceptions.
+- Check whether notices—such as the account-recovery reminder—cover useful content or interrupt writing.
+
+---
+
+## ADDENDUM 2: OUTLINE PAGE
+
+oh also side note: the MICE thread bar should be enabled by default, and i think that being enabled by a tiny collapseable section is weird as fuck, same with the plot views.
+
+---
+
+For confirmed bugs, describe the reproduction steps, expected result, actual result, and practical impact. Distinguish confirmed findings from suspicions and untested areas.
+
+Do not offer solutions during Phase 1. First present the complete audit, its reasoning, the weighted design score, the holistic assessment, and the separate bug-freedom score.
+
+# PHASE 2: PLANNING — READ-ONLY
+
+Enter planning mode and develop a detailed plan addressing every criticism and confirmed flaw from Phase 1.
+
+Be creative, specific, and rigorous. Double- and triple-check that each proposal solves the actual problem and is useful to storytellers. Avoid cosmetic activity, unnecessary features, or added complexity masquerading as improvement.
+
+The plan should not optimize merely for conventional software quality. Preserve the qualities identified in Phase 1 concerning creative usefulness, storyteller-native thinking, creative flexibility, purposeful simplicity, interaction pleasure, and visual character.
+
+The beginning of the plan should explain in detail:
+
+- Exactly what will change and why.
+- Which audit finding each change addresses.
+- How the affected workflow will behave from the user’s perspective.
+- Relevant edge cases and tradeoffs.
+- How existing projects, elements, references, historical states, and unfinished work will transfer safely.
+- How existing features will remain functional and accessible.
+- How each change will be verified, including meaningful interaction outcomes, responsive layouts, accessibility, and regression checks.
+
+For controls reported as ineffective, define their intended behavior and the feedback users should receive. For layout collisions, include checks with realistic content, long labels, narrow viewports, and zoom—not merely one ideal screenshot. When proposing additions, ask whether the same problem can be solved more simply before introducing a new feature, control, mode, setting, piece of copy, or structural concept. When proposing removals or simplifications, verify that something apparently redundant is not serving an important storytelling workflow, edge case, accessibility function, compatibility role, or existing-project dependency.
+
+The plan should aim not merely to fix weaknesses but to increase the degree to which the product feels genuinely pleasurable and creatively useful to work inside. Where interaction quality is weak, consider the timing, feedback, responsiveness, hierarchy, and tactile character of the experience, not merely whether the workflow technically functions.
+
+Finish with a much more concise, plain-language summary that remains specific about what is changing, why, and how.
+
+The goal is to move the site as close as possible to 5/5 for the weighted design score and 5/5 for bug-freedom, without sacrificing creative flexibility, storyteller-native usefulness, purposeful simplicity, satisfying interaction, or existing work.
+
+Wait for my approval before implementation.
+
+# PHASE 3: IMPLEMENTATION — WRITE
+
+After approval, implement the plan meticulously. Verify that every approved item is implemented and that existing projects and features still work.
+
+Repeat thorough bug checks, including:
+
+- Actual outcomes of buttons and controls.
+- Layout collisions and obstructed content.
+- Responsive and keyboard behavior.
+- Accessibility.
+- Saving, recovery, undo/redo, synchronization, and data compatibility.
+- Complete workflows and realistic failure paths.
+
+Do not rely solely on automated tests or a lack of console errors. Reproduce the original problems and demonstrate that they are resolved. Also verify the experiential goals of the implementation rather than checking only technical correctness. Confirm that changes intended to improve intuitiveness, reduce unnecessary complexity, improve creative flexibility, or make interactions more satisfying actually accomplish those things from the user’s perspective.
+
+Do not retain a change merely because it was successfully implemented. If implementation reveals that an approved change introduces unnecessary complexity, damages another workflow, reduces creative flexibility, or makes the experience less satisfying, correct the implementation while remaining faithful to the approved plan rather than blindly preserving the flawed result.
+
+Then automatically:
+
+1. Publish the changes to GitHub.
+2. Create the pull request and verify relevant checks.
+3. Merge the pull request.
+4. Delete the implementation branch.
+5. Verify the live deployment and report what was completed, how it was tested, and any remaining limitations.
+6. Re-present these instructions to me exactly as written in their latest incarnation (do not make edits of your own), and make it easy to copy and paste.

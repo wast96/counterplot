@@ -1,0 +1,333 @@
+{
+  "command": "CHROMIUM_PATH=/usr/bin/chromium TEST_SERVER_URL=http://127.0.0.1:8790 npm run test:browser -- --workers=2 --reporter=json",
+  "stats": {
+    "startTime": "2026-10-03T07:41:22.526Z",
+    "duration": 58960.200000000004,
+    "expected": 64,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "checks": [
+    {
+      "name": "account recovery enrolls, rotates, resets once, revokes sessions and retains writing",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "account recovery enrolls, rotates, resets once, revokes sessions and retains writing",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "preset search never paints over choices, and custom wording survives scrolling and reload",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "Master-only work stays visible after reload and plot/palette controls stay available after actions",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "retired Explorer draft payloads and written possibilities survive editing, export and import",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "main pages and scene planning remain accessible at narrow and landscape widths",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "Account preserves an unfinished scene, keyboard focus and scroll, without a recovery overlay",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "connection retry reports its outcome and conflict notices reserve space below writing",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "leaving a loading account panel prevents late responses from reopening it",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "preset search never paints over choices, and custom wording survives scrolling and reload",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "Master-only work stays visible after reload and plot/palette controls stay available after actions",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "retired Explorer draft payloads and written possibilities survive editing, export and import",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "main pages and scene planning remain accessible at narrow and landscape widths",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "Account preserves an unfinished scene, keyboard focus and scroll, without a recovery overlay",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "connection retry reports its outcome and conflict notices reserve space below writing",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "leaving a loading account panel prevents late responses from reopening it",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "the canvas develops setup before tension, turn, outcome and reaction; continuation uses the same editor",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "authored possibilities remain separate, resumable and independent of planning prompts",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "free prose and incomplete scenes can be saved, edited and recovered after reload",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "development beats can be written, reordered and removed without losing other fields",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "legacy scenes, unfinished edits and retired range values survive loading and editing",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "World and MICE have no Story range; MICE opens the same scene workshop; invalid new fields are rejected",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "JSON and Markdown exports retain the full scene canvas and development beats",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "unfinished scene content is validated as carefully as accepted scenes",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "participants and scene approach survive saving without generated agendas",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "a MICE thread carries its opening and link into the unified workshop",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "earlier Explorer suggestions remain recoverable in the new workshop",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "the canvas develops setup before tension, turn, outcome and reaction; continuation uses the same editor",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "authored possibilities remain separate, resumable and independent of planning prompts",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "free prose and incomplete scenes can be saved, edited and recovered after reload",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "development beats can be written, reordered and removed without losing other fields",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "legacy scenes, unfinished edits and retired range values survive loading and editing",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "World and MICE have no Story range; MICE opens the same scene workshop; invalid new fields are rejected",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "JSON and Markdown exports retain the full scene canvas and development beats",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "unfinished scene content is validated as carefully as accepted scenes",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "participants and scene approach survive saving without generated agendas",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "a MICE thread carries its opening and link into the unified workshop",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "earlier Explorer suggestions remain recoverable in the new workshop",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "a character-free scene supports writing, persistence, reading, continuation and search",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "writing preferences and unfinished text survive navigation without placeholder characters",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "every scene craft field and development beat is searchable and opens its matching field",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "v2 migration preserves histories, pins, unknown metadata and references without mutating the input",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "queued life, world and reader changes commit together and undo preserves historical data",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "populated screens and expanded MICE controls fit narrow widths",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "hosted portable export opens without a backend and retains the embedded project",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "first-save conflict through hosted client retains the unsynced local story",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "legacy what-if tools honor pins and can discard or adopt a single block",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "reader-only outcomes create no story moment and reject duplicate queued records",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "page and scene guides open and keyboard-close without losing unfinished prose",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "character changes preserve block details and failed outcome batches leave history intact",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "browser Back closes the writing workspace and Forward restores unfinished text",
+      "project": "desktop",
+      "result": "expected"
+    },
+    {
+      "name": "a character-free scene supports writing, persistence, reading, continuation and search",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "writing preferences and unfinished text survive navigation without placeholder characters",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "every scene craft field and development beat is searchable and opens its matching field",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "v2 migration preserves histories, pins, unknown metadata and references without mutating the input",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "queued life, world and reader changes commit together and undo preserves historical data",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "populated screens and expanded MICE controls fit narrow widths",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "hosted portable export opens without a backend and retains the embedded project",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "first-save conflict through hosted client retains the unsynced local story",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "legacy what-if tools honor pins and can discard or adopt a single block",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "reader-only outcomes create no story moment and reject duplicate queued records",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "page and scene guides open and keyboard-close without losing unfinished prose",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "character changes preserve block details and failed outcome batches leave history intact",
+      "project": "mobile",
+      "result": "expected"
+    },
+    {
+      "name": "browser Back closes the writing workspace and Forward restores unfinished text",
+      "project": "mobile",
+      "result": "expected"
+    }
+  ]
+}
