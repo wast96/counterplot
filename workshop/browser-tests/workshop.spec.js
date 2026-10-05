@@ -2,7 +2,7 @@ const {test,expect}=require('@playwright/test');
 const path=require('node:path');
 const fixture=path.resolve(__dirname,'../../browser-tests/fixtures/rich-v2-workspace.json');
 const action=(page,name)=>page.locator(`[data-action="${name}"]:visible`).first();
-async function openStoryTool(page,name){await expect(page.locator('.story-viewbar')).toBeVisible();if(!await action(page,name).isVisible())await action(page,'story-tools').click();await action(page,name).click();}
+async function openStoryTool(page,name){await expect(page.locator('.story-viewbar')).toBeVisible();if(!await action(page,name).isVisible())await page.locator('.story-tools-menu>summary').click();await action(page,name).click();}
 async function importOriginal(page){await page.goto('/');await expect(page.locator('.story-viewbar')).toBeVisible();await page.locator('#import-file').setInputFiles(fixture);await action(page,'accept-import').click();await expect(page.locator('#dialog')).not.toBeVisible();}
 const snapshot=async page=>{await page.waitForFunction(()=>!!window.CounterplotTutorial);return page.evaluate(()=>{const d=CounterplotTutorial.snapshot();return d.projects.find(p=>p.id===d.active);});};
 test('old prose, chronology, and editable scene craft survive import and reload',async({page})=>{
