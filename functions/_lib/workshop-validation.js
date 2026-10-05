@@ -1115,7 +1115,18 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
     lines.push('','## Plot roles');for(const pl of p.plots){lines.push('','### '+pl.label+' · '+pl.title,pl.notes);for(const tr of pl.cast||[]){lines.push('- '+label(tr.characterId)+': '+(tr.opening.roles||[]).join(', ')+' · '+tr.opening.note);for(const x of tr.changes||[])lines.push('  - '+when(x.momentId)+': '+(x.roles||[]).join(', ')+' · '+(x.note||''));}}
     lines.push('','## Unfinished drafts');for(const d of p.drafts)lines.push('','### '+(d.title||d.draft?.title||'Unfinished draft'),d.draft?.notes||d.draft?.text||'An unfinished form is retained in the JSON backup.');return lines.join('\n');
   }
-  Object.assign(W,{normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,readingMoments,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
+  // Stored branches share the lossless branch envelope, with a separate UI bucket.
+  const drawerEntries=p=>p.archive.filter(a=>a.kind==='branch'&&a.storage==='drawer');
+  const archivedItems=p=>p.archive.filter(a=>a.storage!=='drawer');
+  function stashNode(p,id){const entry=W.archiveNode(p,id);if(!entry)throw Error('That piece is no longer in the outline.');entry.storage='drawer';return entry;}
+  function returnFromDrawer(p,id,anchor,where='inside'){
+    const entry=drawerEntries(p).find(a=>a.id===id);if(!entry)throw Error('That piece is no longer in the Drawer.');
+    // Validate placement on a copy so a rejected drop cannot consume the stored branch.
+    const candidate=W.copy(p),rootId=entry.nodes[0].id;
+    W.restore(candidate,id);if(anchor!==undefined)W.move(candidate,rootId,anchor,where);
+    Object.assign(p,candidate);return rootId;
+  }
+  Object.assign(W,{drawerEntries,archivedItems,stashNode,returnFromDrawer,normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,readingMoments,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
     factionAt:(p,e,key)=>L.CounterplotEnsemble.factionAt(timelineProject(p),e,momentId(p,key)),
     roleAt:(p,track,key)=>L.CounterplotEnsemble.roleAt(timelineProject(p),track,momentId(p,key)),
     prominenceAt:(p,c,key)=>L.CounterplotEnsemble.prominenceAt(timelineProject(p),c,momentId(p,key))});
