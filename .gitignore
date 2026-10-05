@@ -3,3 +3,18 @@
 node_modules
 test-results/
 playwright-report/
+
+# Generated Workshop delivery and prior test evidence
+dist/
+workshop/tests/evidence/
+workshop/tests/*.html
+workshop/tests/screenshots/
+workshop/Counterplot Workshop.html
+workshop/tutorial/*.html
+workshop/tutorial/base-app.sha256
+
+.DS_Store
+__pycache__/
+*.pyc
+workshop/tests/final-results.txt
+workshop/tests/*results*.txt

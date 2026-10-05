@@ -1,0 +1,16 @@
+MGS3 — Counterplot tutorial
+
+Preferred entry: ../Counterplot Workshop.html → Tutorials → MGS3.
+MGS3 — Counterplot tutorial.html uses the same app; it is not a second source fork.
+
+There are 22 stages and 41 actions. Stage 1.1 is a reading introduction with Next
+immediately available. The original Character-block task starts at 1.2.
+Automatic typing remains on later tasks, and Next stays manual by default.
+
+Edit is full-size and in place. Settings → Sections controls popup content and
+order. Default: headerless Writeup, expanded How this works containing Sample
+wording, then Action. Read, then press Next is an available completion rule.
+
+Copy to My work opens an independent ordinary story without the tutorial.
+Save story JSON and tutorial JSON before replacing files or leaving an error tab.
+Read ../STORAGE REPAIR.md, ../TUTORIAL EDITOR.md and ../QA REPORT.md.

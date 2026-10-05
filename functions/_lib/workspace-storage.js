@@ -12,7 +12,7 @@ export async function digest(text) {
   return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text))), b => b.toString(16).padStart(2, '0')).join('');
 }
 export function requireWriter(request, user) {
-  if (Number(request.headers.get('X-Counterplot-Writer')) !== 4 || !request.headers.get('X-Counterplot-Owner')) {
+  if (![4, 5].includes(Number(request.headers.get('X-Counterplot-Writer'))) || !request.headers.get('X-Counterplot-Owner')) {
     throw json({ error: 'Update Counterplot before saving. Export any unsynced work, then reload.', code: 'update-required' }, 426);
   }
   if (request.headers.get('X-Counterplot-Owner') !== user.id) {

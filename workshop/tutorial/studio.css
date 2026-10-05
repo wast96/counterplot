@@ -1,0 +1,192 @@
+/* The tutorial is edited at the actual browser size. Floating controls never scale it. */
+#tutorial-editor.visual-studio{position:fixed;inset:0;margin:0;padding:0;width:100vw;max-width:none;height:100dvh;max-height:none;border:0;border-radius:0;background:var(--paper);color:var(--ink);overflow:hidden;box-shadow:none;--studio-sidebar:206px;--studio-head-height:61px}
+#tutorial-editor.visual-studio::backdrop{background:var(--paper)}
+.visual-studio *{box-sizing:border-box;min-width:0}
+.visual-studio .studio-shell{height:100%;position:relative;overflow:hidden}
+.visual-studio .studio-viewport,.visual-studio .studio-frame-wrap{position:absolute;inset:0;width:100%;height:100%;padding:0;margin:0;overflow:hidden;background:var(--paper);border:0;box-shadow:none}
+.visual-studio #studio-frame{display:block;width:100%;height:100%;border:0;transform:none!important}
+.visual-studio .studio-loading{position:absolute;inset:0;display:grid;place-items:center;background:var(--paper);font-size:14px;color:var(--muted)}
+.visual-studio .studio-loading[hidden]{display:none}
+.visual-studio .studio-head{position:absolute;top:0;left:var(--studio-sidebar);right:0;z-index:5;display:flex;align-items:center;gap:14px;min-height:61px;padding:10px 24px;background:var(--paper);border-bottom:1px solid var(--line)}
+.visual-studio .studio-location{display:flex;gap:9px;align-items:baseline;flex-shrink:0}
+.visual-studio h2{font:600 14px/1.3 var(--sans,system-ui);margin:0;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.visual-studio .studio-mode-label{font:10px var(--mono,monospace);text-transform:uppercase;letter-spacing:.7px;color:var(--green)}
+.visual-studio .studio-stage-location{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.visual-studio .studio-current-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:12px var(--sans,system-ui);color:var(--muted)}
+.visual-studio .studio-head-actions,.visual-studio .studio-undo{display:flex;gap:6px;align-items:center}
+.visual-studio .studio-undo{margin-right:4px}
+.visual-studio .studio-undo .btn{font-size:20px;padding:3px 7px;min-width:32px}
+.visual-studio .btn{font:12px/1.3 var(--sans,system-ui);padding:7px 10px;min-height:34px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink);flex-shrink:0;transition:background .12s,transform .1s}
+.visual-studio .btn:hover:not(:disabled){background:var(--green-soft,#e2eadb)}
+.visual-studio .btn:active:not(:disabled){transform:translateY(1px)}
+.visual-studio .btn.primary,.visual-studio [data-author=add-stage]{background:var(--green);border-color:var(--green);color:#fff}
+.visual-studio .btn.primary:hover:not(:disabled),.visual-studio [data-author=add-stage]:hover:not(:disabled){background:#244335}
+.visual-studio .btn:disabled{opacity:.38;cursor:default}
+.visual-studio [aria-pressed=true]{box-shadow:inset 0 0 0 1px var(--green)}
+.visual-studio button:focus-visible,.visual-studio input:focus-visible,.visual-studio select:focus-visible,.visual-studio textarea:focus-visible{outline:2px solid #427b56;outline-offset:2px}
+.visual-studio .studio-drawer{display:none;position:absolute;z-index:7;top:calc(var(--studio-head-height) + 12px);left:calc(var(--studio-sidebar) + 16px);width:min(400px,calc(100vw - var(--studio-sidebar) - 32px));max-height:calc(100dvh - var(--studio-head-height) - 28px);background:var(--panel);border:1px solid #cbd5c1;border-radius:10px;box-shadow:0 10px 32px #172e2424;overflow:hidden}
+.visual-studio[data-panel=stages] .studio-stages,.visual-studio[data-panel=settings] .studio-inspector{display:flex;flex-direction:column}
+.visual-studio .studio-stages,.visual-studio .studio-inspector{height:calc(100dvh - var(--studio-head-height) - 28px)}
+.visual-studio .studio-rail-head{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line);flex-shrink:0;font-size:13px}
+.visual-studio .studio-rail-head strong{flex:1}
+.visual-studio .studio-rail-head [data-panel=canvas]{padding:5px;font-size:20px;width:32px}
+.visual-studio .studio-stage-list{min-height:0;flex:1;overflow:auto;padding:6px 8px;scrollbar-width:thin;overscroll-behavior:contain}
+.visual-studio .studio-action-row{display:flex;flex-direction:column;align-items:stretch;gap:8px;padding:10px;border-top:1px solid var(--line);flex:0 1 auto;min-height:100px;max-height:min(330px,42dvh)}
+.visual-studio .studio-properties{overflow:auto;flex:1;min-height:0;padding:16px;overscroll-behavior:contain}
+.visual-studio .studio-menu{left:auto;right:16px;width:280px;padding:12px;gap:6px;overflow:auto}
+.visual-studio[data-panel=menu] .studio-menu{display:flex;flex-direction:column}
+.visual-studio .studio-menu>.btn{text-align:left;border-color:transparent;background:none}
+.visual-studio .studio-menu>strong{font-size:11px;color:var(--muted);padding:4px}
+.visual-studio .studio-phase-controls{display:flex;gap:4px;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:4px}
+.visual-studio .studio-phase-controls .btn{flex:1;padding:6px;font-size:11px}
+.visual-studio #tutorial-save-state{font-size:11px;color:var(--muted);padding:10px 4px 0;border-top:1px solid var(--line)}
+.visual-studio .studio-canvas-message,.visual-studio #tutorial-author-error{position:absolute;z-index:8;left:calc(var(--studio-sidebar) + 16px);right:16px;bottom:14px;padding:12px 16px;font:12px/1.5 var(--sans,system-ui);background:#f7edcf;border:1px solid #d8c49b;border-radius:7px;max-height:130px;overflow:auto;box-shadow:0 2px 8px #192c241a}
+.visual-studio .studio-canvas-message[hidden],.visual-studio #tutorial-author-error[hidden]{display:none}
+.visual-studio #tutorial-author-error{color:#852e22;background:#fff0e8;border-color:#ce9c86}
+.visual-studio.studio-playing .studio-stage-location,.visual-studio.studio-playing .studio-undo,.visual-studio.studio-playing [data-panel=settings],.visual-studio.studio-playing [data-panel=menu],.visual-studio.studio-playing [data-author=save]{display:none}
+.visual-studio.studio-playing .studio-location{flex:1}
+.visual-studio .author-code{min-height:360px!important;font:12px/1.5 var(--mono,monospace)!important}
+.visual-studio .author-section-heading h3{font:21px var(--serif);margin:0 0 10px}
+.visual-studio .author-section-heading p{font:12px/1.5 var(--sans,system-ui);color:var(--muted)}
+.visual-studio .author-inline-actions{display:flex;gap:6px;flex-wrap:wrap}
+.visual-studio .studio-stage{display:flex;align-items:stretch;border:1px solid transparent;border-radius:8px;margin:4px 0;transition:background .12s,border-color .12s}
+.visual-studio .studio-stage:hover{background:#e9efde}
+.visual-studio .studio-stage.active{background:#fffef8;border-color:#aabb9f;box-shadow:0 2px 4px #254b3510}
+.visual-studio .studio-grip{display:flex;align-items:center;justify-content:center;width:26px;padding:4px;border:0;background:transparent;color:#849477;flex-shrink:0;cursor:grab;touch-action:none;font-size:17px;border-radius:5px}
+.visual-studio .studio-grip:active{cursor:grabbing;background:#dce6d1}
+.visual-studio .studio-stage>[data-author]{display:grid;grid-template-columns:22px minmax(0,1fr) 16px;text-align:left;gap:5px;align-items:start;border:0;background:none;flex:1;padding:12px 7px 12px 1px;line-height:1.45;color:inherit;font-size:12px}
+.visual-studio .studio-stage small{font:10px/1.8 var(--mono,monospace);color:#778769}
+.visual-studio .studio-stage em{font:10px/1.8 var(--mono,monospace);color:#778769;text-align:right;font-style:normal}
+.visual-studio .studio-stage.active span{font-weight:600;color:#2e5141}
+.visual-studio .studio-stage-actions{display:flex;gap:4px;padding:10px 8px;border-top:1px solid #dce3d3;flex-wrap:wrap}
+.visual-studio .studio-stage-actions .btn{padding:7px;font-size:11px}
+.visual-studio .studio-workspace{min-height:0;display:flex;flex-direction:column;overflow:hidden;background:#e9eddf}
+.visual-studio .studio-action-list{display:flex;flex-direction:column;gap:6px;flex:1;min-height:0;overflow:auto;scrollbar-width:thin;overscroll-behavior:contain;padding:1px}
+.visual-studio .studio-action{display:flex;flex:0 0 184px;border:1px solid #d0dbc3;border-radius:7px;background:#f2f5e8;min-height:62px;transition:background .12s,box-shadow .12s}
+.visual-studio .studio-action.active{background:#e0ebd5;border-color:#8ca67b;box-shadow:0 2px 5px #32573815}
+.visual-studio .studio-action>[data-author]{flex:1;background:transparent;border:0;display:flex;flex-direction:column;gap:4px;align-items:flex-start;padding:9px 9px 9px 0;text-align:left;color:#3c5033}
+.visual-studio .studio-action b{font:10px var(--mono,monospace);color:#5a7648}
+.visual-studio .studio-action span{font:11px/1.4 system-ui;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.visual-studio .studio-action-row>.btn{align-self:center;font-size:11px}
+.visual-studio .studio-action-tools{display:flex;justify-content:space-between;align-items:center;padding:0 12px 9px;gap:8px;background:#fafbf3}
+.visual-studio .studio-action-tools>span{font:10px var(--mono,monospace);color:#75836a}
+.visual-studio .studio-action-tools>div{display:flex;gap:4px}
+.visual-studio .studio-action-tools .btn{font-size:10px;padding:5px 7px;min-height:26px;background:transparent}
+.visual-studio .studio-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:10px;border-bottom:1px solid #dce3d3}
+.visual-studio .studio-tabs button{font:11px/1.2 system-ui;background:transparent;border:1px solid transparent;padding:9px 3px;color:#6a785f;border-radius:5px;transition:background .12s}
+.visual-studio .studio-tabs button.active{background:#e2ead7;color:#2b4d38;border-color:#c6d5b9}
+.visual-studio .studio-tabs button:hover{background:#edf2e4}
+.visual-studio .studio-properties{overflow:auto;min-height:0;flex:1;padding:14px;scrollbar-width:thin;scrollbar-color:#bdcbb1 transparent}
+.visual-studio .field{display:flex;flex-direction:column;gap:5px;margin:0 0 12px}
+.visual-studio .field>span{font:11px/1.4 system-ui;color:#617154;font-weight:500;letter-spacing:0;text-transform:none}
+.visual-studio .field input:not([type=checkbox]):not([type=range]),.visual-studio .field select,.visual-studio .field textarea{font:12px/1.45 system-ui;padding:8px 9px;width:100%;min-width:0;border:1px solid #ced9c1;border-radius:5px;background:#fffef8;color:#2d422f;box-shadow:inset 0 1px 2px #30482b04}
+.visual-studio .field textarea{min-height:0;resize:vertical;max-height:400px}
+.visual-studio .field input[type=number]{padding-right:3px}
+.visual-studio .field input[type=color]{height:35px;padding:3px!important}
+.visual-studio .field input[type=range]{width:100%;accent-color:#3d684d}
+.visual-studio input[type=checkbox]{accent-color:#3e684b;flex-shrink:0}
+.visual-studio h4{font:11px/1.4 var(--mono,monospace);letter-spacing:.7px;text-transform:uppercase;color:#526c42;margin:18px 0 9px;font-weight:500}
+.visual-studio h4:first-child{margin-top:0}
+.visual-studio .studio-help{font:11px/1.55 system-ui;color:#77816d;margin:0 0 12px}
+.visual-studio .two-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 10px}
+.visual-studio .studio-label-row{display:flex;align-items:baseline;justify-content:space-between}
+.visual-studio .studio-label-row h4{margin-top:9px}
+.visual-studio .studio-check{display:flex;gap:6px;align-items:center;font-size:11px;color:#64745a;margin:5px 0 9px}
+.visual-studio .studio-check-grid{display:flex;flex-wrap:wrap;gap:7px;font:10px/1.3 system-ui;margin:8px 0 12px}
+.visual-studio .studio-check-grid label{display:flex;align-items:center;gap:4px}
+.visual-studio .studio-inline{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 12px}
+.visual-studio .studio-inline .btn{font-size:11px;min-height:30px;padding:7px}
+.visual-studio .studio-presets,.visual-studio .studio-button-picks{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin:10px 0 14px}
+.visual-studio .studio-presets .btn,.visual-studio .studio-button-picks .btn{padding:7px 4px;font-size:10px;min-height:32px}
+.visual-studio .studio-presets [aria-pressed=true],.visual-studio .studio-button-picks [aria-pressed=true]{background:#2e5141;color:white;border-color:#2e5141}
+.visual-studio .studio-colors{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.visual-studio .studio-range>span{display:flex;justify-content:space-between}
+.visual-studio .studio-range output{font-family:var(--mono,monospace);color:#385e42}
+.visual-studio .studio-type-demo{min-height:48px;border-left:3px solid #92aa7c;padding:10px;background:#edf3e2;margin:6px 0;font:13px/1.4 Georgia}
+.visual-studio .studio-reveal-lanes{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.visual-studio .studio-reveal-lane{border:1px dashed #c2d2b4;background:#f4f7eb;border-radius:7px;padding:7px}
+.visual-studio .studio-reveal-lane.selected{border:1px solid #8fa47d;background:#edf4e2}
+.visual-studio .studio-reveal-lane header{display:flex;align-items:center;gap:5px;justify-content:space-between}
+.visual-studio .studio-reveal-lane header>.btn{min-height:26px;font-size:10px;padding:5px;background:transparent;border:0}
+.visual-studio .studio-reveal-lane header>span{font-size:9px;color:#7d8e71;flex:1;text-align:right}
+.visual-studio .studio-lane-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.visual-studio .studio-chip{max-width:100%;display:flex;gap:4px;align-items:center;padding:4px 5px 4px 7px;background:#fffef7;border:1px solid #d5dfc8;border-radius:4px;font:10px/1.4 system-ui;overflow-wrap:anywhere;color:#465a39}
+.visual-studio .studio-chip>button{border:0;background:none;font:14px system-ui;color:#7b8c6e;flex-shrink:0}
+.visual-studio .studio-lane-chips>.btn{font-size:10px;min-height:22px;padding:3px 5px;border:0;background:none;color:#567845}
+.visual-studio .studio-empty-lane{font:10px/1.4 system-ui;color:#849078;padding:5px 3px}
+.visual-studio .studio-catalog{border:1px solid #d1dcc4;border-radius:6px;max-height:265px;overflow:auto;scrollbar-width:thin;background:#fffef8}
+.visual-studio .studio-catalog-item{display:flex;align-items:center;gap:4px;border-bottom:1px solid #e7ebdf;padding:5px 4px;min-height:40px}
+.visual-studio .studio-catalog-item[hidden]{display:none}
+.visual-studio .studio-catalog-item:last-child{border-bottom:0}
+.visual-studio .studio-catalog-item>span{font:11px/1.4 system-ui;flex:1;overflow-wrap:anywhere}
+.visual-studio .studio-add-piece{width:28px;height:28px;border:1px solid #c2d2b6;border-radius:5px;background:#edf4e2;color:#3c663e;font:19px/1 system-ui;flex-shrink:0}
+.visual-studio .studio-drop-active{outline:2px solid #3b754a!important;outline-offset:0;background:#dceacf!important}
+.visual-studio .studio-drag-ghost{position:fixed;pointer-events:none;z-index:99999;max-width:260px;padding:10px 14px;background:#fffef7;color:#2e5141;box-shadow:0 5px 18px #1c38213d;border:1px solid #80a56c;border-radius:8px;font:12px/1.4 system-ui}
+.visual-studio .studio-footer{grid-row:5;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 14px;background:#f7faef;border-top:1px solid #d4dfc6;min-height:43px}
+.visual-studio .studio-footer>span{font:10px/1.4 var(--mono,monospace);color:#6e7f60;flex:1}
+.visual-studio .studio-footer>div{display:flex;gap:5px}
+.visual-studio .studio-footer .btn{font:10px system-ui;padding:5px 7px;min-height:26px;background:transparent;border-color:transparent}
+.visual-studio #tutorial-author-error{grid-row:4;padding:8px 14px;background:#fff1e9;color:#8d3d2c;font-size:12px;max-height:84px;overflow:auto;border-top:1px solid #e3baa5}
+.visual-studio .studio-mobile-nav{grid-row:2;display:none}
+.visual-studio.studio-playing .studio-inspector{opacity:.55;pointer-events:none}
+.visual-studio.studio-playing .studio-stages{opacity:.7;pointer-events:none}
+.visual-studio.studio-playing .studio-action-list,.visual-studio.studio-playing .studio-action-tools,.visual-studio.studio-playing .studio-action-row>[data-author]{pointer-events:none;opacity:.5}
+.visual-studio .author-code{min-height:360px!important;font:11px/1.5 var(--mono,monospace)!important}
+.visual-studio .author-section-heading h3{font:22px Georgia;margin:0 0 10px}
+.visual-studio .author-section-heading p,.visual-studio .author-structure p{font:12px/1.5 system-ui;color:#748467}
+.visual-studio .author-inline-actions{display:flex;gap:5px;flex-wrap:wrap}
+/* Flat, legible inspector controls. No scale reduction at any breakpoint. */
+.visual-studio .studio-tabs{grid-template-columns:repeat(4,minmax(0,1fr));padding:10px;flex-shrink:0}
+.visual-studio .field>span{font-size:12px}
+.visual-studio .field input:not([type=checkbox]):not([type=range]),.visual-studio .field select,.visual-studio .field textarea{font-size:13px}
+.visual-studio .studio-help{font-size:12px}
+.visual-studio .studio-action{flex:0 0 auto;min-height:52px}.visual-studio .studio-action-row>.btn{align-self:stretch}.visual-studio .studio-action span{font-size:12px}
+.visual-studio .studio-action-tools{padding:0 10px 10px;flex-shrink:0}
+@media(max-width:1190px){.visual-studio .studio-head{gap:9px;padding:10px 14px}.visual-studio .studio-current-title{display:none}.visual-studio .studio-location .studio-mode-label{display:none}}
+@media(max-width:980px){.visual-studio .studio-head{flex-wrap:wrap;gap:7px}.visual-studio .studio-head-actions{margin-left:auto}.visual-studio .studio-head-actions>.btn{padding:7px 9px}.visual-studio .studio-undo{display:none}}
+@media(max-width:680px){
+ #tutorial-editor.visual-studio{--studio-sidebar:0px}
+ .visual-studio .studio-head{left:0;padding:8px 10px;gap:6px 8px}
+ .visual-studio .studio-location{flex:0 0 auto}
+ .visual-studio .studio-stage-location{justify-content:flex-end}
+ .visual-studio .studio-head-actions{width:100%;justify-content:space-between;gap:5px}
+ .visual-studio .studio-head-actions [data-author=save]{flex:1;max-width:150px}
+ .visual-studio .studio-drawer{left:8px;width:calc(100vw - 16px);top:calc(var(--studio-head-height) + 8px);max-height:calc(100dvh - var(--studio-head-height) - 16px);height:calc(100dvh - var(--studio-head-height) - 16px)}
+ .visual-studio .studio-menu{left:auto;right:8px;width:min(300px,calc(100vw - 16px));height:auto}
+ .visual-studio .studio-properties{padding:14px}
+ .visual-studio .studio-grip{width:32px;min-height:36px}
+ .visual-studio .studio-canvas-message,.visual-studio #tutorial-author-error{left:8px;right:8px;bottom:8px}
+ .visual-studio.studio-playing .studio-head-actions{width:auto}
+}
+@media(prefers-reduced-motion:reduce){.visual-studio *{transition:none!important;scroll-behavior:auto!important}}
+
+/* In-place element tools. The full-size page never moves to make room for these. */
+.visual-studio .studio-context-tools{position:absolute;z-index:6;display:flex;align-items:center;gap:3px;max-width:calc(100vw - 16px);padding:5px;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 4px 16px #172e2420}
+.visual-studio .studio-context-tools[hidden],.visual-studio .studio-tabs[hidden]{display:none!important}
+.visual-studio .studio-context-tools>span{font:11px/1.2 var(--sans,system-ui);color:var(--muted);padding:0 5px}
+.visual-studio .studio-context-tools .btn{border-color:transparent;background:transparent;font-size:12px;min-height:32px;padding:5px 7px}
+.visual-studio .studio-context-tools .btn:hover{background:var(--green-soft)}
+.visual-studio.studio-contextual .studio-inspector{width:340px;height:auto;max-height:calc(100dvh - var(--studio-head-height) - 24px)}
+.visual-studio.studio-contextual .studio-properties{flex:1 1 auto;min-height:0}
+.visual-studio.studio-contextual .studio-rail-head{padding:9px 12px}
+@media(max-width:680px){.visual-studio .studio-context-tools{gap:1px;padding:4px}.visual-studio .studio-context-tools .btn{min-height:36px;padding:5px 6px}.visual-studio.studio-contextual .studio-inspector{height:auto;max-height:calc(100dvh - var(--studio-head-height) - 24px)}}
+
+/* Picker instructions cannot cover or intercept the block the author is choosing. */
+.visual-studio .studio-canvas-message{pointer-events:none;top:calc(var(--studio-head-height) + 8px);bottom:auto;left:calc(var(--studio-sidebar) + 12px);right:12px;max-width:430px}
+@media(max-width:680px){.visual-studio .studio-canvas-message{left:8px;right:8px;max-width:none}}
+
+/* In Play and target picking the native app toolbar is usable, not hidden behind Edit. */
+.visual-studio.studio-playing .studio-head,.visual-studio.studio-picking .studio-head{display:none}
+
+.visual-studio .studio-show-popup{position:absolute;right:14px;bottom:96px;z-index:6;box-shadow:0 3px 14px #172e2426}
+.visual-studio .studio-show-popup[hidden]{display:none}
+
+#tutorial-editor,.studio-viewport,.studio-drawer{overscroll-behavior-x:contain}
+
+/* Optional section tools live beside the full-size page, never around a miniature. */
+.studio-section-row{display:flex;align-items:center;gap:5px;margin:5px 0 5px calc(var(--section-depth)*14px);border:1px solid var(--line,#d6ddcc);border-radius:6px;background:var(--paper,#fffdf5);min-width:0}
+.studio-section-row.selected{border-color:var(--green,#2e5141);background:var(--green-soft,#e9f0e5)}
+.studio-section-row>button:not(.studio-grip){flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:8px;border:0;background:transparent;color:inherit}
+.studio-section-row strong{font-size:12px;overflow-wrap:anywhere}.studio-section-row small{font-size:10px;color:var(--muted,#64735b)}
+.studio-section-tools{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0}.studio-section-end{border:1px dashed var(--line,#d6ddcc);padding:7px;text-align:center;font-size:10px;color:var(--muted,#64735b);margin:6px 0}
+.studio-section-list{margin:12px 0}.studio-section-row .studio-grip{min-height:36px}.studio-section-row button{cursor:pointer}

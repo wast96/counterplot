@@ -4,9 +4,11 @@
   "type": "module",
   "scripts": {
     "test": "node --test test/*.test.js",
-    "check": "node scripts/generate-runtime.mjs --check && node scripts/check.mjs",
+    "check": "node scripts/build-workshop.mjs --check && node scripts/generate-runtime.mjs --check && node scripts/check.mjs",
     "test:browser": "playwright test",
-    "generate": "node scripts/generate-runtime.mjs"
+    "generate": "node scripts/generate-runtime.mjs",
+    "build:workshop": "node scripts/build-workshop.mjs",
+    "test:workshop": "node --test workshop/tests/*.test.cjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",

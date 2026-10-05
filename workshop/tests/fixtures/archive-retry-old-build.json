@@ -1,0 +1,164 @@
+{
+  "sha256": "938d60a93456e9f3790f005bfe8d1e22b59c39f5923bee0762bfe0b77e108cd9",
+  "fresh_drop_title_after_2s": "",
+  "sample_settings": {
+    "mode": "instant",
+    "charactersPerSecond": 28,
+    "delay": 0,
+    "trigger": "click"
+  },
+  "guide_after_retry": "MGS3\nEdit\nMy work\n\u00d7\nStage 1 of 22\n1. Introduce the person who changes\n2. Give Snake a rescue objective\n3. Enter the mission\u2019s setting\n4. Raise a question within the mission\n5. Create Snake in Characters\n6. Give Snake a starting objective\n7. Make the objective specific\n8. Put the character in the rescue\n9. Close the first mission\u2019s promises\n10. Inspect the same person at two times\n11. Create the weapon in World\n12. Connect a Milieu to its setting\n13. Describe the relationship behind the conflict\n14. Add a smaller development\n15. Draft directly from an outline piece\n16. Control the order of events\n17. Try removing a piece\n18. Bring the cut back\n19. Make a plot view without copying the story\n20. Keep a reference beside the moment\n21. Complete the story and inspect the reveal\n22. Keep your finished project\nIntroduce the person who changes\nACTION 1 OF 3\n\nDrag Character into the empty outline. Press Insert sample to name it \u201cSnake becomes Big Boss\u201d, or write your own title. This thread frames the change we are building toward.\n\nStory context\n\nLet\u2019s introduce Naked Snake. A Character thread promises that the person we meet will be changed by what happens. MICE gives us a language for making narrative promises and paying them off.\n\nSample wording\nHow this works\n\nThe new item could not be linked to this action. Restore any earlier copy from Archive, then resume.\n\n0/22 stages complete \u00b7 Progress saved on this device\nInsert sample\nLocate\nOpen Archive\nBack\nResume action",
+  "workspace_after_retry": {
+    "format": "counterplot-workshop",
+    "schema": 1,
+    "active": "mgs3-build-v1",
+    "saveKey": "counterplot.tutorial.build.v2",
+    "swatches": [
+      {
+        "id": "jungle",
+        "name": "Jungle",
+        "hex": "#53654b"
+      },
+      {
+        "id": "bone",
+        "name": "White petals",
+        "hex": "#d6cbb1"
+      },
+      {
+        "id": "ember",
+        "name": "Divided loyalties",
+        "hex": "#a9603e"
+      },
+      {
+        "id": "steel",
+        "name": "Hidden truth",
+        "hex": "#647e8d"
+      },
+      {
+        "id": "rust",
+        "name": "Escalation",
+        "hex": "#8e4940"
+      }
+    ],
+    "projects": [
+      {
+        "id": "mgs3-build-v1",
+        "title": "MGS3 \u00b7 Build the story",
+        "subtitle": "Build the outline, cast, world, and relationships. Full MGS3 spoilers.",
+        "nodes": [
+          {
+            "id": "wmutbw977khs1f4abp19",
+            "type": "C",
+            "parentId": "",
+            "title": "",
+            "opening": "",
+            "closing": "",
+            "notes": "",
+            "prose": "",
+            "status": "open",
+            "cast": [],
+            "worldIds": [],
+            "plotIds": []
+          }
+        ],
+        "characters": [],
+        "world": [],
+        "connections": [],
+        "archive": [
+          {
+            "id": "wmutbw8qophsma2snue",
+            "kind": "branch",
+            "title": "Keep this archived attempt",
+            "created": "2026-10-04T04:36:19.392Z",
+            "parentId": "",
+            "previousId": "",
+            "nodes": [
+              {
+                "id": "loyalty",
+                "type": "C",
+                "parentId": "",
+                "title": "Keep this archived attempt",
+                "opening": "",
+                "closing": "",
+                "notes": "",
+                "prose": "",
+                "status": "open",
+                "cast": [],
+                "worldIds": [],
+                "plotIds": []
+              }
+            ],
+            "changes": []
+          }
+        ],
+        "source": null,
+        "references": [
+          {
+            "id": "source-main",
+            "title": "Start here \u00b7 story & scope",
+            "url": "https://eu-support.konami.com/hc/en-gb/articles/9731056113303-Backstory-What-is-the-story-of-Metal-Gear-Solid-3-Snake-Eater",
+            "note": "Metal Gear Solid 3: Snake Eater (2004). Full spoilers, including the ending and post-credits call.\n\nThis is a selective story outline, not a room-by-room walkthrough. MICE structure, motives, and block wording are teaching interpretations. Later games\u2019 revelations are outside this project.",
+            "image": ""
+          },
+          {
+            "id": "source-craft",
+            "title": "How to read these cards",
+            "url": "",
+            "note": "Openings describe the starting situation. Closings describe the result. Notes explain context, player-dependent alternatives, or the MICE classification. Character blocks contain traits and facts; timed changes record when those facts change.",
+            "image": ""
+          },
+          {
+            "id": "source-canon",
+            "title": "Canon checks & sources",
+            "url": "https://metalgear.fandom.com/wiki/Operation_Snake_Eater",
+            "note": "Checked against Konami\u2019s story recap, the cited character/mission pages, and a contemporary MGS3 walkthrough.\n\nSokolov: treated as apparently killed, as presented here in MGS3.\nThe Sorrow: the procession depends partly on player choices.\nThe End: this outline follows the standard duel; the game allows alternatives.\nOcelot: the final call is an audience-only reveal.\n\nNo game dialogue is reproduced. Scene prose is an original writing exercise.",
+            "image": ""
+          },
+          {
+            "id": "source-still",
+            "title": "Visual reference \u00b7 the first insertion",
+            "url": "https://eu-support.konami.com/hc/en-gb/articles/9731056113303-Backstory-What-is-the-story-of-Metal-Gear-Solid-3-Snake-Eater",
+            "note": "Official MGS3 screenshot from Konami\u2019s story recap.\nNotice the vertical trees, equipment weight, and low viewpoint.\nUse references to collect choices a scene can express. Image \u00a9 Konami.",
+            "image": ""
+          },
+          {
+            "id": "source-last",
+            "title": "Visual reference \u00b7 the salute",
+            "url": "https://eu-support.konami.com/hc/en-gb/articles/9731056113303-Backstory-What-is-the-story-of-Metal-Gear-Solid-3-Snake-Eater",
+            "note": "Official screenshot of Snake visiting The Boss\u2019s grave. Image \u00a9 Konami.",
+            "image": ""
+          },
+          {
+            "id": "delta-portraits",
+            "title": "Delta portraits & Raikov",
+            "url": "https://www.spriters-resource.com/pc_computer/metalgearsoliddsnakeeater/asset/481808/",
+            "note": "Faces from the remake\u2019s Character Viewer. Art \u00a9 Konami.\nRaikov background: https://metalgear.fandom.com/wiki/Ivan_Raidenovitch_Raikov",
+            "image": ""
+          }
+        ],
+        "tutorialId": "mgs3",
+        "plots": []
+      }
+    ],
+    "tutorialBuild": true
+  },
+  "progress_after_retry": {
+    "version": 3,
+    "projects": {
+      "mgs3:mgs3-build-v1": {
+        "index": 0,
+        "goal": 0,
+        "open": true,
+        "running": false,
+        "done": [],
+        "baselines": {
+          "build-c:build-c-action-1": []
+        },
+        "samples": {},
+        "events": {},
+        "visitedPlots": {}
+      }
+    }
+  },
+  "errors": []
+}

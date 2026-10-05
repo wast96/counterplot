@@ -3,6 +3,7 @@ import { assertSameOrigin, errorResponse, json, readJson } from "../_lib/http.js
 
 import { ensureStorage, readManifest, responseFor, requireWriter } from "../_lib/workspace-storage.js";
 import { validateWorkspace } from "../_lib/workspace-validation.js";
+import { validateWorkshop } from "../_lib/workshop-validation.js";
 
 export async function onRequestGet(context) {
   try {
@@ -27,6 +28,9 @@ export async function onRequestGet(context) {
       }
     }
     const response = await responseFor(context.env, user.id, row);
+    if (revision === null && response.workspace?.format === 'counterplot-workshop' && Number(context.request.headers.get('X-Counterplot-Writer')) < 5) {
+      return json({error:'This account now uses Counterplot Workshop. Export unsynced writing from this old tab, then reload.',code:'update-required'},426);
+    }
     return json(response, 200, { ETag: `"${response.revision}"` });
   } catch (error) {
     return errorResponse(error);
@@ -42,8 +46,9 @@ export async function onRequestPut(context) {
     const body = await readJson(context.request, 5_032_768);
     if (!body || !Number.isInteger(body.revision) || body.revision < 0 || typeof body.writeId !== 'string' || !/^[A-Za-z0-9_-]{1,100}$/.test(body.writeId)) return json({ error: 'Invalid workspace save' }, 400);
     const incoming = body.manifest ? await readManifest(context.env, user.id, body.manifest) : body.workspace;
-    try { validateWorkspace(incoming); } catch (error) { return json({ error: error.message, code: 'invalid-save' }, 400); }
-    const workspaceJson = JSON.stringify(body.manifest ? { storage: 'chunks-v1', schema: incoming.schema, manifest: body.manifest } : incoming);
+    const workshop = incoming?.format === 'counterplot-workshop';
+    try { workshop ? validateWorkshop(incoming) : validateWorkspace(incoming); } catch (error) { return json({ error: error.message, code: 'invalid-save' }, 400); }
+    const workspaceJson = JSON.stringify(body.manifest ? { storage: 'chunks-v1', format: incoming.format, schema: incoming.schema, manifest: body.manifest } : incoming);
 
     const current = await context.env.DB.prepare(`
       SELECT workspace_json, revision, last_write_id, updated_at FROM workspaces WHERE user_id = ?
@@ -51,11 +56,12 @@ export async function onRequestPut(context) {
     if (current?.last_write_id === body.writeId) return json({ ok: true, owner: user.id, revision: current.revision });
     const expected = current?.revision || 0;
     const writer = Number(context.request.headers.get("X-Counterplot-Writer") || 2);
-    const currentSchema = current ? JSON.parse(current.workspace_json).schema : 0;
-    if (!Number.isInteger(writer) || writer < currentSchema || incoming.schema > writer || incoming.schema < currentSchema) {
+    const currentMetadata = current ? JSON.parse(current.workspace_json) : {};
+    const currentSchema = currentMetadata.schema || 0;
+    if ((workshop && writer !== 5) || (currentMetadata.format === 'counterplot-workshop' && !workshop) || (!workshop && (!Number.isInteger(writer) || writer < currentSchema || incoming.schema > writer || incoming.schema < currentSchema))) {
       return json({ error: "Update Counterplot before saving. Your local edits are retained." }, 426);
     }
-    if (![1, 2, 3].includes(incoming.schema) || !Array.isArray(incoming.projects) || !incoming.projects.length) {
+    if (!(workshop ? [2] : [1, 2, 3]).includes(incoming.schema) || !Array.isArray(incoming.projects) || !incoming.projects.length) {
       return json({ error: "Unsupported workspace format" }, 400);
     }
     if (body.revision !== expected) return json(await responseFor(context.env, user.id, current), 409);

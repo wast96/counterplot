@@ -1,0 +1,282 @@
+{
+  "format": "counterplot-workshop",
+  "schema": 1,
+  "active": "w6320b09ff9d74b318a316fb3b35994ca",
+  "projects": [
+    {
+      "id": "w6320b09ff9d74b318a316fb3b35994ca",
+      "title": "The last light",
+      "subtitle": "A lighthouse keeper. An impossible signal. One last night before the sea comes in.",
+      "nodes": [
+        {
+          "id": "storm",
+          "type": "E",
+          "parentId": "",
+          "title": "The night the sea goes silent",
+          "opening": "The lighthouse receives a distress signal from a ship that sank twenty years ago.",
+          "closing": "The light answers. For the first time, the island answers with it.",
+          "notes": "",
+          "prose": "",
+          "status": "planned",
+          "cast": [
+            "mara",
+            "june"
+          ],
+          "worldIds": [
+            "lighthouse"
+          ]
+        },
+        {
+          "id": "signal",
+          "type": "I",
+          "parentId": "storm",
+          "title": "Who is sending the signal?",
+          "opening": "The voice on the radio knows Mara’s childhood nickname.",
+          "closing": "It is a warning sent by the people her father left behind.",
+          "notes": "",
+          "prose": "",
+          "status": "planned",
+          "cast": [
+            "mara",
+            "eli"
+          ],
+          "worldIds": []
+        },
+        {
+          "id": "arrival",
+          "type": "B",
+          "parentId": "signal",
+          "title": "A stranger at the door",
+          "opening": "Eli arrives soaked through, carrying a radio that should not work.",
+          "closing": "",
+          "notes": "",
+          "prose": "Three knocks. Then a fourth, softer one.\n\nMara left the kettle where it was. Nobody on the island knocked four times. Nobody on the island would have come out in this weather at all.\n\nBehind the door, someone said her name.",
+          "status": "draft",
+          "cast": [
+            "mara",
+            "eli"
+          ],
+          "worldIds": []
+        },
+        {
+          "id": "trust",
+          "type": "C",
+          "parentId": "storm",
+          "title": "Mara learns to let someone stay",
+          "opening": "Mara believes keeping everyone at a distance is how she keeps them safe.",
+          "closing": "She hands Eli the spare key. This time, she leaves both cups on the table.",
+          "notes": "",
+          "prose": "",
+          "status": "planned",
+          "cast": [
+            "mara"
+          ],
+          "worldIds": []
+        },
+        {
+          "id": "key",
+          "type": "B",
+          "parentId": "trust",
+          "title": "The spare key",
+          "opening": "The lamp fails. Mara has to ask Eli to climb the tower with her.",
+          "closing": "",
+          "notes": "",
+          "prose": "",
+          "status": "open",
+          "cast": [
+            "mara",
+            "eli"
+          ],
+          "worldIds": [
+            "lighthouse"
+          ]
+        }
+      ],
+      "characters": [
+        {
+          "id": "mara",
+          "name": "Mara Venn",
+          "identity": "Lighthouse keeper · reluctant guardian",
+          "color": "orange",
+          "notes": "She notices what people do with their hands. Never what they say about themselves.",
+          "blocks": [
+            {
+              "id": "m-want",
+              "kind": "want",
+              "label": "",
+              "text": "Keep the lighthouse burning",
+              "detail": "",
+              "pinned": true
+            },
+            {
+              "id": "m-belief",
+              "kind": "belief",
+              "label": "",
+              "text": "Depending on people gives them power over you",
+              "detail": "",
+              "pinned": true
+            },
+            {
+              "id": "m-boundary",
+              "kind": "boundary",
+              "label": "",
+              "text": "Never leave someone out in the storm",
+              "detail": "",
+              "pinned": false
+            },
+            {
+              "id": "m-ritual",
+              "kind": "ritual",
+              "label": "",
+              "text": "Sets two cups on the table, then puts one away",
+              "detail": "",
+              "pinned": false
+            },
+            {
+              "id": "m-skill",
+              "kind": "capability",
+              "label": "",
+              "text": "Reads the sea by the sound of it",
+              "detail": "Cannot read a storm that has already gone quiet.",
+              "pinned": false
+            },
+            {
+              "id": "m-watch",
+              "kind": "possession",
+              "label": "",
+              "text": "Her father’s watch, stopped at 3:17",
+              "detail": "",
+              "pinned": false
+            }
+          ],
+          "changes": [
+            {
+              "id": "change-trust",
+              "at": "key:open",
+              "blockId": "m-belief",
+              "op": "develop",
+              "block": {
+                "id": "m-belief",
+                "kind": "belief",
+                "label": "",
+                "text": "Letting someone help is a choice, not a surrender",
+                "detail": "",
+                "pinned": true
+              },
+              "reason": "Eli stays when leaving would be easier."
+            },
+            {
+              "id": "change-ritual",
+              "at": "trust:close",
+              "blockId": "m-ritual",
+              "op": "develop",
+              "block": {
+                "id": "m-ritual",
+                "kind": "ritual",
+                "label": "",
+                "text": "Leaves two cups on the table",
+                "detail": "",
+                "pinned": false
+              },
+              "reason": "A small habit makes the change visible."
+            }
+          ]
+        },
+        {
+          "id": "eli",
+          "name": "Eli Ash",
+          "identity": "A stranger with a familiar story",
+          "color": "blue",
+          "notes": "",
+          "blocks": [
+            {
+              "id": "e-want",
+              "kind": "want",
+              "label": "",
+              "text": "Get a message to the mainland",
+              "detail": "",
+              "pinned": false
+            },
+            {
+              "id": "e-secret",
+              "kind": "secret",
+              "label": "",
+              "text": "Knows why the old light went dark",
+              "detail": "",
+              "pinned": false
+            },
+            {
+              "id": "e-voice",
+              "kind": "voice",
+              "label": "",
+              "text": "Says the hard thing as if it were obvious",
+              "detail": "",
+              "pinned": false
+            }
+          ],
+          "changes": []
+        },
+        {
+          "id": "june",
+          "name": "June Venn",
+          "identity": "Mara’s sister · voice on the radio",
+          "color": "green",
+          "notes": "",
+          "blocks": [
+            {
+              "id": "j-want",
+              "kind": "want",
+              "label": "",
+              "text": "Bring Mara home",
+              "detail": "",
+              "pinned": false
+            },
+            {
+              "id": "j-method",
+              "kind": "method",
+              "label": "",
+              "text": "Asks a second time, more gently",
+              "detail": "",
+              "pinned": false
+            }
+          ],
+          "changes": []
+        }
+      ],
+      "world": [
+        {
+          "id": "lighthouse",
+          "name": "The North Light",
+          "type": "place",
+          "notes": "A working lighthouse on an island that is slowly losing its shore. Three hundred and seventeen steps. One spare key."
+        },
+        {
+          "id": "signal-rule",
+          "name": "The sea remembers",
+          "type": "rule",
+          "notes": "On a windless night, a radio can pick up what the water has kept."
+        }
+      ],
+      "connections": [
+        {
+          "id": "r-me",
+          "a": "mara",
+          "b": "eli",
+          "label": "Suspicion → earned trust",
+          "notes": "He needs shelter. She needs a reason to open the door."
+        },
+        {
+          "id": "r-mj",
+          "a": "mara",
+          "b": "june",
+          "label": "Love at a distance",
+          "notes": "June calls every evening. Mara always lets it ring twice."
+        }
+      ],
+      "archive": [],
+      "source": null,
+      "example": true
+    }
+  ],
+  "saveKey": "counterplot.qa.20261003"
+}

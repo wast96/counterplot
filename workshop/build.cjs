@@ -1,0 +1,18 @@
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
+const dir=__dirname;
+const W=require('./src/integration.js'),D=require('./tutorial/definition.js'),construction=require('./tutorial/construction.js');
+const {data}=require('./tutorial/mgs3-project.cjs');
+const sample=construction.teachingSample(data.projects[0]),starter=construction.starter(data);
+const definition=D.validate({format:'counterplot-tutorial',schemaVersion:1,revision:'workshop-mgs3-2026-10-03-unified-2',id:'mgs3',title:'MGS3',description:'Build MGS3 from an empty outline. Learn MICE threads, characters, world links, changes, drafting, and revision. Full story spoilers.',presentation:{sample:{mode:'type',charactersPerSecond:32,delay:600,trigger:'ready'},advance:{mode:'manual'}},lessons:require('./tutorial/lessons.cjs'),sample,starter},W);
+const read=file=>fs.readFileSync(path.join(dir,file),'utf8');
+const models=['src/core.js','src/legacy.js','src/integration.js','src/sync-core.js','src/vocabulary.js','src/content.js','tutorial/construction.js','tutorial/checks.js','tutorial/effects.js','tutorial/story-edits.js','tutorial/sections.js','tutorial/definition.js','tutorial/studio-model.js'].map(read).join('\n');
+let script=['src/app.js','tutorial/hub.js','tutorial/guide.js'].map(read).join('\n').replace('/*__STUDIO__*/',()=>read('tutorial/studio.js')).replace('/*__WORKSPACE_STORAGE__*/',()=>read('src/persistence.js')).replace('/*__INTEGRATION_UI__*/',()=>read('src/integration-ui.js')).replace('/*__ACCOUNT_UI__*/',()=>read('src/accounts.js')).replace('/*__FEATURES__*/',()=>read('src/features.js')).replace('/*__SESSION_BRIDGE__*/',()=>read('src/sessions.js')).replace('/*__TUTORIAL_BRIDGE__*/',()=>read('src/tutorial-bridge.js'));
+// Hydrate all Counterplot records before the app reads stories or tutorials.
+// The temporary authoring/Play frame never opens the parent's persistent database.
+script=read('src/studio-bootstrap.js')+'\n'+models+'\n'+read('tutorial/storage.js')+'\n'+`var CounterplotTutorialStore;\n(async()=>{\nlet storage,db;try{storage=window.localStorage;}catch{}try{db=window.indexedDB;}catch{}\nCounterplotTutorialStore=TutorialStorage.create({storage,indexedDB:db,isolated:!!window.__COUNTERPLOT_STUDIO__,extraKeys:[JSON.parse(document.querySelector('#embedded-workspace').textContent||'null')?.saveKey].filter(Boolean),dbName:'counterplot.tutorials.v1'+(location.protocol==='file:'?'.'+location.pathname:'')});\nawait CounterplotTutorialStore.ready;\n`+read('src/account-store.js')+`\n`+script+`\n})().catch(error=>{console.error(error);const e=document.querySelector('#save-alert');if(e){e.hidden=false;e.textContent='Counterplot could not open safely. Your saved data has not been reset. '+error.message;}});`;
+new vm.Script(script,{filename:'Counterplot Workshop inline script'});
+const encode=x=>JSON.stringify(x).replace(/</g,'\\u003c');
+const html=read('src/shell.html').replace('/*__STYLE__*/',()=>read('src/style.css')+'\n'+read('tutorial/guide.css')+'\n'+read('tutorial/studio.css')).replace('<script type="application/json" id="embedded-workspace">null</script>',()=>'<script type="application/json" id="tutorial-data">'+encode({tutorials:[definition]})+'</script><script type="application/json" id="embedded-workspace">null</script>').replace('/*__SCRIPT__*/',()=>script);
+fs.writeFileSync(path.join(dir,'Counterplot Workshop.html'),html);
+fs.writeFileSync(path.join(dir,'tutorial/MGS3 — Tutorial definition.json'),JSON.stringify(D.upgradeMGS3(definition),null,2));
+console.log('Built unified Counterplot Workshop.html ('+Math.round(Buffer.byteLength(html)/1024)+' KB). Inline JavaScript syntax passed.');
