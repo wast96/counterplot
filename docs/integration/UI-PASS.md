@@ -2,6 +2,7 @@
 
 Follow-up: [Sequence, Chronology, and Choices](STORY-VIEWS.md) adds closing moments
 and distinct layouts for these three views.
+The former Drafts panel is now [Archive → Unfinished edits](UNFINISHED-EDITS.md).
 
 This follow-up improves the Workshop's layout and information grouping while
 keeping existing project/account data formats. The user explicitly requires the
