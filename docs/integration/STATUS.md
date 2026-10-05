@@ -1,15 +1,19 @@
 # Workshop integration status
 
-Implemented and tested locally on `integration/workshop`. Production deployment
-is **not completed**: Cloudflare configuration and credential access are absent.
-No remote branch, PR, deployment, production setting, or production data was
-changed during this work.
+Workshop integration `87e020a4f2125af0ea0d449552909d353b6b6b9f` was published
+to GitHub `main` at the user's request. GitHub verification and Cloudflare Pages
+deployment checks both succeeded. Direct Cloudflare configuration access remains
+unavailable; publication uses the existing GitHub connection.
+
+The follow-up [UI pass](UI-PASS.md) records responsive layout, information
+grouping, outline tags, and interaction improvements with their verification.
 
 Original GitHub main was verified at
 `7d116c34d7eb9f7900480a4fa02377c1786d4363`. Local archive branch
 `archive/pre-workshop-2026-10-05`, tag `backup/pre-workshop-2026-10-05`, and a
-verified complete Git bundle preserve it. Archive publication waits until its
-Cloudflare deployment exclusion can be verified.
+verified complete Git bundle preserve it. The backup tag was published alongside
+the integration. The archive branch remains local until its Cloudflare deployment
+exclusion can be verified.
 
 ## Candidate
 
