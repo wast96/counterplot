@@ -11,7 +11,7 @@ with sync_playwright() as pw:
   p.locator('#dialog button[type=submit]').click();p.wait_for_selector('#dialog[open]',state='hidden')
  def snapshot():return p.evaluate('() => CounterplotTutorial.snapshot().projects.find(p=>p.id===CounterplotTutorial.snapshot().active)')
  # Advanced scene fields remain editable; parent and thread structure remain separate.
- do('scene-details');p.locator('summary').filter(has_text='Scene craft').click();p.locator('[name="goal"]').fill('Keep the editable goal');save();assert snapshot()['nodes'][0]['goal']=='Keep the editable goal'
+ do('scene-details');p.locator('summary').filter(has_text='Additional craft notes').click();p.locator('[name="goal"]').fill('Keep the editable goal');p.locator('[name="goal"]').blur();assert snapshot()['nodes'][0]['goal']=='Keep the editable goal'
  # New earlier opening preserves prior chronological character state.
  p.locator('[data-nav="characters"]').click();do('edit-character');p.locator('summary').filter(has_text='Story presence').click();do('earlier-self');p.locator('[name="preservedLabel"]').fill('Arrival preserved');p.locator('[name="seed"]').select_option('blank');save();s=snapshot();assert s['characters'][0]['blocks']==[];assert s['characters'][0]['stateCheckpoints']
  # Faction split has temporal membership changes, not opening-state mutation.

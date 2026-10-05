@@ -15,7 +15,7 @@ test('life status and prominence stay with the character and follow the selected
  await page.locator('.time-stop[data-id="ui-node-0:close"]').click();await expect(hero.locator('[data-life-status]')).toHaveText('Dead');await expect(hero.locator('.character-presence small')).toContainText('Closing');await page.locator('.time-stop').first().click();await expect(hero.locator('[data-life-status]')).toHaveText('Alive');await hero.locator('[data-action=edit-character]').click();await expect(page.locator('#dialog [name=name]')).toHaveValue('Liu Jun');
 });
 test('story tabs expose selection and keyboard navigation independently of actions',async({page})=>{
- await page.goto('/');const outline=page.getByRole('tab',{name:'Outline',exact:true});await outline.focus();await outline.press('ArrowRight');await expect(page.getByRole('tab',{name:'Write',exact:true})).toBeFocused();await expect(page.getByRole('tabpanel')).toHaveAttribute('aria-labelledby','story-tab-write');await expect(page.locator('.page-head h1')).toHaveText('Write your story');await page.keyboard.press('End');await expect(page.getByRole('tab',{name:'Choices',exact:true})).toHaveAttribute('aria-selected','true');await page.keyboard.press('Home');await expect(page.getByRole('tab',{name:'Outline',exact:true})).toBeFocused();
+ await page.goto('/');const outline=page.getByRole('tab',{name:'Outline',exact:true});await outline.focus();await outline.press('ArrowRight');await expect(page.getByRole('tab',{name:'Refine',exact:true})).toBeFocused();await page.keyboard.press('ArrowRight');await expect(page.getByRole('tab',{name:'Write',exact:true})).toBeFocused();await expect(page.getByRole('tabpanel')).toHaveAttribute('aria-labelledby','story-tab-write');await expect(page.locator('.page-head h1')).toHaveText('Write your story');await page.keyboard.press('End');await expect(page.getByRole('tab',{name:'Choices',exact:true})).toHaveAttribute('aria-selected','true');await page.keyboard.press('Home');await expect(page.getByRole('tab',{name:'Outline',exact:true})).toBeFocused();
  if(await action(page,'story-tools').isVisible()){await action(page,'story-tools').click();await action(page,'outline-text').click();}else await action(page,'outline-text').click();await expect(page.locator('#dialog textarea[name=outline]')).toBeVisible();
 });
 test('dialog headings and account recovery links remain inside narrow dialogs',async({page})=>{
@@ -42,6 +42,6 @@ test('all tab labels fit their hit targets at phone and tablet widths',async({pa
    const heading=document.querySelector('.first-story-tip strong')?.getBoundingClientRect();
    const copy=document.querySelector('.first-story-tip p')?.getBoundingClientRect();
    return {tabCount:tabs.length,clipped,tipFits:!!heading&&!!copy&&heading.bottom<=copy.top+1,overflow:document.documentElement.scrollWidth>innerWidth+1};
-  }),{message:`Tab and tip layout at ${width}px`}).toEqual({tabCount:6,clipped:[],tipFits:true,overflow:false});
+  }),{message:`Tab and tip layout at ${width}px`}).toEqual({tabCount:7,clipped:[],tipFits:true,overflow:false});
  }
 });

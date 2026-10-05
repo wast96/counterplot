@@ -34,9 +34,13 @@ keep a JSON backup when working from a downloaded file.
 ## Writing, time, and migration
 
 Outline, manuscript order, and story chronology have independent saved sequences.
-Moving an outline branch does not silently retime character history. Write and
-Read use manuscript order; Sequence arranges that order; Chronology arranges
-historical events and dates. Scene craft, causal links, Inquiry evidence,
+Moving an outline branch does not silently retime character history. Refine, Write, and
+Read use manuscript order, including separate thread openings and closings; Sequence arranges that order; Chronology arranges
+historical events and dates. Refine asks MICE-specific questions about each thread’s promise and payoff,
+and what each beat contributes. People and connections use searchable pickers;
+additional scene-craft notes remain optional. Closing prose and
+craft are saved separately from the opening; existing drafts remain opening drafts.
+“Scene craft & links” opens the selected moment in Refine. Causal links, Inquiry evidence,
 knowledge, world state, relationships, factions, and plot roles are contextual
 controls. Changes at one moment can be applied and undone together.
 

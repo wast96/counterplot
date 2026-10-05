@@ -6,6 +6,7 @@
   const copy = W.copy, text = value => typeof value === 'string' ? value : '';
   const list = value => Array.isArray(value) ? value : [];
   const allNodes = p => [...p.nodes, ...p.archive.filter(a => a.kind === 'branch').flatMap(a => a.nodes)];
+  const craftRecords = p => allNodes(p).flatMap(n=>[n,...(n.closingCraft?[n.closingCraft]:[])]);
   const allCharacters = p => [...p.characters, ...p.archive.filter(a => a.kind === 'character').map(a => a.item)];
   const allWorld = p => [...p.world, ...p.archive.filter(a => a.kind === 'world').map(a => a.item)];
   const allConnections = p => [...p.connections, ...p.archive.filter(a => a.kind === 'connection').map(a => a.item)];
@@ -20,7 +21,7 @@
     for (const n of p.nodes) if (!readingIds.has(n.id)) {p.readingOrder.push(n.id);readingIds.add(n.id);}
     normalizeReadingSequence(p);
     p.drafts ||= []; p.plots ||= []; p.storyWorld ||= {}; p.version ||= 'Main draft';
-    for (const n of allNodes(p)) { n.writingId ||= n.sceneId || n.id; n.plotIds ||= []; }
+    for (const n of allNodes(p)) { n.writingId ||= n.sceneId || n.id; n.plotIds ||= []; if(n.closingCraft&&typeof n.closingCraft==='object'&&!Array.isArray(n.closingCraft)){n.closingCraft.cast ||= [];n.closingCraft.worldIds ||= [];} }
     for (const c of allCharacters(p)) {
       c.lifeStatus ||= 'alive'; c.lifeChanges ||= []; c.stateCheckpoints ||= [];
       c.prominence ||= {opening:'',changes:[],checkpoints:[]};
@@ -147,6 +148,21 @@
       for(const c of people){timing(c.lifeChanges,'Life history');for(const x of [{status:c.lifeStatus},...c.lifeChanges])if(!['alive','dead'].includes(x.status))fail('Invalid life status.');timing(c.stateCheckpoints,'Character checkpoints');for(const x of c.stateCheckpoints){if(!['alive','dead'].includes(x.lifeStatus))fail('Invalid checkpoint life status.');unique(array(x.blocks,'Checkpoint pieces').map(b=>b.id),'checkpoint piece');for(const b of x.blocks)block(b);}for(const b of [...c.blocks,...c.changes.flatMap(x=>x.block?[x.block]:[])])block(b);timing(c.prominence.changes,'Prominence');timing(c.prominence.checkpoints,'Prominence checkpoints');}
       for(const n of nodes){if(!date(n.storyDate)||!date(n.storyEndDate))fail('Use a valid scene date.');for(const id of n.cast)if(!targets.has(id))fail('A scene participant is missing.');for(const id of n.worldIds)if(!targets.has(id))fail('A world link is missing.');for(const evidence of n.evidenceLinks||[]){if(!['supports','challenges','complicates'].includes(evidence.bearing))fail('Invalid evidence interpretation.');if(evidence.sourceType==='fact'?!world.some(w=>w.id===evidence.sourceId&&w.type==='fact'):evidence.sourceType!=='scene'||!nodes.some(x=>[x.id,x.writingId,x.sceneId].includes(evidence.sourceId)))fail('Evidence points to a missing fact or scene.');}}
       const scenes=new Set(nodes.flatMap(n=>[n.id,n.writingId,n.sceneId].filter(Boolean)));
+      for(const c of craftRecords(p)){if(c.refinement!==undefined){if(!c.refinement||typeof c.refinement!=='object'||Array.isArray(c.refinement))fail('Refinement must be a record.');for(const value of Object.values(c.refinement))if(typeof value!=='string'||value.length>2000000)fail('Refinement answers must be text.');}}
+      for(const n of nodes){
+        if(n.closingProse!==undefined&&(typeof n.closingProse!=='string'||n.closingProse.length>2000000))fail('Closing prose must be text.');
+        if(n.closingWritingStatus!==undefined&&!['draft','done'].includes(n.closingWritingStatus))fail('Invalid closing writing status.');
+        const c=n.closingCraft;if(c===undefined)continue;
+        if(!c||typeof c!=='object'||Array.isArray(c))fail('Closing craft must be a record.');
+        for(const key of ['ideaNotes','context','goal','purpose','entry','tension','stakes','development','turn','action','after','gain','cost','response','reaction','readerExpectation','next','exit','thread','sceneKind'])if(c[key]!==undefined&&(typeof c[key]!=='string'||c[key].length>2000000))fail('Closing craft fields must be text.');
+        for(const id of array(c.cast||[],'Closing cast'))if(!people.some(p=>p.id===id))fail('A closing participant is missing.');
+        for(const key of ['povId','focus'])if(c[key]&&!people.some(p=>p.id===c[key]))fail('A closing point of view is missing.');
+        for(const id of array(c.worldIds||[],'Closing world links'))if(!world.some(w=>w.id===id))fail('A closing world link is missing.');
+        for(const b of array(c.beats||[],'Closing internal beats'))if(typeof b!=='string')fail('Internal beats must be text.');
+        for(const x of array(c.ensemble||[],'Closing roles'))if(!x||!people.some(p=>p.id===x.id)||!['present','assist','oppose','complicate','witness'].includes(x.role))fail('Invalid closing role.');
+        for(const x of array(c.miceLinks||[],'Closing thread links'))if(!x||!nodes.some(n=>n.id===x.miceId)||!['open','advance','close'].includes(x.edge||x.role))fail('Invalid closing thread link.');
+        for(const id of [c.parent,c.openSceneId,c.closeSceneId,...array(c.extraParents||[],'Closing causal links').map(x=>x?.id)].filter(Boolean))if(!scenes.has(id))fail('A closing scene link is missing.');
+      }
       const byScene=new Map(nodes.flatMap(n=>[n.id,n.writingId,n.sceneId].filter(Boolean).map(id=>[id,n]))),degrees=new Map(),children=new Map();
       for(const n of nodes){const parents=new Set([n.parent,...(n.extraParents||[]).map(x=>x.id)].filter(Boolean).map(id=>{const parent=byScene.get(id);if(!parent)fail('A causal parent is missing.');return parent.id;}));degrees.set(n.id,parents.size);for(const id of parents){if(!children.has(id))children.set(id,[]);children.get(id).push(n.id);}}
       const ready=nodes.filter(n=>!degrees.get(n.id)).map(n=>n.id);for(let i=0;i<ready.length;i++)for(const child of children.get(ready[i])||[]){degrees.set(child,degrees.get(child)-1);if(!degrees.get(child))ready.push(child);}if(ready.length!==nodes.length)fail('Causal links contain a cycle.');
@@ -168,6 +184,19 @@
   function reading(p,{archived=false}={}){const nodes=new Map((archived?allNodes(p):p.nodes).map(n=>[n.id,n]));return p.readingOrder.map(id=>nodes.get(id)).filter(Boolean);}
   function reorder(p,collection,id,beforeId='') {const xs=collection==='timeline'?p.timeline:collection==='readingOrder'?p.readingOrder:collection==='readingSequence'?p.readingSequence:p.characters;const at=xs.findIndex(x=>(typeof x==='string'?x:x.key||x.id)===id);if(at<0)throw Error('That item no longer exists.');const dest=beforeId?xs.findIndex(x=>(typeof x==='string'?x:x.key||x.id)===beforeId):xs.length;if(dest<0)throw Error('That destination no longer exists.');const [item]=xs.splice(at,1);xs.splice(dest-(at<dest?1:0),0,item);if(collection==='readingSequence')p.readingOrder=xs.filter(key=>key.endsWith(':open')).map(key=>key.slice(0,-5));if(collection==='readingOrder'){const key=id+':open',at=p.readingSequence.indexOf(key);if(at>=0){p.readingSequence.splice(at,1);const dest=beforeId?p.readingSequence.indexOf(beforeId+':open'):p.readingSequence.length;p.readingSequence.splice(dest<0?p.readingSequence.length:dest,0,key);}}}
   function removeFrame(p,id){const n=p.nodes.find(n=>n.id===id);if(!n||n.type==='B')throw Error('Choose a thread frame.');const index=p.nodes.indexOf(n);for(const child of p.nodes)if(child.parentId===id)child.parentId=n.parentId;
+    if(n.closingProse||n.closingCraft){
+      const closing={...W.node('B',n.parentId),...copy(n.closingCraft||{}),title:(n.title||'Thread')+' · Closing',opening:n.closing,prose:n.closingProse||'',writingStatus:n.closingWritingStatus||'draft',plotIds:copy(n.plotIds||[])};
+      if(!n.closingCraft)closing.cast=copy(n.cast);
+      p.nodes.splice(index+1,0,closing);
+      const oldKey=n.id+':close',newKey=closing.id+':open';
+      p.readingSequence=p.readingSequence.map(key=>key===oldKey?newKey:key);
+      p.readingOrder=p.readingSequence.filter(key=>key.endsWith(':open')).map(key=>key.slice(0,-5));
+      const event=p.timeline.find(e=>e.nodeId===n.id&&e.edge==='close');
+      if(event)Object.assign(event,{key:newKey,nodeId:closing.id,edge:'open'});
+      // Keep moment IDs and chronological positions; retarget key-based histories.
+      const retime=o=>{if(!o||typeof o!=='object')return;if(Array.isArray(o)){o.forEach(retime);return;}for(const key of ['at','momentId'])if(o[key]===oldKey)o[key]=newKey;if(o.knownFrom)for(const id of Object.keys(o.knownFrom))if(o.knownFrom[id]===oldKey)o.knownFrom[id]=newKey;for(const [key,value] of Object.entries(o))if(!['source','migration','drafts','retiredPlanning','continuitySnapshot'].includes(key))retime(value);};retime(p);
+      delete n.closingProse;delete n.closingCraft;delete n.closingWritingStatus;
+    }
     // The writing remains a stable fragment, and both historical edges remain addressable.
     n.removedFrame={type:n.type,opening:n.opening,closing:n.closing};n.type='B';n.closing='';n.title ||= 'Writing from removed frame';p.nodes.splice(index,1,n);
   }
@@ -218,7 +247,7 @@
     const people=new Set(allCharacters(p).map(c=>c.id)),world=new Set(allWorld(p).map(w=>w.id)),targets=new Set([...people,...world]),nodes=new Set(allNodes(p).map(n=>n.id)),scenes=new Set(allNodes(p).flatMap(n=>[n.id,n.sceneId,n.writingId].filter(Boolean)));
     p.connections=p.connections.filter(r=>targets.has(r.a)&&targets.has(r.b));p.archive=p.archive.filter(a=>a.kind!=='connection'||targets.has(a.item.a)&&targets.has(a.item.b));
     const prune=o=>{if(!o||typeof o!=='object')return;if(Array.isArray(o)){o.forEach(prune);return;}if(o.knownBy)o.knownBy=o.knownBy.filter(id=>targets.has(id));if(o.knownFrom)o.knownFrom=Object.fromEntries(Object.entries(o.knownFrom).filter(([id])=>targets.has(id)));if(o.links)o.links=o.links.filter(x=>targets.has(x.targetId));for(const key of ['targetId','stateTargetId'])if(o[key]&&!targets.has(o[key]))o[key]='';if(o.readerAppearances)o.readerAppearances=o.readerAppearances.filter(x=>scenes.has(x.sceneId));for(const [key,value]of Object.entries(o))if(!['source','retiredPlanning','migration','drafts','continuitySnapshot'].includes(key))prune(value);};prune(p);
-    for(const n of allNodes(p)){n.cast=n.cast.filter(id=>people.has(id));n.worldIds=n.worldIds.filter(id=>world.has(id));n.ensemble=(n.ensemble||[]).filter(x=>people.has(x.id));n.factionIds=(n.factionIds||[]).filter(id=>world.has(id));for(const key of ['povId','focus','partner','characterId'])if(n[key]&&!people.has(n[key]))n[key]='';if(n.parent&&!scenes.has(n.parent))n.parent='';n.extraParents=(n.extraParents||[]).filter(x=>scenes.has(x.id));n.miceLinks=(n.miceLinks||[]).filter(x=>nodes.has(x.miceId));n.evidenceLinks=(n.evidenceLinks||[]).filter(x=>x.sourceType==='fact'?world.has(x.sourceId):scenes.has(x.sourceId));for(const key of ['openSceneId','closeSceneId'])if(n[key]&&!scenes.has(n[key]))n[key]='';}
+    for(const n of craftRecords(p)){n.cast=(n.cast||[]).filter(id=>people.has(id));n.worldIds=(n.worldIds||[]).filter(id=>world.has(id));n.ensemble=(n.ensemble||[]).filter(x=>people.has(x.id));n.factionIds=(n.factionIds||[]).filter(id=>world.has(id));for(const key of ['povId','focus','partner','characterId'])if(n[key]&&!people.has(n[key]))n[key]='';if(n.parent&&!scenes.has(n.parent))n.parent='';n.extraParents=(n.extraParents||[]).filter(x=>scenes.has(x.id));n.miceLinks=(n.miceLinks||[]).filter(x=>nodes.has(x.miceId));n.evidenceLinks=(n.evidenceLinks||[]).filter(x=>x.sourceType==='fact'?world.has(x.sourceId):scenes.has(x.sourceId));for(const key of ['openSceneId','closeSceneId'])if(n[key]&&!scenes.has(n[key]))n[key]='';}
     for(const plot of p.plots)plot.cast=(plot.cast||[]).filter(x=>people.has(x.characterId));
     p.readingOrder=p.readingOrder.filter(id=>nodes.has(id));
     p.readingSequence=p.readingSequence.filter(key=>nodes.has(key.slice(0,key.lastIndexOf(':'))));
@@ -237,7 +266,7 @@
           const old=e[field];e[field]=to+old.slice(from.length);timeMap.set(old,e[field]);
         }
       }
-      for(const n of allNodes(p)){
+      for(const n of craftRecords(p)){
         if(n.writingId===from)n.writingId=to;if(n.sceneId===from)n.sceneId=to;
         for(const key of ['parent','openSceneId','closeSceneId','miceId'])if(n[key]===from)n[key]=to;
         for(const x of n.extraParents||[])x.id=rename(x.id);
@@ -247,7 +276,8 @@
     }
     if(entity==='character'||entity==='world'){
       for(const r of allConnections(p)){r.a=rename(r.a);r.b=rename(r.b);}
-      for(const n of allNodes(p)){
+      for(const n of craftRecords(p)){
+        if(n.cast)n.cast=n.cast.map(rename);if(n.worldIds)n.worldIds=n.worldIds.map(rename);
         for(const key of ['povId','focus','partner','characterId'])if(n[key]===from)n[key]=to;
         n.factionIds=(n.factionIds||[]).map(rename);
         for(const x of n.ensemble||[])x.id=rename(x.id);
@@ -278,8 +308,8 @@
   function markdown(p){
     const label=id=>[...allCharacters(p),...allWorld(p)].find(x=>x.id===id)?.name||id;
     const when=id=>{const e=W.events(p).find(e=>e.id===id||e.key===id);return e?((e.storyDate?e.storyDate+' · ':'')+(e.title||e.node.title)):id||'Opening';};
-    const lines=[baseMarkdown(p),'','## Version',p.version||'Main draft','','## Manuscript',...reading(p).filter(n=>n.prose).flatMap(n=>['','### '+n.title,'',n.prose]),'','## Story chronology',...W.events(p).map(e=>'- '+when(e.id||e.key)+' · '+e.edge),'','## Scene craft'];
-    for(const n of reading(p)){lines.push('','### '+(n.title||'Untitled'));for(const key of ['goal','purpose','context','entry','tension','stakes','development','turn','action','gain','cost','response','reaction','after','readerExpectation','next','exit','ideaNotes'])if(n[key])lines.push('**'+key.replace(/([A-Z])/g,' $1')+':** '+n[key]);if(n.beats?.length)lines.push('**Internal beats:**',...n.beats.map(b=>'- '+b));}
+    const lines=[baseMarkdown(p),'','## Version',p.version||'Main draft','','## Manuscript',...readingMoments(p).filter(e=>e.edge==='close'?e.node.closingProse:e.node.prose).flatMap(e=>['','### '+e.node.title+(e.edge==='close'?' · Closing':''),'',e.edge==='close'?e.node.closingProse:e.node.prose]),'','## Story chronology',...W.events(p).map(e=>'- '+when(e.id||e.key)+' · '+e.edge),'','## Scene craft'];
+    for(const e of readingMoments(p)){const n=e.edge==='close'?e.node.closingCraft:e.node;if(!n)continue;lines.push('','### '+(e.node.title||'Untitled')+(e.edge==='close'?' · Closing':''));for(const key of ['goal','purpose','context','entry','tension','stakes','development','turn','action','gain','cost','response','reaction','after','readerExpectation','next','exit','ideaNotes'])if(n[key])lines.push('**'+key.replace(/([A-Z])/g,' $1')+':** '+n[key]);if(n.beats?.length)lines.push('**Internal beats:**',...n.beats.map(b=>'- '+b));for(const [key,value] of Object.entries(n.refinement||{}))if(value)lines.push('**'+key.replace(/([A-Z])/g,' $1')+':** '+value);}
     lines.push('','## World rules and priorities',p.storyWorld.setting||'',p.storyWorld.reality||'',(p.storyWorld.tones||[]).join(', '),p.storyWorld.priorities||'',p.storyWorld.notes||'','## Author knowledge and reader disclosure','These notes may include secrets the reader or cast does not yet know.');
     for(const e of allWorld(p)){lines.push('','### '+e.name,e.notes);if(e.knownBy?.length)lines.push('Known by: '+e.knownBy.map(id=>label(id)+' (from '+when(e.knownFrom?.[id])+')').join('; '));for(const a of e.readerAppearances||[])lines.push('- Reader '+a.kind+' in '+(allNodes(p).find(n=>n.sceneId===a.sceneId||n.writingId===a.sceneId)?.title||a.sceneId)+(a.note?': '+a.note:''));if(e.stateLabel)lines.push(e.stateLabel+': '+e.stateValue);for(const x of e.stateChanges||[])lines.push('- '+when(x.momentId)+': '+x.value+(x.targetId?' · '+label(x.targetId):'')+(x.reason?' — '+x.reason:''));for(const b of e.faction?.blocks||[])lines.push('- '+(b.title||b.kind)+': '+b.text);for(const x of e.faction?.changes||[])lines.push('- '+when(x.momentId)+': '+x.operation+' '+(x.block?.text||x.blockId)+(x.reason?' — '+x.reason:''));}
     lines.push('','## Character life and saved selves');for(const c of allCharacters(p)){lines.push('','### '+c.name,'Opening: '+c.lifeStatus);for(const x of c.lifeChanges)lines.push('- '+when(x.momentId||x.at)+': '+x.status+' — '+(x.reason||''));for(const x of c.stateCheckpoints)lines.push('- Saved self at '+when(x.momentId||x.at)+': '+x.blocks.map(b=>b.text).join('; '));for(const b of c.blocks)if(b.knownBy?.length)lines.push('- '+(b.label||b.kind)+': known by '+b.knownBy.map(id=>label(id)+' (from '+when(b.knownFrom?.[id])+')').join('; '));}
