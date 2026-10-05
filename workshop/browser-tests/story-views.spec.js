@@ -18,3 +18,14 @@ test('Choices groups decisions and places scene craft beside the content on desk
 test('story view cards fit narrow screens and the floating bar stays visible in every view',async({page})=>{
  await load(page);for(const width of [320,390,768,1440]){await page.setViewportSize({width,height:900});for(const name of ['Sequence','Chronology','Choices']){await view(page,name);await expect(page.locator('.tray[aria-label="MICE building pieces"]')).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width+1);const cards=page.locator('.moment-card,.choice-card');expect(await cards.evaluateAll(xs=>xs.every(e=>e.scrollWidth<=e.clientWidth+2))).toBeTruthy();}}
 });
+
+test('Read shows an undrafted plan including closings, and keeps draft prose separate',async({page})=>{
+ const data=fixture(),p=data.projects[0];for(const n of p.nodes)n.prose='';p.nodes[0].opening='The question opens.';p.nodes[1].opening='A clue arrives.';p.nodes[0].closing='The question is answered.';
+ await page.goto('/');await page.locator('#import-file').setInputFiles({name:'plan.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(data))});await page.locator('[data-action=accept-import]').click();await view(page,'Read');
+ await expect(page.locator('.manuscript-prose')).toHaveText(['The question opens.','A clue arrives.','The question is answered.']);
+ await expect(page.getByRole('button',{name:'Plan',exact:true})).toHaveAttribute('aria-pressed','true');
+ await page.locator('[data-reading-moment="ui-node-0:close"] button').click();await expect(page.getByLabel('Closing plan',{exact:true})).toHaveValue('The question is answered.');
+ await view(page,'Read');await page.getByRole('button',{name:'Draft',exact:true}).click();await expect(page.locator('.reading-empty')).toContainText('No draft prose');await page.getByRole('button',{name:'Read the plan',exact:true}).click();await expect(page.locator('.manuscript-prose')).toHaveCount(3);
+ await view(page,'Write');await page.locator('.moment-switcher [data-edge=close]').click();await page.getByLabel('Closing draft prose').fill('She finally understood.');await view(page,'Read');await page.getByRole('button',{name:'Draft',exact:true}).click();await expect(page.locator('.manuscript-prose')).toHaveText(['She finally understood.']);
+ await page.reload();await view(page,'Read');await expect(page.getByRole('button',{name:'Draft',exact:true})).toHaveAttribute('aria-pressed','true');await expect(page.locator('.manuscript-prose')).toHaveText(['She finally understood.']);
+});

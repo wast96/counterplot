@@ -43,3 +43,13 @@ test('thread questions reflect MICE and beat prompts describe a contribution',as
  await moment(page,'refine-node','ui-node-0','close').click();await expect(page.getByText('What earlier choices make this change believable?',{exact:true})).toBeVisible();
  await moment(page,'refine-node','ui-node-1','open').click();await expect(page.getByText('What changes because of this beat?',{exact:true})).toBeVisible();await page.getByRole('button',{name:'Link a piece',exact:true}).click();await page.getByLabel('Find a piece').fill('Discovery');await page.locator('#refine-picker-results [data-id=ui-node-0]').click();await expect(page.locator('.refine-link')).toContainText('Advances the thread');await page.locator('.refine-link [data-action=refine-remove-link]').click();await expect(page.locator('.refine-link')).toHaveCount(0);await page.locator('.topbar [data-action=undo]').click();await expect(page.locator('.refine-link')).toHaveCount(1);
 });
+
+test('Refine and Write share page geometry and details controls',async({page})=>{
+ await load(page);
+ for(const width of [390,1440,1800]){
+  await page.setViewportSize({width,height:1000});await view(page,'Write');
+  const geometry=()=>page.locator('.writing-layout').evaluate(el=>{const sels=['.scene-list','.manuscript','.draft-title','.moment-switcher'];return sels.map(s=>{const n=el.querySelector(s),r=n.getBoundingClientRect(),c=getComputedStyle(n);return {x:r.x,width:r.width,font:c.fontSize,padding:c.padding};});});
+  const write=await geometry();await view(page,'Refine');expect(await geometry()).toEqual(write);await expect(page.locator('.tray')).toHaveCount(0);await expect(page.getByRole('button',{name:'Manage plots',exact:true})).toBeVisible();
+ }
+ await page.getByRole('button',{name:'Focus on refining',exact:true}).click();await expect(page.locator('.refine-piece')).toBeVisible();await expect(page.locator('.inspector')).not.toBeVisible();await page.getByRole('button',{name:'Leave focus mode',exact:true}).click();await expect(page.locator('.workbench-grid>.inspector')).toBeVisible();
+});
