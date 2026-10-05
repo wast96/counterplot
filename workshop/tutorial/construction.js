@@ -3,7 +3,7 @@ const TutorialConstruction=(()=>{
  const copy=x=>JSON.parse(JSON.stringify(x));
  function teachingSample(source){const p=copy(source),find=id=>p.nodes.find(n=>n.id===id);
   if(find('defection')&&find('mission-question'))return p;
-  delete p.timeline;delete p.readingOrder;
+  delete p.timeline;delete p.readingOrder;delete p.readingSequence;
   const defection={...copy(find('sokolov-rescue')),id:'defection',type:'E',parentId:'loyalty',title:'Defection of Sokolov',opening:'Sokolov wants to leave the Soviet Union. Snake must bring him out safely.',closing:'Sokolov is unable to defect.',notes:'The rescue attempt resolves through failure when The Boss takes Sokolov.',cast:['snake','sokolov'],references:[]};
   const question={...copy(find('inquiry')),id:'mission-question',parentId:'drop',title:'Why did The Boss join this mission?',opening:'The Boss joins Snake’s support team. Why is his former instructor involved in this operation?',closing:'Her apparent defection explains her involvement to Snake: she takes Sokolov and joins Volgin.',notes:'This is Snake’s provisional answer. EVA’s recording later reveals that The Boss was following American orders.',cast:['snake','boss'],references:[]};
   find('drop').parentId='defection';find('jungle').parentId='loyalty';
@@ -16,7 +16,7 @@ const TutorialConstruction=(()=>{
   p.nodes.splice(p.nodes.indexOf(find('drop')),0,defection);p.nodes.splice(p.nodes.indexOf(find('drop'))+1,0,question);
   return p;
  }
- function starter(data){const w=copy(data),p=w.projects[0];w.saveKey='counterplot.tutorial.build.v2';w.tutorialBuild=true;w.active=p.id='mgs3-build-v1';p.tutorialId='mgs3';p.title='MGS3 · Build the story';p.subtitle='Build the outline, cast, world, and relationships. Full MGS3 spoilers.';for(const key of ['nodes','characters','world','connections','archive','timeline','readingOrder','drafts'])p[key]=[];p.plots=[];p.source=null;return w}
+ function starter(data){const w=copy(data),p=w.projects[0];w.saveKey='counterplot.tutorial.build.v2';w.tutorialBuild=true;w.active=p.id='mgs3-build-v1';p.tutorialId='mgs3';p.title='MGS3 · Build the story';p.subtitle='Build the outline, cast, world, and relationships. Full MGS3 spoilers.';for(const key of ['nodes','characters','world','connections','archive','timeline','readingOrder','readingSequence','drafts'])p[key]=[];p.plots=[];p.source=null;return w}
  function assemble(p,sample,stage){
   sample=teachingSample(sample);
   const early=['defection','mission-question','loyalty','drop','sokolov-rescue','bridge','nuclear-launch'];

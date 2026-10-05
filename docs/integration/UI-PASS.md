@@ -1,5 +1,8 @@
 # Workshop UI review — 2026-10-05
 
+Follow-up: [Sequence, Chronology, and Choices](STORY-VIEWS.md) adds closing moments
+and distinct layouts for these three views.
+
 This follow-up improves the Workshop's layout and information grouping while
 keeping existing project/account data formats. The user explicitly requires the
 floating MICE / Beat / Archive bar to retain its appearance, position, and behavior.

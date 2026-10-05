@@ -18,6 +18,7 @@
     p.readingOrder ||= W.ordered(p).map(x => x.node.id);
     const readingIds = new Set(p.readingOrder);
     for (const n of p.nodes) if (!readingIds.has(n.id)) {p.readingOrder.push(n.id);readingIds.add(n.id);}
+    normalizeReadingSequence(p);
     p.drafts ||= []; p.plots ||= []; p.storyWorld ||= {}; p.version ||= 'Main draft';
     for (const n of allNodes(p)) { n.writingId ||= n.sceneId || n.id; n.plotIds ||= []; }
     for (const c of allCharacters(p)) {
@@ -25,6 +26,39 @@
       c.prominence ||= {opening:'',changes:[],checkpoints:[]};
     }
     return p;
+  }
+  // Add closing positions without changing the relative order of existing openings.
+  // A thread initially closes after its last descendant in manuscript order.
+  function seedReadingSequence(p) {
+    const nodes=new Map(allNodes(p).map(n=>[n.id,n])), ends=new Map(), depths=new Map();
+    p.readingOrder.forEach((id,index)=>{let n=nodes.get(id),depth=0;const seen=new Set();
+      while(n&&!seen.has(n.id)){seen.add(n.id);ends.set(n.id,Math.max(ends.get(n.id)??-1,index));n=nodes.get(n.parentId);depth++;}
+      depths.set(id,depth);
+    });
+    const closing=new Map();
+    for(const id of p.readingOrder){const n=nodes.get(id);if(!n||n.type==='B')continue;const index=ends.get(id);if(!closing.has(index))closing.set(index,[]);closing.get(index).push(id);}
+    return p.readingOrder.flatMap((id,index)=>[id+':open',...(closing.get(index)||[]).sort((a,b)=>depths.get(b)-depths.get(a)).map(id=>id+':close')]);
+  }
+  function normalizeReadingSequence(p) {
+    const nodes=new Map(allNodes(p).map(n=>[n.id,n]));
+    if(p.readingSequence===undefined){p.readingSequence=seedReadingSequence(p);return;}
+    if(!Array.isArray(p.readingSequence))throw Error('Reading sequence must be a supported list.');
+    const known=new Set(p.readingSequence);
+    if(p.readingOrder.every(id=>known.has(id+':open')&&(nodes.get(id)?.type==='B'||known.has(id+':close')))){
+      // An older open tab may update the piece order without understanding closings.
+      // Honor that order in the opening slots, keeping every saved closing position.
+      const openings=p.readingSequence.filter(key=>typeof key==='string'&&key.endsWith(':open'));
+      if(openings.length===p.readingOrder.length&&new Set(openings).size===openings.length&&openings.some((key,i)=>key!==p.readingOrder[i]+':open')){let i=0;p.readingSequence=p.readingSequence.map(key=>key.endsWith(':open')?p.readingOrder[i++]+':open':key);}
+      return;
+    }
+    const canonical=seedReadingSequence(p);let next='';
+    // New pieces inherit an outline-aware position; existing positions never move.
+    for(let i=canonical.length-1;i>=0;i--){const key=canonical[i];if(!known.has(key)){const at=next?p.readingSequence.indexOf(next):p.readingSequence.length;p.readingSequence.splice(at,0,key);known.add(key);}next=key;}
+    p.readingOrder=p.readingSequence.filter(key=>typeof key==='string'&&key.endsWith(':open')).map(key=>key.slice(0,-5));
+  }
+  function readingMoments(p) {
+    const nodes=new Map(p.nodes.map(n=>[n.id,n]));
+    return (p.readingSequence||seedReadingSequence(p)).flatMap(key=>{const split=key.lastIndexOf(':'),n=nodes.get(key.slice(0,split)),edge=key.slice(split+1);return n&&(edge==='open'||n.type!=='B')?[{key,node:n,edge}]:[];});
   }
   function migrate(raw) {
     const data = L.validateWorkspace(raw);
@@ -105,6 +139,7 @@
       const eventIds=new Set(events.flatMap(e=>[e.id,e.key]));
       for(const e of events){if(e.nodeId&&!nodeIds.has(e.nodeId))fail('Chronology points to a missing piece.');if(!/^[A-Za-z0-9_-]{1,120}$/.test(e.id))fail('Invalid moment identity.');if(typeof e.key!=='string'||!/^[A-Za-z0-9_-]{1,120}:(open|close|moment)$/.test(e.key))fail('Invalid story moment key.');if(!date(e.storyDate)||!date(e.storyEndDate))fail('Use a valid story date.');if(e.storyDate&&e.storyEndDate&&e.storyEndDate<e.storyDate)fail('The end date precedes the start date.');}
       for(const id of unique(array(p.readingOrder,'Reading order'),'reading position'))if(!nodeIds.has(id))fail('Reading order points to a missing piece.');
+      for(const key of unique(array(p.readingSequence,'Reading sequence',40000),'reading moment')){const split=key.lastIndexOf(':');if(!nodeIds.has(key.slice(0,split))||!['open','close'].includes(key.slice(split+1)))fail('Reading sequence points to a missing piece or edge.');}
       const people=allCharacters(p),world=allWorld(p),targets=new Set([...people,...world].map(x=>x.id));
       const timing=(xs,label)=>{unique(array(xs||[],label).map(x=>x.id),label+' identity');for(const x of xs||[])if(!eventIds.has(x.at||x.momentId))fail(label+' points to a missing story moment.');};
       const knowledge=o=>{for(const id of o.knownBy||[])if(!targets.has(id))fail('Knowledge points to a missing person or faction.');for(const [id,mid] of Object.entries(o.knownFrom||{})){if(!(o.knownBy||[]).includes(id)||mid&&!eventIds.has(mid))fail('Invalid knowledge timing.');}};
@@ -131,7 +166,7 @@
   function knownAt(p,item,who,key='') {if(!(item.knownBy||[]).includes(who))return false;const from=item.knownFrom?.[who];if(!from)return true;const events=W.events(p),i=events.findIndex(e=>e.id===from||e.key===from),at=events.findIndex(e=>e.id===key||e.key===key);return i>=0&&at>=i;}
   function readerAt(p,item,writingId){const order=reading(p).map(n=>n.sceneId||n.writingId||n.id),stop=order.indexOf(writingId);return list(item.readerAppearances).filter(x=>order.indexOf(x.sceneId)>=0&&order.indexOf(x.sceneId)<=stop);}
   function reading(p,{archived=false}={}){const nodes=new Map((archived?allNodes(p):p.nodes).map(n=>[n.id,n]));return p.readingOrder.map(id=>nodes.get(id)).filter(Boolean);}
-  function reorder(p,collection,id,beforeId='') {const xs=collection==='timeline'?p.timeline:collection==='readingOrder'?p.readingOrder:p.characters;const at=xs.findIndex(x=>(typeof x==='string'?x:x.key||x.id)===id);if(at<0)throw Error('That item no longer exists.');const dest=beforeId?xs.findIndex(x=>(typeof x==='string'?x:x.key||x.id)===beforeId):xs.length;if(dest<0)throw Error('That destination no longer exists.');const [item]=xs.splice(at,1);xs.splice(dest-(at<dest?1:0),0,item);}
+  function reorder(p,collection,id,beforeId='') {const xs=collection==='timeline'?p.timeline:collection==='readingOrder'?p.readingOrder:collection==='readingSequence'?p.readingSequence:p.characters;const at=xs.findIndex(x=>(typeof x==='string'?x:x.key||x.id)===id);if(at<0)throw Error('That item no longer exists.');const dest=beforeId?xs.findIndex(x=>(typeof x==='string'?x:x.key||x.id)===beforeId):xs.length;if(dest<0)throw Error('That destination no longer exists.');const [item]=xs.splice(at,1);xs.splice(dest-(at<dest?1:0),0,item);if(collection==='readingSequence')p.readingOrder=xs.filter(key=>key.endsWith(':open')).map(key=>key.slice(0,-5));if(collection==='readingOrder'){const key=id+':open',at=p.readingSequence.indexOf(key);if(at>=0){p.readingSequence.splice(at,1);const dest=beforeId?p.readingSequence.indexOf(beforeId+':open'):p.readingSequence.length;p.readingSequence.splice(dest<0?p.readingSequence.length:dest,0,key);}}}
   function removeFrame(p,id){const n=p.nodes.find(n=>n.id===id);if(!n||n.type==='B')throw Error('Choose a thread frame.');const index=p.nodes.indexOf(n);for(const child of p.nodes)if(child.parentId===id)child.parentId=n.parentId;
     // The writing remains a stable fragment, and both historical edges remain addressable.
     n.removedFrame={type:n.type,opening:n.opening,closing:n.closing};n.type='B';n.closing='';n.title ||= 'Writing from removed frame';p.nodes.splice(index,1,n);
@@ -158,7 +193,7 @@
   function taggedOutline(p){return W.outlineEvents(p).map(({node:n,edge})=>n.type==='B'?(n.opening||n.title):'<'+(edge==='close'?'/':'')+n.type+'> '+(edge==='close'?n.closing:n.opening||n.title)).join('\n');}
   function parseOutline(value){return L.CounterplotStory.parse(value,W.uid).nodes.map(n=>({...W.node(n.type==='beat'?'B':n.type,n.parentId),...n,type:n.type==='beat'?'B':n.type,prose:'',cast:[],worldIds:[]}));}
   function structureIssues(p){return L.CounterplotStory.issues({structure:p.nodes.map(n=>({...n,type:n.type==='B'?'beat':n.type})),scenes:reading(p,{archived:true}).map(n=>({...n,id:n.sceneId||n.id,archived:!p.nodes.includes(n)}))});}
-  function continueScene(p,id){const parent=p.nodes.find(n=>n.id===id);if(!parent)throw Error('Choose a scene to continue.');const n=W.node('B',parent.parentId);n.title='After '+(parent.title||'this scene');n.parent=parent.sceneId||parent.id;n.cast=copy(parent.cast);n.plotIds=copy(parent.plotIds||[]);p.nodes.push(n);normalize(p);const at=p.readingOrder.indexOf(id);p.readingOrder=p.readingOrder.filter(x=>x!==n.id);p.readingOrder.splice(at+1,0,n.id);acceptContinuity(p,n);return n;}
+  function continueScene(p,id){const parent=p.nodes.find(n=>n.id===id);if(!parent)throw Error('Choose a scene to continue.');const n=W.node('B',parent.parentId);n.title='After '+(parent.title||'this scene');n.parent=parent.sceneId||parent.id;n.cast=copy(parent.cast);n.plotIds=copy(parent.plotIds||[]);p.nodes.push(n);normalize(p);const at=p.readingOrder.indexOf(id);p.readingOrder=p.readingOrder.filter(x=>x!==n.id);p.readingOrder.splice(at+1,0,n.id);reorder(p,'readingOrder',n.id,p.readingOrder[at+2]||'');acceptContinuity(p,n);return n;}
   function addEarlierSelf(p,id,{earlierLabel='',preservedLabel,storyDate='',seed='copy',lifeStatus='alive'}){
     const c=p.characters.find(c=>c.id===id);if(!c||!preservedLabel?.trim())throw Error('Name the opening you want to preserve.');if(!['copy','blank'].includes(seed)||!['alive','dead'].includes(lifeStatus)||!L.CounterplotStory.validDate(storyDate))throw Error('Choose valid earlier-state options.');
     const mid=W.uid(),key=mid+':moment';p.timeline.unshift({id:mid,key,nodeId:'',edge:'open',title:preservedLabel.trim(),storyDate,storyEndDate:'',affectedCharacterIds:[id]});
@@ -186,6 +221,7 @@
     for(const n of allNodes(p)){n.cast=n.cast.filter(id=>people.has(id));n.worldIds=n.worldIds.filter(id=>world.has(id));n.ensemble=(n.ensemble||[]).filter(x=>people.has(x.id));n.factionIds=(n.factionIds||[]).filter(id=>world.has(id));for(const key of ['povId','focus','partner','characterId'])if(n[key]&&!people.has(n[key]))n[key]='';if(n.parent&&!scenes.has(n.parent))n.parent='';n.extraParents=(n.extraParents||[]).filter(x=>scenes.has(x.id));n.miceLinks=(n.miceLinks||[]).filter(x=>nodes.has(x.miceId));n.evidenceLinks=(n.evidenceLinks||[]).filter(x=>x.sourceType==='fact'?world.has(x.sourceId):scenes.has(x.sourceId));for(const key of ['openSceneId','closeSceneId'])if(n[key]&&!scenes.has(n[key]))n[key]='';}
     for(const plot of p.plots)plot.cast=(plot.cast||[]).filter(x=>people.has(x.characterId));
     p.readingOrder=p.readingOrder.filter(id=>nodes.has(id));
+    p.readingSequence=p.readingSequence.filter(key=>nodes.has(key.slice(0,key.lastIndexOf(':'))));
     for(const e of p.timeline)if(e.nodeId&&!nodes.has(e.nodeId)){e.title ||= beforeNodes.get(e.nodeId)?.title||'Historical moment';e.nodeId='';}
   }
   // Extend the original tutorial identity operation to the retained story histories.
@@ -194,6 +230,7 @@
     const rename=id=>id===from?to:id, timeMap=new Map();
     if(entity==='node'){
       p.readingOrder=(p.readingOrder||[]).map(rename);
+      p.readingSequence=(p.readingSequence||[]).map(key=>key.startsWith(from+':')?to+key.slice(from.length):key);
       for(const e of p.timeline||[]){
         if(e.nodeId===from)e.nodeId=to;
         for(const field of ['id','key'])if(e[field]===from+'-open'||e[field]===from+'-close'||e[field]?.startsWith(from+':')){
@@ -250,7 +287,7 @@
     lines.push('','## Plot roles');for(const pl of p.plots){lines.push('','### '+pl.label+' · '+pl.title,pl.notes);for(const tr of pl.cast||[]){lines.push('- '+label(tr.characterId)+': '+(tr.opening.roles||[]).join(', ')+' · '+tr.opening.note);for(const x of tr.changes||[])lines.push('  - '+when(x.momentId)+': '+(x.roles||[]).join(', ')+' · '+(x.note||''));}}
     lines.push('','## Unfinished drafts');for(const d of p.drafts)lines.push('','### '+(d.title||d.draft?.title||'Unfinished draft'),d.draft?.notes||d.draft?.text||'An unfinished form is retained in the JSON backup.');return lines.join('\n');
   }
-  Object.assign(W,{normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
+  Object.assign(W,{normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,readingMoments,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
     factionAt:(p,e,key)=>L.CounterplotEnsemble.factionAt(timelineProject(p),e,momentId(p,key)),
     roleAt:(p,track,key)=>L.CounterplotEnsemble.roleAt(timelineProject(p),track,momentId(p,key)),
     prominenceAt:(p,c,key)=>L.CounterplotEnsemble.prominenceAt(timelineProject(p),c,momentId(p,key))});
