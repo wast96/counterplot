@@ -4,6 +4,7 @@ import { assertSameOrigin, errorResponse, json, readJson } from "../_lib/http.js
 import { ensureStorage, readManifest, responseFor, requireWriter } from "../_lib/workspace-storage.js";
 import { validateWorkspace } from "../_lib/workspace-validation.js";
 import { validateWorkshop } from "../_lib/workshop-validation.js";
+import { acknowledgeChunks, maintainChunks } from "../_lib/chunk-maintenance.js";
 
 export async function onRequestGet(context) {
   try {
@@ -43,6 +44,7 @@ export async function onRequestPut(context) {
     const user = await requireUser(context);
     await ensureStorage(context.env);
     requireWriter(context.request, user);
+    await maintainChunks(context.env, user.id);
     const body = await readJson(context.request, 5_032_768);
     if (!body || !Number.isInteger(body.revision) || body.revision < 0 || typeof body.writeId !== 'string' || !/^[A-Za-z0-9_-]{1,100}$/.test(body.writeId)) return json({ error: 'Invalid workspace save' }, 400);
     const incoming = body.manifest ? await readManifest(context.env, user.id, body.manifest) : body.workspace;
@@ -90,7 +92,8 @@ export async function onRequestPut(context) {
         DELETE FROM workspace_revisions WHERE user_id = ? AND revision NOT IN (
           SELECT revision FROM workspace_revisions WHERE user_id = ? ORDER BY revision DESC LIMIT 100
         )
-      `).bind(user.id, user.id)
+      `).bind(user.id, user.id),
+      acknowledgeChunks(context.env, user.id, revision, body.writeId)
     ]);
     if (!results[0].meta?.changes) {
       const latest = await context.env.DB.prepare(`
@@ -100,12 +103,6 @@ export async function onRequestPut(context) {
       return json(await responseFor(context.env, user.id, latest), 409);
     }
 
-    // Uncommitted uploads receive a full day for retry. Referenced snapshots are never collected.
-    const cleanup = context.env.DB.prepare(`DELETE FROM workspace_chunks WHERE user_id = ? AND created_at < ?
-      AND hash NOT IN (SELECT part.value FROM workspace_revisions r, json_each(r.workspace_json, '$.manifest.chunks') part WHERE r.user_id = ? AND json_extract(r.workspace_json, '$.storage') = 'chunks-v1' AND json_type(r.workspace_json, '$.projects') IS NULL)
-      AND hash NOT IN (SELECT part.value FROM workspaces w, json_each(w.workspace_json, '$.manifest.chunks') part WHERE w.user_id = ? AND json_extract(w.workspace_json, '$.storage') = 'chunks-v1' AND json_type(w.workspace_json, '$.projects') IS NULL)`)
-      .bind(user.id, new Date(Date.now() - 86400000).toISOString(), user.id, user.id).run().catch(() => {});
-    if (context.waitUntil) context.waitUntil(cleanup); else await cleanup;
     return json({ ok: true, owner: user.id, revision, updatedAt: now }, 200, { ETag: `"${revision}"` });
   } catch (error) {
     return errorResponse(error);
