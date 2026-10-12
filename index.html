@@ -29,12 +29,12 @@ dialog{max-width:700px;width:calc(100% - 36px);border:1px solid #ced5c1;border-r
 
 /* Keep long casts and timeline selections within reach. */
 @media(min-width:681px){.sidebar{overflow-y:auto}.sidebar>*{flex-shrink:0}.cast-dock{overflow-y:auto;min-height:110px;flex:1 1 auto;align-content:start;scrollbar-gutter:stable;overscroll-behavior:contain}.side-foot{margin-top:12px;padding-top:10px}.side-label{margin-top:20px}}
-.character-hero .avatar.large{width:156px;height:180px;border-radius:14px;font-size:42px}.character-hero .avatar.large img{object-position:center 20%}.character-hero>.row{gap:22px}.portrait-button{border-radius:14px}.character-hero h1{overflow-wrap:anywhere}
-@media(max-width:680px){.character-hero .avatar.large{width:100px;height:120px}.character-hero>.row{gap:14px}.character-hero h1{font-size:29px}}
+.character-hero .avatar.large{width:156px;height:auto;aspect-ratio:1 / 1;border-radius:14px;font-size:42px}.character-hero .avatar.large img{object-position:center 20%}.character-hero>.row{gap:22px}.portrait-button{border-radius:14px}.character-hero h1{overflow-wrap:anywhere}
+@media(max-width:680px){.character-hero .avatar.large{width:100px}.character-hero>.row{gap:14px}.character-hero h1{font-size:29px}}
 
 .tray-piece.optional-scene{margin-left:14px;box-shadow:none;border-style:dashed;background:transparent}.tray-piece.optional-scene small{font-size:9px}
 
-@media(min-width:681px){.character-hero .avatar.large{width:256px;height:160px}}
+@media(min-width:681px){.character-hero .avatar.large{width:256px}}
 
 .cast-chip{max-width:100%;white-space:normal;text-align:left}.cast-chip>span:not(.avatar){overflow-wrap:anywhere}.cast-item .grow{overflow-wrap:anywhere;min-width:0}
 
