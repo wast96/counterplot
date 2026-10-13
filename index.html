@@ -3774,7 +3774,7 @@ document.addEventListener('dragover',e=>{const row=e.target.closest('[data-sort-
 document.addEventListener('dragleave',e=>e.target.closest('[data-sort-collection]')?.classList.remove('sequence-landing'));
 document.addEventListener('drop',e=>{const row=e.target.closest('[data-sort-collection]');if(!sequenceDrag||row?.dataset.sortCollection!==sequenceDrag.collection)return;e.preventDefault();const d=sequenceDrag;sequenceDrag=null;mutate('Moved '+(d.collection==='timeline'?'story moment':'reading position'),pr=>W.reorder(pr,d.collection,d.id,row.dataset.sortId));});
 document.addEventListener('dragend',()=>{sequenceDrag=null;$$('.sequence-landing').forEach(x=>x.classList.remove('sequence-landing'));});
-document.addEventListener('change',e=>{if(e.target.id==='story-cast-filter'){storyFilter=e.target.value;render();$('#story-cast-filter')?.focus({preventScroll:true});}if(e.target.id==='story-review-filter'){onlyReview=e.target.checked;render();$('#story-review-filter')?.focus({preventScroll:true});}});
+document.addEventListener('change',e=>{if(e.target.id==='story-cast-filter'){ui.filtersOpen=true;storyFilter=e.target.value;render();$('#story-cast-filter')?.focus({preventScroll:true});}if(e.target.id==='story-review-filter'){ui.filtersOpen=true;onlyReview=e.target.checked;render();$('#story-review-filter')?.focus({preventScroll:true});}});
 const oldInspector=inspector;
 inspector=function(){const html=oldInspector(),n=node(ui.selected);return n?html.replace('</aside>',`<div class="section stack">${btn('scene-details','Scene craft & links','edit',false,`data-id="${n.id}"`)}${btn('continuity','Review continuity'+(W.continuity(p(),n).stale?' · changed':''),'change',false,`data-id="${n.id}"`)}${btn('branch-focus','Focus on this branch','focus',false,`data-id="${n.id}"`)}${btn('continue-scene','Continue from here','arrow',false,`data-id="${n.id}"`)}${recordTools('node',n.id)}${n.type!=='B'?btn('remove-frame','Remove frame; keep contents','close',false,`data-id="${n.id}"`):''}</div></aside>`):html;};
 function sceneDetails(id){const n=node(id);if(!n)return;modalData={kind:'scene-details',id};dialog('A CLOSER LOOK',name(n),sceneDetailFields(n,id),submit('Keep details'),'scene-details');}
@@ -4103,7 +4103,7 @@ document.addEventListener('keydown',e=>{const menu=$('.story-tools-menu[open]');
 
 // Filters retain their state through edits, and follow native disclosure keyboard behavior.
 actions['clear-story-filters']=()=>{storyFilter='';onlyReview=false;ui.filtersOpen=false;render();$('.story-filter-menu>summary')?.focus({preventScroll:true});};
-document.addEventListener('toggle',e=>{if(e.target.matches?.('.story-filter-menu'))ui.filtersOpen=e.target.open;},true);
+document.addEventListener('toggle',e=>{if(e.target.matches?.('.story-filter-menu')&&e.target.isConnected)ui.filtersOpen=e.target.open;},true);
 document.addEventListener('click',e=>{const menu=$('.story-filter-menu[open]');if(menu&&!menu.contains(e.target)){ui.filtersOpen=false;menu.open=false;}});
 document.addEventListener('keydown',e=>{const menu=$('.story-filter-menu[open]');if(e.key==='Escape'&&menu){ui.filtersOpen=false;menu.open=false;menu.querySelector('summary').focus();}});
 

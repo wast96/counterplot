@@ -35,3 +35,13 @@ test('world titles open their editor and mobile form fields stay readable',async
  const scan=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(scan.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([]);
  await page.keyboard.press('Escape');await expect(page.locator('.world-card h2 button').first()).toBeFocused();
 });
+
+test('immediate filter changes do not depend on the asynchronous disclosure event',async({page})=>{
+ await load(page);
+ await page.evaluate(()=>{
+  document.querySelector('.story-filter-menu>summary').click();
+  const select=document.querySelector('#story-cast-filter');select.value=select.options[1].value;
+  select.dispatchEvent(new Event('change',{bubbles:true}));
+ });
+ await expect(page.locator('#story-cast-filter')).toBeVisible();await expect(page.locator('#story-cast-filter')).toBeFocused();await expect(page.locator('.filter-count')).toHaveText('1');
+});
