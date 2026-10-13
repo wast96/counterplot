@@ -47,7 +47,7 @@ test('immediate filter changes do not depend on the asynchronous disclosure even
 });
 
 test('long outline titles wrap, save on Enter, and retain undo and reload behavior',async({page})=>{
- await load(page);await page.setViewportSize({width:390,height:844});
+ await page.setViewportSize({width:390,height:844});await load(page);
  const title=page.locator('.node-title').first(),original=await title.inputValue();
  const value='Liu Jun follows the evidence through the old city and discovers why her father disappeared';
  await title.fill(value);await title.press('Enter');await expect(title).toHaveValue(value);
@@ -57,7 +57,7 @@ test('long outline titles wrap, save on Enter, and retain undo and reload behavi
 });
 
 test('returning to the workbench reveals the active tab and ordering controls stop at list boundaries',async({page})=>{
- await load(page);await page.setViewportSize({width:390,height:844});
+ await page.setViewportSize({width:390,height:844});await load(page);
  await page.getByRole('tab',{name:'Outline',exact:true}).focus();await page.keyboard.press('End');await expect(page.getByRole('tab',{name:'Choices',exact:true})).toBeFocused();
  await page.locator('[data-nav=world]').first().click();await page.locator('[data-nav=outline]').first().click();
  const active=page.locator('.story-viewbar [aria-selected=true]');await expect(active).toHaveText('Choices');
