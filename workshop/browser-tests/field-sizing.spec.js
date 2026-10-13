@@ -7,7 +7,7 @@ async function readable(field){
  expect(blank).toBeLessThanOrEqual(13);
 }
 test('Resolution wraps as it grows without an expanding empty container and shrinks on deletion',async({page})=>{
- await load(page,fixture());const field=page.getByRole('textbox',{name:'Event Resolution',exact:true});
+ await load(page,fixture());await page.locator('[data-node=event] > .node-head .node-title').click();const field=page.getByRole('textbox',{name:'Event Resolution',exact:true});
  await field.fill('The police');const short=(await field.boundingBox()).height;
  await field.press('End');await field.pressSequentially(' beat the thief up mercilessly ahtoaihtioaehtaoihtoiahte');
  await field.screenshot({path:'/tmp/resolution-field-'+test.info().project.name+'.png'});
@@ -18,15 +18,15 @@ test('Resolution wraps as it grows without an expanding empty container and shri
  await page.getByRole('tab',{name:'Refine',exact:true}).click();await page.locator('.moment-navigation [data-id=event][data-edge=close]').click();await readable(page.getByRole('textbox',{name:'Event Resolution',exact:true}));
 });
 test('all opening, closing, additional outcome, custom and Development fields share wrapping behavior',async({page})=>{
- const data=fixture();data.projects[0].nodes.find(n=>n.id==='beat').storyFields={'B:open':{hidden:[],custom:[{id:'obstacle',label:'Obstacle',text:''}]}};await load(page,data);await page.getByRole('button',{name:'Add another resolution',exact:true}).click();
+ const data=fixture();data.projects[0].nodes.find(n=>n.id==='beat').storyFields={'B:open':{hidden:[],custom:[{id:'obstacle',label:'Obstacle',text:''}]}};await load(page,data);await page.locator('[data-node=event] > .node-head .node-title').click();await page.getByRole('button',{name:'Add another resolution',exact:true}).click();
  const fields=page.locator('.thread-word textarea,.thread-word input');
- for(const field of await fields.all()){await field.fill(longText);await readable(field);}
+ for(const field of await fields.all()){const id=await field.evaluate(el=>el.closest('[data-node]')?.dataset.node);if(id)await page.locator(`[data-node="${id}"] > .node-head .node-title`).click();await field.fill(longText);await readable(field);}
  await page.keyboard.press('Tab');
  await page.setViewportSize({width:390,height:1000});for(const field of await fields.all())await readable(field);
  await page.getByRole('button',{name:'Remove additional resolution',exact:true}).click();await expect(page.getByRole('textbox',{name:'Event Resolution · additional outcome',exact:true})).toHaveCount(0);
 });
 test('empty World and Leaving hints stay one line before and after editing or resizing',async({page})=>{
- await load(page,fixture());
+ await load(page,fixture());await page.locator('[data-node=milieu] > .node-head .node-title').click();
  for(const label of ['Milieu World','Milieu Leaving']){const field=page.getByRole('textbox',{name:label,exact:true});
  for(const width of [1440,390,320]){await page.setViewportSize({width,height:1000});await expect.poll(()=>field.evaluate(el=>el.clientHeight<parseFloat(getComputedStyle(el).lineHeight)*2)).toBe(true);await field.fill(longText);await readable(field);await field.fill('');await expect.poll(()=>field.evaluate(el=>el.clientHeight<parseFloat(getComputedStyle(el).lineHeight)*2)).toBe(true);}
  }

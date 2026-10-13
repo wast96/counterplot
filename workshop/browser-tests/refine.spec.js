@@ -38,7 +38,7 @@ test('Refine supports keyboard tabs and fits narrow screens',async({page})=>{
 test('thread questions reflect MICE and beat prompts describe a contribution',async({page},testInfo)=>{
  await load(page);await view(page,'Refine');
  await expect(page.getByText('What prevents things from being put right immediately?',{exact:true})).toBeVisible();await expect(page.locator('.refine-person')).toHaveCount(1);await expect(page.locator('.refine-form [name=goal]')).not.toBeVisible();
- await view(page,'Outline');await page.locator('[data-action=select-node][data-id=ui-node-0]').click();await page.locator('[data-action=node-type][data-type=C]').click();await page.getByRole('button',{name:'Scene craft & links',exact:true}).click();
+ await view(page,'Outline');await page.locator('[data-action=select-node][data-id=ui-node-0]').click();await page.locator('.inspector-type>summary').click();await page.locator('[data-action=node-type][data-type=C]').click();await page.locator('.inspector-tools>summary').click();await page.getByRole('button',{name:'Scene craft & links',exact:true}).click();
  await expect(page.getByText('What belief, desire, or dissatisfaction starts this character’s change?',{exact:true})).toBeVisible();await expect(page.getByText('What puts pressure on this way of thinking or living?',{exact:true})).toBeVisible();
  await page.screenshot({path:testInfo.outputPath('refine.png'),fullPage:true});
  await moment(page,'refine-node','ui-node-0','close').click();await expect(page.getByText('What earlier choices make this change believable?',{exact:true})).toBeVisible();

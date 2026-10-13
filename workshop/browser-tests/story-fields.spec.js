@@ -2,12 +2,12 @@ const {test,expect}=require('@playwright/test');
 const Axe=require('@axe-core/playwright').default;
 const {fixture,load}=require('../../docs/audits/2026-10-13-beat-board-sweep/audit.cjs');
 const snapshot=page=>page.evaluate(()=>{const d=CounterplotTutorial.snapshot();return d.projects.find(p=>p.id===d.active);});
-const fields=(page,id,edge='open')=>page.locator(`[data-action=story-fields][data-id="${id}"][data-edge="${edge}"]`).first();
+const fields=(page,id,edge='open')=>({async click(){const title=page.locator(`[data-node="${id}"] > .node-head .node-title`);if(await title.isVisible())await title.click();await page.locator(`[data-action=story-fields][data-id="${id}"][data-edge="${edge}"]`).filter({visible:true}).first().click();}});
 async function add(page,label,value){await page.getByRole('button',{name:'Add field',exact:true}).click();const row=page.locator('.story-field-editor').last();await row.getByLabel('Field label',{exact:true}).fill(label);await row.getByLabel('Field value · optional',{exact:true}).fill(value);}
 async function keep(page){await page.getByRole('button',{name:'Keep fields',exact:true}).click();await expect(page.locator('#dialog')).not.toBeVisible();}
 test('story fields can be created, edited, removed and restored independently at each edge',async({page})=>{
  test.setTimeout(60000);
- await load(page,fixture());const development=page.getByRole('textbox',{name:'Beat Development',exact:true});await development.fill('She asks for help and is turned away');await page.keyboard.press('Tab');
+ await load(page,fixture());await page.locator('[data-node=beat] > .node-head .node-title').click();const development=page.getByRole('textbox',{name:'Beat Development',exact:true});await development.fill('She asks for help and is turned away');await page.keyboard.press('Tab');
  await fields(page,'beat').click();await add(page,'Obstacle','The officer ignores her');await keep(page);
  await expect(page.getByRole('textbox',{name:'Beat Obstacle',exact:true})).toHaveValue('The officer ignores her');
  await fields(page,'event').click();await page.getByLabel('Before value',{exact:true}).fill('A quiet carriage');await page.getByLabel('Show Before',{exact:true}).uncheck();await add(page,'Clue','A stolen wallet');await keep(page);

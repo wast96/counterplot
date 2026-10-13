@@ -44,3 +44,5 @@ inlineUpdate=function(el){
 };
 
 draftable.add('story-fields');
+
+actions['piece-fields']=el=>actions['story-fields'](el);

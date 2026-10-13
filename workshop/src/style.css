@@ -974,7 +974,7 @@ body:has(.story-tools-menu[open]) #toast,body:has(.account-menu[open]) #toast{op
 .piece-menu{position:relative;flex:none}
 .piece-menu>summary{list-style:none;cursor:pointer;font:22px/1 var(--sans);color:#687465}
 .piece-menu>summary::-webkit-details-marker{display:none}
-.piece-menu-actions{position:absolute;right:0;top:calc(100% + 5px);width:210px;max-width:calc(100vw - 64px);padding:6px;background:var(--panel);border:1px solid var(--line);border-radius:9px;box-shadow:0 8px 24px #233c302b;z-index:24}
+.piece-menu-actions{position:fixed;right:auto;overflow-y:auto;overscroll-behavior:contain;width:210px;max-width:calc(100vw - 64px);padding:6px;background:var(--panel);border:1px solid var(--line);border-radius:9px;box-shadow:0 8px 24px #233c302b;z-index:24}
 .node-actions .piece-menu-actions .icon{display:flex;width:100%;height:auto;min-height:36px;gap:9px;justify-content:flex-start;padding:7px 9px;opacity:1;font:12px/1.4 var(--sans);text-align:left;color:var(--ink)}
 .node:has(>.node-head .piece-menu[open]){z-index:25}
 .outline .thread-word,.outline .arc-state,.outline .recorded-state{background:transparent;border-color:transparent;box-shadow:none}
@@ -987,7 +987,7 @@ body:has(.story-tools-menu[open]) #toast,body:has(.account-menu[open]) #toast{op
 .outline .node:not(.selected)>.thread-plan-fields>.optional-empty:has(textarea:not(:placeholder-shown)),.outline .node:not(.selected)>.closing .optional-empty:has(textarea:not(:placeholder-shown)){display:flex}
 .outline .node .story-fields-launch{font-size:0;padding:4px;min-width:28px;min-height:28px}
 .outline .node .story-fields-launch::after{content:'⋯';font:20px var(--sans)}
-.outline .node:not(.selected)>:is(.node-foot,.thread-plan-fields,.character-arc-heading) :is(.add-cast,.beat-add-change,.story-fields-launch,.thread-note-launch,.arc-add-change,.arc-state-options,.arc-fork),.outline .node:not(.selected)>.closing :is(.closing-add-change,.story-fields-launch,.arc-state-options,.arc-fork){opacity:.35}
+.outline .node:not(.selected)>:is(.node-foot,.thread-plan-fields,.character-arc-heading) :is(.add-cast,.beat-add-change,.story-fields-launch,.thread-note-launch,.arc-add-change,.arc-state-options,.arc-fork),.outline .node:not(.selected)>.closing :is(.closing-add-change,.story-fields-launch,.arc-state-options,.arc-fork){opacity:0}
 .outline .node :is(.node-foot,.thread-plan-fields,.character-arc-heading,.closing):is(:hover,:focus-within) :is(.add-cast,.beat-add-change,.closing-add-change,.story-fields-launch,.thread-note-launch,.arc-add-change,.arc-state-options,.arc-fork){opacity:1}
 .outline .closing{background:color-mix(in srgb,var(--tint),var(--panel) 80%);border-top:1px solid color-mix(in srgb,var(--accent),transparent 82%);border-radius:0 0 8px 8px;padding-block:8px}
 .outline .closing-label{font:10px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
@@ -998,7 +998,7 @@ body:has(.story-tools-menu[open]) #toast,body:has(.account-menu[open]) #toast{op
 .outline .is-folded>.collapsed-thread-beats p{display:none}
 .outline .inside-drop{border-color:transparent;background:transparent;min-height:28px;padding:0;transition:background 130ms,border-color 130ms}
 .outline .inside-drop:is(:hover,:focus-within){border-color:var(--line);background:var(--paper)}
-.outline .inside-drop .text-btn{opacity:.55}
+.outline .inside-drop .text-btn{color:#596b5b;opacity:1}
 .outline .inside-drop:is(:hover,:focus-within) .text-btn{opacity:1}
 body.drag-active .outline .inside-drop{border:1px dashed #9aaa90;background:#f0f5eb}
 .outline .insert-slot{transition:min-height 130ms,background 130ms}
@@ -1034,3 +1034,12 @@ body.drag-active .outline .inside-drop{border:1px dashed #9aaa90;background:#f0f
  .outline .node-head>.grip:is(:hover,:focus-visible){transform:none}
  .drag-ghost.piece-preview{transform:translate(16px,18px)}
 }
+
+.outline :is(.thread-word>span,.arc-state-label,.outline-count,.folded-count){color:#59695e}
+/* Empty optional rows need no space until their piece is selected. */
+.outline .node:not(.selected)>.thread-plan-fields:not(:has(textarea:not(:placeholder-shown))){display:none}
+.outline .node:not(.selected)>.closing .thread-plan-fields:not(:has(textarea:not(:placeholder-shown))){display:none}
+@media(min-width:1191px){body:has(.details-hidden .outline) .tray{left:calc(206px + (100vw - 206px)/2)}}
+@media(min-width:981px) and (max-width:1190px){body:has(.details-hidden .outline) .tray{left:calc(180px + (100vw - 180px)/2)}}
+
+@media(max-width:680px){#story-panel:has(.outline) .plot-collapse [data-action=manage-plots]{font-size:0;width:36px;min-width:36px;padding:6px}}
