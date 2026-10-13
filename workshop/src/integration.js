@@ -2,7 +2,7 @@
 (() => {
   const W = typeof module !== 'undefined' ? require('./core.js') : Workshop;
   const L = typeof module !== 'undefined' ? require('./legacy.js') : CounterplotLegacy;
-  const baseValidate = W.validate, baseMarkdown = W.markdown,basePurge=W.purgeArchive,baseRekey=W.rekeyEntity,baseDuplicate=W.duplicateNode;
+  const baseValidate = W.validate, baseMarkdown = W.markdown,basePurge=W.purgeArchive,baseRekey=W.rekeyEntity,baseDuplicate=W.duplicateNode,baseMove=W.move,baseCharacterState=W.characterState;
   const copy = W.copy, text = value => typeof value === 'string' ? value : '';
   const list = value => Array.isArray(value) ? value : [];
   const allNodes = p => [...p.nodes, ...p.archive.filter(a => a.kind === 'branch').flatMap(a => a.nodes)];
@@ -283,13 +283,36 @@
     }
     return out;
   }
-  function changeTitle(from,to){
-    from=text(from).trim();to=text(to).trim();
-    if(!from||!to)throw Error('Add both a starting and an ending state.');
-    const title='From '+from+' to '+to;
-    if(title.length>1000)throw Error('Shorten the states so the title fits within 1,000 characters.');
-    return title;
+
+  // Labels describe a building block, not a point in its history. Older changes
+  // contain full snapshots that may predate a custom label on the starting block.
+  function characterBlockSnapshots(p,c){
+    return [...c.blocks,...c.changes.flatMap(x=>x.block?[x.block]:[]),
+      ...(c.stateCheckpoints||[]).flatMap(x=>x.blocks),
+      ...p.archive.filter(a=>a.kind==='branch').flatMap(a=>a.changes.filter(x=>x.characterId===c.id&&x.change.block).map(x=>x.change.block)),
+      ...p.archive.filter(a=>a.kind==='block'&&a.characterId===c.id).flatMap(a=>[a.item,...(a.changes||[]).flatMap(x=>x.block?[x.block]:[])])];
   }
+  function blockLabelResolver(p,c){
+    const snapshots=characterBlockSnapshots(p,c),labels=new Map(),blocks=new Map(),parents=new Map();
+    for(const b of snapshots){if(!blocks.has(b.id))blocks.set(b.id,b);if(b.label&&!labels.has(b.id))labels.set(b.id,b.label);if(b.forkedFrom)parents.set(b.id,b.forkedFrom);}
+    for(const n of allNodes(p))if(n.characterArc?.subjectId===c.id)for(const row of n.characterArc.changes)for(const v of row.outcomes||[])if(v.linked&&!parents.has(v.blockId))parents.set(v.blockId,row.from.blockId||row.to.blockId);
+    const resolve=(b,seen=new Set())=>{if(!b||seen.has(b.id))return '';seen.add(b.id);if(labels.has(b.id))return labels.get(b.id);
+      const source=b.forkedFrom||parents.get(b.id);
+      return b.label||(source?resolve(blocks.get(source),seen):'');};
+    return resolve;
+  }
+  function characterBlockLabel(p,c,b){return blockLabelResolver(p,c)(b);}
+  function characterState(p,c,key='',before=false){
+    const state=baseCharacterState(p,c,key,before),label=blockLabelResolver(p,c);
+    for(const b of state.blocks)b.label=label(b);
+    return state;
+  }
+  function setBlockLabel(p,cid,bid,value){
+    const c=allCharacters(p).find(c=>c.id===cid);if(!c||typeof value!=='string'||value.length>1000)throw Error('Choose a block label within 1,000 characters.');
+    for(const b of characterBlockSnapshots(p,c))if(b.id===bid)b.label=value;
+    for(const n of allNodes(p))if(n.characterArc?.subjectId===cid)for(const row of n.characterArc.changes)if([row.from,row.to].some(v=>v.linked&&v.blockId===bid))row.label=value;
+  }
+
   const emptyArcState=()=>({text:'',blockId:'',linked:false});
   const emptyArcChange=(id='state-empty')=>({id,kind:'custom',label:'',from:emptyArcState(),to:emptyArcState(),outcomes:[]});
   const arcSubjects=p=>[...allCharacters(p),...allWorld(p).filter(w=>w.type==='group')];
@@ -298,7 +321,8 @@
     if(!c)return [];
     const source=c.type==='group'?c.faction||{}:c;
     const blocks=[...(source.blocks||[]),...(source.changes||[]).flatMap(x=>x.block?[x.block]:[]),...(source.stateCheckpoints||source.checkpoints||[]).flatMap(x=>x.blocks)];
-    const seen=new Set();return blocks.filter(b=>{const key=b.id+'\0'+b.text;if(seen.has(key))return false;seen.add(key);return true;});
+    const label=c.type==='group'?null:blockLabelResolver(p,c);
+    const seen=new Set();return blocks.filter(b=>{const key=b.id+'\0'+b.text;if(seen.has(key))return false;seen.add(key);return true;}).map(b=>label?{...b,label:label(b)}:b);
   }
   function arcBlocksAt(p,c,key,before=false){
     if(c.type!=='group')return W.stateAt(p,c,key,before);
@@ -320,7 +344,7 @@
       arc={subjectId,changes:rows.length?rows:[emptyArcChange()],legacyTitle:parsed?'':n.title||''};
     }
     const c=arcSubject(p,arc);
-    return {...arc,changes:arc.changes.map(row=>{const state=(value,key)=>{value={...value};return {...value,text:value.linked&&c?arcBlocksAt(p,c,n.id+':'+key).find(b=>b.id===value.blockId)?.text||'':text(value.text)};};return {...row,from:state(row.from,'open'),to:state(row.to,'close'),outcomes:(row.outcomes||[]).map(v=>state(v,'close'))};})};
+    return {...arc,changes:arc.changes.map(row=>{const state=(value,key)=>{value={...value};return {...value,text:value.linked&&c?arcBlocksAt(p,c,n.id+':'+key).find(b=>b.id===value.blockId)?.text||'':text(value.text)};};const linked=[row.from,row.to].find(v=>v.linked),block=c&&linked?arcStateOptions(p,c).find(b=>b.id===linked.blockId):null;return {...row,...(block?{label:block.label||block.title||''}:{}),from:state(row.from,'open'),to:state(row.to,'close'),outcomes:(row.outcomes||[]).map(v=>state(v,'close'))};})};
   }
   function pieceTitle(p,n){
     if(!n)return '';
@@ -373,10 +397,10 @@
       const group=c.type==='group';if(group)c.faction||={blocks:[],changes:[],checkpoints:[]};
       const records=group?c.faction.changes:c.changes,at=n.id+':'+(edge==='from'?'open':'close'),before=arcBlocksAt(p,c,at,true);
       const existing=blockId==='new'?null:records.findLast(x=>x.blockId===blockId&&(x.at===at||x.momentId===momentId(p,at)));
-      const original=blockId==='new'?(group?{id:W.uid(),kind,key:'custom',title:'',text:'',detail:'',context:'any',knownBy:[],links:[]}:W.block(kind)):existing?.block||arcBlocksAt(p,c,at).find(b=>b.id===blockId)||arcStateOptions(p,c).find(b=>b.id===blockId);
+      const original=blockId==='new'?(group?{id:W.uid(),kind,key:'custom',title:'',text:'',detail:'',context:'any',knownBy:[],links:[]}:W.block(kind)):arcBlocksAt(p,c,at).find(b=>b.id===blockId)||existing?.block||arcStateOptions(p,c).find(b=>b.id===blockId);
       if(!original)throw Error('That building block is no longer available.');
       const block={...copy(original),text:value},present=before.some(b=>b.id===block.id);
-      if(outcome&&blockId==='new')block.forkedFrom=row.from.blockId||row.to.blockId||'';
+      if(outcome&&blockId==='new'){block.forkedFrom=row.from.blockId||row.to.blockId||'';block[group?'title':'label']=row.label;}
       const record={id:existing?.id||W.uid(),at,momentId:momentId(p,at),blockId:block.id,...(group?{operation:present?'replace':'add'}:{op:present?'develop':'add'}),block,reason:existing?.reason||'Set in character thread'};
       if(existing)Object.assign(existing,record);else records.push(record);
       assign({text:value,blockId:block.id,linked:true});if(!outcome){row.kind=block.kind;row.label=block.label||block.title||'';}
@@ -452,6 +476,19 @@
   function setAdvancedThreads(p,n,ids){
     const chosen=[...new Set(ids)];if(chosen.some(id=>id===n.id||!p.nodes.some(t=>t.id===id&&t.type!=='B')))throw Error('Choose existing threads for this beat to advance.');
     n.miceLinks=chosen.map(id=>(n.miceLinks||[]).find(x=>x.miceId===id)||{miceId:id,edge:'advance',role:'advance'});
+  }
+  function retainedBeatThread(p,id,anchorId='',where='inside'){
+    const n=p.nodes.find(n=>n.id===id),anchor=p.nodes.find(n=>n.id===anchorId);
+    if(n?.type!=='B'||!anchor||!['inside','before','after'].includes(where))return null;
+    const parentId=where==='inside'?anchorId:anchor.parentId,owner=openThreadContext(p,n).owner;
+    return owner&&parentId!==owner.id&&W.descendants(p,owner.id).has(parentId)?owner:null;
+  }
+  function move(p,id,anchorId='',where='inside'){
+    const owner=retainedBeatThread(p,id,anchorId,where);
+    baseMove(p,id,anchorId,where);
+    // A deeper position does not change the thread this beat already advances.
+    const n=p.nodes.find(n=>n.id===id);
+    if(owner&&!(n.miceLinks||[]).some(x=>x.miceId===owner.id))(n.miceLinks||=[]).push({miceId:owner.id,edge:'advance',role:'advance'});
   }
   function applyBulk(p,ids,{cast=[],worldIds=[],plotIds=[],povId=null,status=null}={}){
     const chosen=[...new Set(ids)].map(id=>p.nodes.find(n=>n.id===id));
@@ -599,7 +636,7 @@
     W.restore(candidate,id);if(anchor!==undefined)W.move(candidate,rootId,anchor,where);
     Object.assign(p,candidate);return rootId;
   }
-  Object.assign(W,{THREAD_FIELDS,threadPlan,setThreadPlan,addThreadOutcome,removeThreadOutcome,changeStateAt,recordedThreadStates,setPieceState,openThreadContext,setAdvancedThreads,editableTitle,setPieceTitle,applyBulk,addArcOutcome,removeArcOutcome,arcSubjects,arcSubject,addArcChange,removeArcChange,characterArc,pieceTitle,setArcCharacter,setArcState,arcStateOptions,pieceChanges,changeTitle,drawerEntries,archivedItems,stashNode,returnFromDrawer,normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,readingMoments,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
+  Object.assign(W,{characterState,stateAt:(p,c,key='',before=false)=>characterState(p,c,key,before).blocks,characterBlockLabel,setBlockLabel,move,retainedBeatThread,THREAD_FIELDS,threadPlan,setThreadPlan,addThreadOutcome,removeThreadOutcome,changeStateAt,recordedThreadStates,setPieceState,openThreadContext,setAdvancedThreads,editableTitle,setPieceTitle,applyBulk,addArcOutcome,removeArcOutcome,arcSubjects,arcSubject,addArcChange,removeArcChange,characterArc,pieceTitle,setArcCharacter,setArcState,arcStateOptions,pieceChanges,drawerEntries,archivedItems,stashNode,returnFromDrawer,normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,readingMoments,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
     factionAt:(p,e,key)=>L.CounterplotEnsemble.factionAt(timelineProject(p),e,momentId(p,key)),
     roleAt:(p,track,key)=>L.CounterplotEnsemble.roleAt(timelineProject(p),track,momentId(p,key)),
     prominenceAt:(p,c,key)=>L.CounterplotEnsemble.prominenceAt(timelineProject(p),c,momentId(p,key))});
