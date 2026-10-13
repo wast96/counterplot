@@ -893,6 +893,22 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
     for(let i=canonical.length-1;i>=0;i--){const key=canonical[i];if(!known.has(key)){const at=next?p.readingSequence.indexOf(next):p.readingSequence.length;p.readingSequence.splice(at,0,key);known.add(key);}next=key;}
     p.readingOrder=p.readingSequence.filter(key=>typeof key==='string'&&key.endsWith(':open')).map(key=>key.slice(0,-5));
   }
+  function matchOutlineOrder(p,collection) {
+    if(!['timeline','readingSequence'].includes(collection))throw Error('Choose Chronology or Sequence.');
+    normalize(p);
+    const outline=W.outlineEvents(p),keys=new Set(outline.map(e=>e.key));
+    if(collection==='timeline'){
+      const byKey=new Map(p.timeline.map(e=>[e.key,e]));
+      const ordered=outline.map(e=>byKey.get(e.key)||p.timeline.find(x=>x.nodeId+':'+x.edge===e.key));
+      const ids=new Set(ordered.map(e=>e.id));let index=0;
+      // Retained history and deliberately added moments keep their own slots.
+      p.timeline=p.timeline.map(e=>ids.has(e.id)?ordered[index++]:e);
+    }else{
+      const ordered=outline.map(e=>e.key);let index=0;
+      p.readingSequence=p.readingSequence.map(key=>keys.has(key)?ordered[index++]:key);
+      p.readingOrder=p.readingSequence.filter(key=>key.endsWith(':open')).map(key=>key.slice(0,-5));
+    }
+  }
   function readingMoments(p) {
     const nodes=new Map(p.nodes.map(n=>[n.id,n]));
     return (p.readingSequence||seedReadingSequence(p)).flatMap(key=>{const split=key.lastIndexOf(':'),n=nodes.get(key.slice(0,split)),edge=key.slice(split+1);return n&&(edge==='open'||n.type!=='B')?[{key,node:n,edge}]:[];});
@@ -986,6 +1002,17 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
       const scenes=new Set(nodes.flatMap(n=>[n.id,n.writingId,n.sceneId].filter(Boolean)));
       for(const c of craftRecords(p)){if(c.refinement!==undefined){if(!c.refinement||typeof c.refinement!=='object'||Array.isArray(c.refinement))fail('Refinement must be a record.');for(const value of Object.values(c.refinement))if(typeof value!=='string'||value.length>2000000)fail('Refinement answers must be text.');}}
       for(const n of nodes){
+        for(const key of ['entry','exit'])if(n[key]!==undefined&&(typeof n[key]!=='string'||n[key].length>2000000))fail('Scene endpoints must be text.');
+        for(const b of array(n.beats||[],'Scene moments'))if(typeof b!=='string'||b.length>2000000)fail('Scene moments must be text.');
+        if(n.storyFields!==undefined){
+          if(!n.storyFields||typeof n.storyFields!=='object'||Array.isArray(n.storyFields))fail('Story fields must be a record.');
+          for(const [edge,settings]of Object.entries(n.storyFields)){
+            if(!/^[MCIEB]:(open|close)$/.test(edge)||!settings||typeof settings!=='object'||Array.isArray(settings))fail('Invalid story field settings.');
+            for(const key of unique(array(settings.hidden,'Hidden story fields',100),'hidden field'))if(!/^(focus|from|to|development|state:[A-Za-z0-9_-]{1,160})$/.test(key))fail('Invalid hidden story field.');
+            unique(array(settings.custom,'Custom story fields',100).map(f=>f?.id),'custom field');
+            for(const f of settings.custom)if(!f||!/^[A-Za-z0-9_-]{1,120}$/.test(f.id)||typeof f.label!=='string'||!f.label.trim()||f.label.length>100||typeof f.text!=='string'||f.text.length>1000)fail('Story fields need a label within 100 characters and text within 1,000 characters.');
+          }
+        }
         if(n.threadPlans!==undefined){
           if(!n.threadPlans||typeof n.threadPlans!=='object'||Array.isArray(n.threadPlans))fail('Thread plans must be a record.');
           for(const [type,plan]of Object.entries(n.threadPlans)){
@@ -1016,7 +1043,7 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
         for(const id of array(c.cast||[],'Closing cast'))if(!people.some(p=>p.id===id))fail('A closing participant is missing.');
         for(const key of ['povId','focus'])if(c[key]&&!people.some(p=>p.id===c[key]))fail('A closing point of view is missing.');
         for(const id of array(c.worldIds||[],'Closing world links'))if(!world.some(w=>w.id===id))fail('A closing world link is missing.');
-        for(const b of array(c.beats||[],'Closing internal beats'))if(typeof b!=='string')fail('Internal beats must be text.');
+        for(const b of array(c.beats||[],'Closing internal beats'))if(typeof b!=='string'||b.length>2000000)fail('Internal beats must be text.');
         for(const x of array(c.ensemble||[],'Closing roles'))if(!x||!people.some(p=>p.id===x.id)||!['present','assist','oppose','complicate','witness'].includes(x.role))fail('Invalid closing role.');
         for(const x of array(c.miceLinks||[],'Closing thread links'))if(!x||!nodes.some(n=>n.id===x.miceId)||!['open','advance','close'].includes(x.edge||x.role))fail('Invalid closing thread link.');
         for(const id of [c.parent,c.openSceneId,c.closeSceneId,...array(c.extraParents||[],'Closing causal links').map(x=>x?.id)].filter(Boolean))if(!scenes.has(id))fail('A closing scene link is missing.');
@@ -1488,6 +1515,7 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
     const when=id=>{const e=W.events(p).find(e=>e.id===id||e.key===id);return e?((e.storyDate?e.storyDate+' · ':'')+(e.title||e.node.title)):id||'Opening';};
     const lines=[baseMarkdown(p),'','## Version',p.version||'Main draft','','## Manuscript',...readingMoments(p).filter(e=>e.edge==='close'?e.node.closingProse:e.node.prose).flatMap(e=>['','### '+e.node.title+(e.edge==='close'?' · Closing':''),'',e.edge==='close'?e.node.closingProse:e.node.prose]),'','## Story chronology',...W.events(p).map(e=>'- '+when(e.id||e.key)+' · '+e.edge),'','## Scene craft'];
     for(const e of readingMoments(p)){const n=e.edge==='close'?e.node.closingCraft:e.node;if(!n)continue;lines.push('','### '+(e.node.title||'Untitled')+(e.edge==='close'?' · Closing':''));for(const key of ['goal','purpose','context','entry','tension','stakes','development','turn','action','gain','cost','response','reaction','after','readerExpectation','next','exit','ideaNotes'])if(n[key])lines.push('**'+key.replace(/([A-Z])/g,' $1')+':** '+n[key]);if(n.beats?.length)lines.push('**Internal beats:**',...n.beats.map(b=>'- '+b));for(const [key,value] of Object.entries(n.refinement||{}))if(value)lines.push('**'+key.replace(/([A-Z])/g,' $1')+':** '+value);}
+    for(const n of allNodes(p))for(const [edge,settings]of Object.entries(n.storyFields||{}))if(settings.custom.length)lines.push('','### '+(n.title||'Untitled')+' · '+edge.split(':')[1]+' fields',...settings.custom.map(f=>'**'+f.label+':** '+f.text));
     for(const n of allNodes(p))if(THREAD_FIELDS[n.type]&&n.threadPlans?.[n.type]){const a=threadPlan(n),labels=THREAD_FIELDS[n.type];lines.push('','### '+(n.title||W.TYPES[n.type].name)+' · Thread plan',labels.focus+': '+a.focus,labels.from+': '+a.from,labels.to+': '+[a.to,...a.outcomes.map(x=>x.text)].join(' / '));}
     lines.push('','## World rules and priorities',p.storyWorld.setting||'',p.storyWorld.reality||'',(p.storyWorld.tones||[]).join(', '),p.storyWorld.priorities||'',p.storyWorld.notes||'','## Author knowledge and reader disclosure','These notes may include secrets the reader or cast does not yet know.');
     for(const e of allWorld(p)){lines.push('','### '+e.name,e.notes);if(e.knownBy?.length)lines.push('Known by: '+e.knownBy.map(id=>label(id)+' (from '+when(e.knownFrom?.[id])+')').join('; '));for(const a of e.readerAppearances||[])lines.push('- Reader '+a.kind+' in '+(allNodes(p).find(n=>n.sceneId===a.sceneId||n.writingId===a.sceneId)?.title||a.sceneId)+(a.note?': '+a.note:''));if(e.stateLabel)lines.push(e.stateLabel+': '+e.stateValue);for(const x of e.stateChanges||[])lines.push('- '+when(x.momentId)+': '+x.value+(x.targetId?' · '+label(x.targetId):'')+(x.reason?' — '+x.reason:''));for(const b of e.faction?.blocks||[])lines.push('- '+(b.title||b.kind)+': '+b.text);for(const x of e.faction?.changes||[])lines.push('- '+when(x.momentId)+': '+x.operation+' '+(x.block?.text||x.blockId)+(x.reason?' — '+x.reason:''));}
@@ -1507,7 +1535,7 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
     W.restore(candidate,id);if(anchor!==undefined)W.move(candidate,rootId,anchor,where);
     Object.assign(p,candidate);return rootId;
   }
-  Object.assign(W,{characterHistory,archiveCharacterBlock,removeCharacterChange,characterState,stateAt:(p,c,key='',before=false)=>characterState(p,c,key,before).blocks,characterBlockLabel,setBlockLabel,move,retainedBeatThread,THREAD_FIELDS,threadPlan,setThreadPlan,addThreadOutcome,removeThreadOutcome,changeStateAt,recordedThreadStates,setPieceState,openThreadContext,setAdvancedThreads,editableTitle,setPieceTitle,applyBulk,addArcOutcome,removeArcOutcome,arcSubjects,arcSubject,addArcChange,removeArcChange,characterArc,pieceTitle,setArcCharacter,setArcState,arcStateOptions,pieceChanges,drawerEntries,archivedItems,stashNode,returnFromDrawer,normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,readingMoments,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
+  Object.assign(W,{matchOutlineOrder,characterHistory,archiveCharacterBlock,removeCharacterChange,characterState,stateAt:(p,c,key='',before=false)=>characterState(p,c,key,before).blocks,characterBlockLabel,setBlockLabel,move,retainedBeatThread,THREAD_FIELDS,threadPlan,setThreadPlan,addThreadOutcome,removeThreadOutcome,changeStateAt,recordedThreadStates,setPieceState,openThreadContext,setAdvancedThreads,editableTitle,setPieceTitle,applyBulk,addArcOutcome,removeArcOutcome,arcSubjects,arcSubject,addArcChange,removeArcChange,characterArc,pieceTitle,setArcCharacter,setArcState,arcStateOptions,pieceChanges,drawerEntries,archivedItems,stashNode,returnFromDrawer,normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,readingMoments,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
     factionAt:(p,e,key)=>L.CounterplotEnsemble.factionAt(timelineProject(p),e,momentId(p,key)),
     roleAt:(p,track,key)=>L.CounterplotEnsemble.roleAt(timelineProject(p),track,momentId(p,key)),
     prominenceAt:(p,c,key)=>L.CounterplotEnsemble.prominenceAt(timelineProject(p),c,momentId(p,key))});

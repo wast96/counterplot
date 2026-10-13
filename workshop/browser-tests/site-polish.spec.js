@@ -58,9 +58,9 @@ test('long outline titles wrap, save on Enter, and retain undo and reload behavi
 
 test('returning to the workbench reveals the active tab and ordering controls stop at list boundaries',async({page})=>{
  await page.setViewportSize({width:390,height:844});await load(page);
- await page.getByRole('tab',{name:'Outline',exact:true}).focus();await page.keyboard.press('End');await expect(page.getByRole('tab',{name:'Refine',exact:true})).toBeFocused();
+ await page.getByRole('tab',{name:'Outline',exact:true}).focus();await page.keyboard.press('End');await expect(page.getByRole('tab',{name:'Beat board',exact:true})).toBeFocused();
  await page.locator('[data-nav=world]').first().click();await page.locator('[data-nav=outline]').first().click();
- const active=page.locator('.story-viewbar [aria-selected=true]');await expect(active).toHaveText('Refine');
+ const active=page.locator('.story-viewbar [aria-selected=true]');await expect(active).toHaveText('Beat board');
  const rects=await active.evaluate(el=>[el.getBoundingClientRect(),el.parentElement.getBoundingClientRect()].map(r=>({left:r.left,right:r.right})));expect(rects[0].left).toBeGreaterThanOrEqual(rects[1].left-1);expect(rects[0].right).toBeLessThanOrEqual(rects[1].right+1);
  for(const name of ['Sequence','Chronology']){
   await page.getByRole('tab',{name,exact:true}).click();const cards=page.locator('.moment-card');

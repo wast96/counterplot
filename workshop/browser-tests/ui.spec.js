@@ -16,10 +16,10 @@ test('life status and prominence stay with the character and follow the selected
 });
 test('story tabs expose selection and keyboard navigation independently of actions',async({page})=>{
  await page.goto('/');const tabs=page.getByRole('tablist',{name:'Story views'}).getByRole('tab');
- const stages=['Outline','Chronology','Sequence','Refine'];await expect(tabs).toHaveText(stages);
+ const stages=['Outline','Chronology','Sequence','Refine','Beat board'];await expect(tabs).toHaveText(stages);
  const outline=page.getByRole('tab',{name:'Outline',exact:true});await outline.focus();
  for(const name of stages.slice(1)){await page.keyboard.press('ArrowRight');const tab=page.getByRole('tab',{name,exact:true});await expect(tab).toBeFocused();await expect(tab).toHaveAttribute('aria-selected','true');await expect(page.getByRole('tabpanel')).toHaveAttribute('aria-labelledby',await tab.getAttribute('id'));}
- await page.keyboard.press('Home');await expect(outline).toBeFocused();await page.keyboard.press('End');await expect(page.getByRole('tab',{name:'Refine',exact:true})).toBeFocused();await expect(page.locator('.page-head h1')).toHaveText('Refine your story');
+ await page.keyboard.press('Home');await expect(outline).toBeFocused();await page.keyboard.press('End');await expect(page.getByRole('tab',{name:'Beat board',exact:true})).toBeFocused();await expect(page.locator('.page-head h1')).toHaveText('Beat board');
 
  await page.locator('.story-tools-menu>summary').click();await action(page,'outline-text').click();await expect(page.locator('#dialog textarea[name=outline]')).toBeVisible();
 });
@@ -47,6 +47,6 @@ test('all tab labels fit their hit targets at phone and tablet widths',async({pa
    const heading=document.querySelector('.first-story-tip strong')?.getBoundingClientRect();
    const copy=document.querySelector('.first-story-tip p')?.getBoundingClientRect();
    return {tabCount:tabs.length,clipped,tipFits:!!heading&&!!copy&&heading.bottom<=copy.top+1,overflow:document.documentElement.scrollWidth>innerWidth+1};
-  }),{message:`Tab and tip layout at ${width}px`}).toEqual({tabCount:4,clipped:[],tipFits:true,overflow:false});
+  }),{message:`Tab and tip layout at ${width}px`}).toEqual({tabCount:5,clipped:[],tipFits:true,overflow:false});
  }
 });
