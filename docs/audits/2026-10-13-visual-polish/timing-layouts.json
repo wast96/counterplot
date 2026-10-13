@@ -1,0 +1,684 @@
+[
+  {
+    "stress": false,
+    "width": 320,
+    "character": {
+      "width": 320,
+      "documentWidth": 320,
+      "overflow": [
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Before the storyThe beginning"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread opens 01Liu Jun finds her allegiance"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread opens 02Liu Jun in Shanghai"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread opens 03What happened to her father?"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread opens 04The pickpocket on the train"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 06The pickpocket on the train"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 07What happened to her father?"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 08Liu Jun in Shanghai"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 09Liu Jun finds her allegiance"
+        }
+      ],
+      "clipped": [
+        {
+          "cls": "portrait-button",
+          "text": "LJ＋",
+          "overflow": 4
+        }
+      ]
+    },
+    "axe": [],
+    "new": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "beat:open",
+      "axe": []
+    },
+    "timing": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "",
+      "axe": []
+    },
+    "errors": []
+  },
+  {
+    "stress": false,
+    "width": 390,
+    "character": {
+      "width": 390,
+      "documentWidth": 390,
+      "overflow": [
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Before the storyThe beginning"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread opens 01Liu Jun finds her allegiance"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread opens 02Liu Jun in Shanghai"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread opens 03What happened to her father?"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 07What happened to her father?"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 08Liu Jun in Shanghai"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 09Liu Jun finds her allegiance"
+        }
+      ],
+      "clipped": [
+        {
+          "cls": "portrait-button",
+          "text": "LJ＋",
+          "overflow": 4
+        }
+      ]
+    },
+    "axe": [],
+    "new": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "beat:open",
+      "axe": []
+    },
+    "timing": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "",
+      "axe": []
+    },
+    "errors": []
+  },
+  {
+    "stress": false,
+    "width": 768,
+    "character": {
+      "width": 768,
+      "documentWidth": 768,
+      "overflow": [
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Before the storyThe beginning"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread opens 01Liu Jun finds her allegiance"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread opens 02Liu Jun in Shanghai"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 07What happened to her father?"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 08Liu Jun in Shanghai"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 09Liu Jun finds her allegiance"
+        }
+      ],
+      "clipped": [
+        {
+          "cls": "portrait-button",
+          "text": "LJ＋",
+          "overflow": 4
+        }
+      ]
+    },
+    "axe": [],
+    "new": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "beat:open",
+      "axe": []
+    },
+    "timing": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "",
+      "axe": []
+    },
+    "errors": []
+  },
+  {
+    "stress": false,
+    "width": 1024,
+    "character": {
+      "width": 1024,
+      "documentWidth": 1024,
+      "overflow": [
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 06The pickpocket on the train"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 07What happened to her father?"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 08Liu Jun in Shanghai"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 09Liu Jun finds her allegiance"
+        }
+      ],
+      "clipped": [
+        {
+          "cls": "portrait-button",
+          "text": "LJ＋",
+          "overflow": 4
+        }
+      ]
+    },
+    "axe": [],
+    "new": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "beat:open",
+      "axe": []
+    },
+    "timing": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "",
+      "axe": []
+    },
+    "errors": []
+  },
+  {
+    "stress": false,
+    "width": 1440,
+    "character": {
+      "width": 1440,
+      "documentWidth": 1440,
+      "overflow": [
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 06The pickpocket on the train"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 07What happened to her father?"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 08Liu Jun in Shanghai"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 09Liu Jun finds her allegiance"
+        }
+      ],
+      "clipped": [
+        {
+          "cls": "portrait-button",
+          "text": "LJ＋",
+          "overflow": 4
+        }
+      ]
+    },
+    "axe": [],
+    "new": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "beat:open",
+      "axe": []
+    },
+    "timing": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "",
+      "axe": []
+    },
+    "errors": []
+  },
+  {
+    "stress": false,
+    "width": 1920,
+    "character": {
+      "width": 1920,
+      "documentWidth": 1920,
+      "overflow": [
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 09Liu Jun finds her allegiance"
+        }
+      ],
+      "clipped": [
+        {
+          "cls": "portrait-button",
+          "text": "LJ＋",
+          "overflow": 4
+        }
+      ]
+    },
+    "axe": [],
+    "new": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "beat:open",
+      "axe": []
+    },
+    "timing": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "",
+      "axe": []
+    },
+    "errors": []
+  },
+  {
+    "stress": true,
+    "width": 320,
+    "character": {
+      "width": 320,
+      "documentWidth": 320,
+      "overflow": [
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Before the storyThe beginning"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread opens 01Liu Jun finds her allegiance Liu Jun finds her allegianceLiu Jun finds her "
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread opens 02Liu Jun in Shanghai Liu Jun in ShanghaiLiu Jun in ShanghaiLiu Jun in Shangh"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread opens 03What happened to her father? What happened to her father?What happened to h"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread opens 04The pickpocket on the train The pickpocket on the trainThe pickpocket on th"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 06The pickpocket on the train The pickpocket on the trainThe pickpocket on t"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 07What happened to her father? What happened to her father?What happened to "
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 08Liu Jun in Shanghai Liu Jun in ShanghaiLiu Jun in ShanghaiLiu Jun in Shang"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 09Liu Jun finds her allegiance Liu Jun finds her allegianceLiu Jun finds her"
+        }
+      ],
+      "clipped": [
+        {
+          "cls": "portrait-button",
+          "text": "LJ＋",
+          "overflow": 4
+        }
+      ]
+    },
+    "axe": [],
+    "new": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "beat:open",
+      "axe": []
+    },
+    "timing": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "",
+      "axe": []
+    },
+    "errors": []
+  },
+  {
+    "stress": true,
+    "width": 390,
+    "character": {
+      "width": 390,
+      "documentWidth": 390,
+      "overflow": [
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Before the storyThe beginning"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread opens 01Liu Jun finds her allegiance Liu Jun finds her allegianceLiu Jun finds her "
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread opens 02Liu Jun in Shanghai Liu Jun in ShanghaiLiu Jun in ShanghaiLiu Jun in Shangh"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread opens 03What happened to her father? What happened to her father?What happened to h"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 07What happened to her father? What happened to her father?What happened to "
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 08Liu Jun in Shanghai Liu Jun in ShanghaiLiu Jun in ShanghaiLiu Jun in Shang"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 09Liu Jun finds her allegiance Liu Jun finds her allegianceLiu Jun finds her"
+        }
+      ],
+      "clipped": [
+        {
+          "cls": "portrait-button",
+          "text": "LJ＋",
+          "overflow": 4
+        }
+      ]
+    },
+    "axe": [],
+    "new": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "beat:open",
+      "axe": []
+    },
+    "timing": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "",
+      "axe": []
+    },
+    "errors": []
+  },
+  {
+    "stress": true,
+    "width": 768,
+    "character": {
+      "width": 768,
+      "documentWidth": 768,
+      "overflow": [
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Before the storyThe beginning"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread opens 01Liu Jun finds her allegiance Liu Jun finds her allegianceLiu Jun finds her "
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread opens 02Liu Jun in Shanghai Liu Jun in ShanghaiLiu Jun in ShanghaiLiu Jun in Shangh"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 07What happened to her father? What happened to her father?What happened to "
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 08Liu Jun in Shanghai Liu Jun in ShanghaiLiu Jun in ShanghaiLiu Jun in Shang"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 09Liu Jun finds her allegiance Liu Jun finds her allegianceLiu Jun finds her"
+        }
+      ],
+      "clipped": [
+        {
+          "cls": "portrait-button",
+          "text": "LJ＋",
+          "overflow": 4
+        }
+      ]
+    },
+    "axe": [],
+    "new": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "beat:open",
+      "axe": []
+    },
+    "timing": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "",
+      "axe": []
+    },
+    "errors": []
+  },
+  {
+    "stress": true,
+    "width": 1024,
+    "character": {
+      "width": 1024,
+      "documentWidth": 1024,
+      "overflow": [
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 06The pickpocket on the train The pickpocket on the trainThe pickpocket on t"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 07What happened to her father? What happened to her father?What happened to "
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 08Liu Jun in Shanghai Liu Jun in ShanghaiLiu Jun in ShanghaiLiu Jun in Shang"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 09Liu Jun finds her allegiance Liu Jun finds her allegianceLiu Jun finds her"
+        }
+      ],
+      "clipped": [
+        {
+          "cls": "portrait-button",
+          "text": "LJ＋",
+          "overflow": 4
+        }
+      ]
+    },
+    "axe": [],
+    "new": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "beat:open",
+      "axe": []
+    },
+    "timing": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "",
+      "axe": []
+    },
+    "errors": []
+  },
+  {
+    "stress": true,
+    "width": 1440,
+    "character": {
+      "width": 1440,
+      "documentWidth": 1440,
+      "overflow": [
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 06The pickpocket on the train The pickpocket on the trainThe pickpocket on t"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 07What happened to her father? What happened to her father?What happened to "
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 08Liu Jun in Shanghai Liu Jun in ShanghaiLiu Jun in ShanghaiLiu Jun in Shang"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 09Liu Jun finds her allegiance Liu Jun finds her allegianceLiu Jun finds her"
+        }
+      ],
+      "clipped": [
+        {
+          "cls": "portrait-button",
+          "text": "LJ＋",
+          "overflow": 4
+        }
+      ]
+    },
+    "axe": [],
+    "new": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "beat:open",
+      "axe": []
+    },
+    "timing": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "",
+      "axe": []
+    },
+    "errors": []
+  },
+  {
+    "stress": true,
+    "width": 1920,
+    "character": {
+      "width": 1920,
+      "documentWidth": 1920,
+      "overflow": [
+        {
+          "tag": "BUTTON",
+          "cls": "time-stop",
+          "text": "Thread closes 09Liu Jun finds her allegiance Liu Jun finds her allegianceLiu Jun finds her"
+        }
+      ],
+      "clipped": [
+        {
+          "cls": "portrait-button",
+          "text": "LJ＋",
+          "overflow": 4
+        }
+      ]
+    },
+    "axe": [],
+    "new": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "beat:open",
+      "axe": []
+    },
+    "timing": {
+      "fits": true,
+      "bodyFits": true,
+      "at": "",
+      "axe": []
+    },
+    "errors": []
+  }
+]

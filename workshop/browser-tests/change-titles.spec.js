@@ -11,7 +11,7 @@ async function load(page){
 async function refine(page,id){await page.getByRole('tab',{name:'Refine',exact:true}).click();await page.locator(`.moment-navigation [data-action=refine-node][data-id=${id}][data-edge=open]`).click();}
 test('titles edit independently of recorded changes and survive undo and reload',async({page})=>{
  await load(page);const before=await snapshot(page);await refine(page,'ui-node-1');await expect(page.getByRole('button',{name:'Name from a change',exact:true})).toHaveCount(0);
- await page.getByLabel('Refine title').fill('A freely edited title');await page.getByLabel('Beat plan').click();await expect.poll(async()=>(await snapshot(page)).nodes[1].title).toBe('A freely edited title');
+ await page.getByLabel('Refine title').fill('A freely edited title');await page.locator('.refine-piece').getByLabel('Beat plan').click();await expect.poll(async()=>(await snapshot(page)).nodes[1].title).toBe('A freely edited title');
  await page.locator('.topbar [data-action=undo]').click();await expect(page.getByLabel('Refine title')).toHaveValue(before.nodes[1].title);await page.locator('.topbar [data-action=redo]').click();await expect(page.getByLabel('Refine title')).toHaveValue('A freely edited title');
  const after=await snapshot(page);for(const key of ['characters','timeline','world','connections'])expect(after[key]).toEqual(before[key]);await expect(page.locator('.refine-piece [data-beat-inline]').first()).toHaveValue('curiosity');
  await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await refine(page,'ui-node-1');await expect(page.getByLabel('Refine title')).toHaveValue('A freely edited title');
