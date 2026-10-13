@@ -304,8 +304,35 @@
   function characterBlockLabel(p,c,b){return blockLabelResolver(p,c)(b);}
   function characterState(p,c,key='',before=false){
     const state=baseCharacterState(p,c,key,before),label=blockLabelResolver(p,c);
+    const hidden=new Set(p.archive.filter(a=>a.kind==='block'&&a.characterId===c.id).map(a=>a.item.id));
+    state.blocks=state.blocks.filter(b=>!hidden.has(b.id));
     for(const b of state.blocks)b.label=label(b);
     return state;
+  }
+  // The character view must expose every record that contributes to its state,
+  // including retained changes in archived threads and saved earlier selves.
+  function characterHistory(p,c){
+    const hidden=new Set(p.archive.filter(a=>a.kind==='block'&&a.characterId===c.id).map(a=>a.item.id)),seen=new Set();
+    const entries=c.changes.map(change=>({change}));
+    for(const archive of p.archive.filter(a=>a.kind==='branch'))for(const x of archive.changes)if(x.characterId===c.id&&!p.archive.some(a=>a.kind==='block'&&a.id===x.archiveBlockId))entries.push({change:x.change,archive});
+    const unique=entries.filter(({change:x})=>{if(hidden.has(x.blockId)||seen.has(x.id))return false;seen.add(x.id);return true;});
+    for(const checkpoint of c.stateCheckpoints||[])for(const b of checkpoint.blocks)if(!hidden.has(b.id))unique.push({checkpoint,change:{id:checkpoint.id+':'+b.id,at:W.events(p).find(e=>e.key===(checkpoint.at||checkpoint.momentId)||e.id===(checkpoint.at||checkpoint.momentId))?.key||checkpoint.at||checkpoint.momentId,blockId:b.id,op:'saved',block:b}});
+    const order=new Map(W.events(p).flatMap((e,i)=>[[e.key,i],[e.id,i]]));
+    return unique.sort((a,b)=>(order.get(a.change.at)??Infinity)-(order.get(b.change.at)??Infinity)||(a.checkpoint?0:1)-(b.checkpoint?0:1));
+  }
+  function archiveCharacterBlock(p,cid,bid){
+    const c=p.characters.find(c=>c.id===cid);if(!c)return;
+    if(p.archive.some(a=>a.kind==='block'&&a.characterId===cid&&a.item.id===bid))return;
+    const b=c.blocks.find(b=>b.id===bid)||characterHistory(p,c).find(e=>e.change.blockId===bid&&e.change.block)?.change.block;if(!b)return;
+    const entry={id:W.uid(),kind:'block',title:(characterBlockLabel(p,c,b)||b.kind)+' · '+c.name,created:new Date().toISOString(),characterId:cid,item:copy(b),startingBlock:c.blocks.some(b=>b.id===bid),changes:copy(c.changes.filter(x=>x.blockId===bid))};
+    p.archive.unshift(entry);c.blocks=c.blocks.filter(b=>b.id!==bid);c.changes=c.changes.filter(x=>x.blockId!==bid);
+    for(const a of p.archive.filter(a=>a.kind==='branch'))for(const x of a.changes)if(x.characterId===cid&&x.change.blockId===bid)x.archiveBlockId=entry.id;
+    return entry;
+  }
+  function removeCharacterChange(p,cid,id){
+    const c=p.characters.find(c=>c.id===cid);if(!c)return;
+    c.changes=c.changes.filter(x=>x.id!==id);
+    for(const a of p.archive.filter(a=>a.kind==='branch'))a.changes=a.changes.filter(x=>x.characterId!==cid||x.change.id!==id);
   }
   function setBlockLabel(p,cid,bid,value){
     const c=allCharacters(p).find(c=>c.id===cid);if(!c||typeof value!=='string'||value.length>1000)throw Error('Choose a block label within 1,000 characters.');
@@ -651,7 +678,7 @@
     W.restore(candidate,id);if(anchor!==undefined)W.move(candidate,rootId,anchor,where);
     Object.assign(p,candidate);return rootId;
   }
-  Object.assign(W,{characterState,stateAt:(p,c,key='',before=false)=>characterState(p,c,key,before).blocks,characterBlockLabel,setBlockLabel,move,retainedBeatThread,THREAD_FIELDS,threadPlan,setThreadPlan,addThreadOutcome,removeThreadOutcome,changeStateAt,recordedThreadStates,setPieceState,openThreadContext,setAdvancedThreads,editableTitle,setPieceTitle,applyBulk,addArcOutcome,removeArcOutcome,arcSubjects,arcSubject,addArcChange,removeArcChange,characterArc,pieceTitle,setArcCharacter,setArcState,arcStateOptions,pieceChanges,drawerEntries,archivedItems,stashNode,returnFromDrawer,normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,readingMoments,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
+  Object.assign(W,{characterHistory,archiveCharacterBlock,removeCharacterChange,characterState,stateAt:(p,c,key='',before=false)=>characterState(p,c,key,before).blocks,characterBlockLabel,setBlockLabel,move,retainedBeatThread,THREAD_FIELDS,threadPlan,setThreadPlan,addThreadOutcome,removeThreadOutcome,changeStateAt,recordedThreadStates,setPieceState,openThreadContext,setAdvancedThreads,editableTitle,setPieceTitle,applyBulk,addArcOutcome,removeArcOutcome,arcSubjects,arcSubject,addArcChange,removeArcChange,characterArc,pieceTitle,setArcCharacter,setArcState,arcStateOptions,pieceChanges,drawerEntries,archivedItems,stashNode,returnFromDrawer,normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,readingMoments,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
     factionAt:(p,e,key)=>L.CounterplotEnsemble.factionAt(timelineProject(p),e,momentId(p,key)),
     roleAt:(p,track,key)=>L.CounterplotEnsemble.roleAt(timelineProject(p),track,momentId(p,key)),
     prominenceAt:(p,c,key)=>L.CounterplotEnsemble.prominenceAt(timelineProject(p),c,momentId(p,key))});

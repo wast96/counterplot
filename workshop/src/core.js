@@ -66,6 +66,7 @@ const Workshop = (() => {
     for(const n of nodes){n.cast=n.cast.filter(id=>!chars.has(id));n.worldIds=n.worldIds.filter(id=>!worlds.has(id));}
     for(const a of p.archive.filter(a=>a.kind==='branch'))a.changes=a.changes.filter(x=>!chars.has(x.characterId)&&!blocks.get(x.characterId)?.has(x.change.blockId));
     for(const {characterId,owner} of changeOwners(p))owner.changes=(owner.changes||[]).filter(x=>!blocks.get(characterId)?.has(x.blockId));
+    for(const {characterId,owner} of changeOwners(p))for(const x of owner.stateCheckpoints||[])x.blocks=x.blocks.filter(b=>!blocks.get(characterId)?.has(b.id));
   }
   function duplicateNode(p,id) {
     const ids=descendants(p,id);ids.add(id);const list=ordered(p).map(x=>x.node).filter(n=>ids.has(n.id));if(!list.length)throw Error('Choose a piece to duplicate.');
@@ -107,7 +108,7 @@ const Workshop = (() => {
     result.lifeStatus=c.lifeStatus==='dead'?'dead':'alive';
     if(stop<0)return result;
     const order=new Map(ev.flatMap((e,i)=>[[e.key,i],[e.id||e.key,i]]));
-    const archived=p.archive.filter(a=>a.kind==='branch').flatMap(a=>a.changes.filter(x=>x.characterId===c.id).map(x=>x.change));
+    const archived=p.archive.filter(a=>a.kind==='branch').flatMap(a=>a.changes.filter(x=>x.characterId===c.id&&!p.archive.some(a=>a.kind==='block'&&a.id===x.archiveBlockId)).map(x=>x.change));
     const changes=[...(c.stateCheckpoints||[]).map((x,i)=>({x,i,rank:0})),
       ...[...c.changes,...archived.filter(x=>!c.changes.some(y=>y.id===x.id))].map((x,i)=>({x,i,rank:1})),
       ...(c.lifeChanges||[]).map((x,i)=>({x,i,rank:2}))]
@@ -173,7 +174,7 @@ const Workshop = (() => {
     } else if (a.kind === 'character') { p.characters.push(copy(a.item)); }
     else if (a.kind === 'world') { p.world.push(copy(a.item)); }
     else if (a.kind === 'connection') { p.connections.push(copy(a.item)); }
-    else if (a.kind === 'block') { const c = p.characters.find(c => c.id === a.characterId); if (!c) throw Error('Restore this character first.'); c.blocks.push(copy(a.item)); c.changes.push(...copy(a.changes || [])); }
+    else if (a.kind === 'block') { const c = p.characters.find(c => c.id === a.characterId); if (!c) throw Error('Restore this character first.'); if(a.startingBlock!==false&&!c.blocks.some(b=>b.id===a.item.id))c.blocks.push(copy(a.item)); c.changes.push(...copy(a.changes || []).filter(x=>!c.changes.some(y=>y.id===x.id))); for(const branch of p.archive.filter(x=>x.kind==='branch'))for(const x of branch.changes)if(x.archiveBlockId===a.id)delete x.archiveBlockId; }
     p.archive = p.archive.filter(x => x.id !== id);
   }
   // Rekey a story entity without changing its content or disconnecting its history.
