@@ -3,6 +3,7 @@ const fixture=require('./ui-fixture.cjs');
 const W=require('../src/integration.js');
 async function load(page,data){
  await page.goto('/');
+ await expect(page.locator('.story-viewbar')).toBeVisible();
  await page.locator('#import-file').setInputFiles({name:'spacing.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(data))});
  await page.locator('[data-action=accept-import]').click();await expect(page.locator('#dialog')).not.toBeVisible();
 }
