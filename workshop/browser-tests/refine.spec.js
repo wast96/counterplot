@@ -30,7 +30,7 @@ test('Refine edits opening, closing and beat craft independently and scene craft
 });
 
 test('Refine sits before Write, supports keyboard tabs and fits narrow screens',async({page})=>{
- await load(page);const outline=page.getByRole('tab',{name:'Outline',exact:true});await outline.focus();await outline.press('ArrowRight');await expect(page.getByRole('tab',{name:'Refine',exact:true})).toBeFocused();await expect(page.getByRole('tabpanel')).toHaveAttribute('aria-labelledby','story-tab-refine');await page.keyboard.press('ArrowRight');await expect(page.getByRole('tab',{name:'Write',exact:true})).toBeFocused();
+ await load(page);await view(page,'Refine');const refine=page.getByRole('tab',{name:'Refine',exact:true});await refine.focus();await expect(page.getByRole('tabpanel')).toHaveAttribute('aria-labelledby','story-tab-refine');await page.keyboard.press('ArrowRight');await expect(page.getByRole('tab',{name:'Choices',exact:true})).toBeFocused();await page.keyboard.press('ArrowRight');await expect(page.getByRole('tab',{name:'Write',exact:true})).toBeFocused();
  for(const width of [320,390,768,1440]){await page.setViewportSize({width,height:950});for(const mode of ['Refine','Write']){await view(page,mode);expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width+1);}}
 });
 
