@@ -160,7 +160,7 @@
       },
       "steps": [
         "Read the introduction, then press Next to start building the outline.",
-        "Drag Character into the empty outline. Watch “Snake becomes Big Boss” write itself in. Read or edit the title, then press Next. Your own wording is always kept.",
+        "Drag Character into the empty outline. Its title pairs starting and ending states for whoever changes. Leave the fields open for now; we will introduce Snake and his states as we build the story.",
         "Watch the opening write in: Snake trusts The Boss, his former instructor. This establishes the relationship the story will test.",
         "Watch the closing write in: Snake has killed his mentor and learned her true orders. This is the destination of his Character thread; the missions will develop how he gets there."
       ],
@@ -188,7 +188,7 @@
           }
         },
         {
-          "text": "Drag Character into the empty outline. Watch “Snake becomes Big Boss” write itself in. Read or edit the title, then press Next. Your own wording is always kept.",
+          "text": "Drag Character into the empty outline. Its title pairs starting and ending states for whoever changes. Leave the fields open for now; we will introduce Snake and his states as we build the story.",
           "setup": {
             "page": "outline",
             "reveal": ""
@@ -203,9 +203,7 @@
           },
           "drop": ".outline-tail",
           "sampleNode": "loyalty",
-          "nodeFields": [
-            "title"
-          ],
+          "nodeFields": [],
           "id": "build-c-action-1",
           "enterAssemblies": [],
           "completeAssemblies": [],

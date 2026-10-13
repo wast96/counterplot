@@ -4,8 +4,9 @@
  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const bridge=window.CounterplotTutorial, sessions=window.CounterplotSession, library=window.CounterplotTutorialLibrary;
+ const availableDefinition=d=>!d||bridge.features?.drafting!==false?d:{...d,lessons:d.lessons.map(l=>({...l,goals:l.goals.filter(g=>!['prose','closingProse'].includes(g.check?.field)&&!g.setup?.write&&!['write','read'].includes(g.setup?.mode))})).filter(l=>l.goals.length)};
  const key='counterplot.guide.library.v1';
- let definition=library.definition('mgs3')||library.definition(library.list()[0]?.id), state={version:3,projects:{}}, lastSaved='',storageOkay=true;
+ let definition=availableDefinition(library.definition('mgs3')||library.definition(library.list()[0]?.id)), state={version:3,projects:{}}, lastSaved='',storageOkay=true;
  let message='',generation=0,busy=false,internal=false,frame=0,checking=false,preview=null,suspended=false,signature='',abortSample=null;
  let lastPosition=null,placementToken='',currentTarget=null,autoTimer=0,autoSampleToken='',autoNextToken='',scrollAnimation=0;
  const panelStates=new Map();
@@ -455,7 +456,7 @@
  document.addEventListener('close',schedule,true);window.visualViewport?.addEventListener('resize',schedule);addEventListener('resize',schedule);addEventListener('scroll',()=>layout(),true);
  document.addEventListener('counterplot:before-mode-change',()=>{cancelTyping();if(sessions.isPractice())persist();suspended=true;root.hidden=true;spot.hidden=true;document.body.append(spot,root);removeLayout();});
  function activate(event){
-  suspended=false;preview=null;signature='';lastPosition=null;message='';definition=sessions.definition()||library.definition('mgs3')||library.definition(library.list()[0]?.id);
+  suspended=false;preview=null;signature='';lastPosition=null;message='';definition=availableDefinition(sessions.definition()||library.definition('mgs3')||library.definition(library.list()[0]?.id));
   if(sessions.isPractice()){
    const r=record(),fresh=!(token() in r.baselines);
    // First entry and a browser reload must honor first-step assemblies/setup.
@@ -468,7 +469,7 @@
   render(true);schedule();
  }
  document.addEventListener('counterplot:mode-change',activate);document.addEventListener('counterplot:practice-change',activate);
- document.addEventListener('counterplot:definition-change',()=>{const l=lesson()?.id,g=goal()?.id;definition=sessions.definition()||library.definition(definition.id);if(sessions.isPractice()){const r=record(),li=definition.lessons.findIndex(x=>x.id===l);if(li>=0){r.index=li;r.goal=Math.max(0,definition.lessons[li].goals.findIndex(x=>x.id===g));}persist();}signature='';render(true);});
+ document.addEventListener('counterplot:definition-change',()=>{const l=lesson()?.id,g=goal()?.id;definition=availableDefinition(sessions.definition()||library.definition(definition.id));if(sessions.isPractice()){const r=record(),li=definition.lessons.findIndex(x=>x.id===l);if(li>=0){r.index=li;r.goal=Math.max(0,definition.lessons[li].goals.findIndex(x=>x.id===g));}persist();}signature='';render(true);});
  window.CounterplotGuide={
  suspend(){cancelTyping();suspended=true;root.hidden=true;spot.hidden=true;document.body.append(spot,root);removeLayout();},
  resume(){suspended=false;preview=null;signature='';render(true);schedule();},

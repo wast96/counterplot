@@ -985,6 +985,18 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
       const scenes=new Set(nodes.flatMap(n=>[n.id,n.writingId,n.sceneId].filter(Boolean)));
       for(const c of craftRecords(p)){if(c.refinement!==undefined){if(!c.refinement||typeof c.refinement!=='object'||Array.isArray(c.refinement))fail('Refinement must be a record.');for(const value of Object.values(c.refinement))if(typeof value!=='string'||value.length>2000000)fail('Refinement answers must be text.');}}
       for(const n of nodes){
+        if(n.characterArc!==undefined){
+          const a=n.characterArc;
+          if(!a||typeof a!=='object'||Array.isArray(a)||typeof a.subjectId!=='string'||typeof a.legacyTitle!=='string')fail('Character thread titles must be records.');
+          if(a.subjectId&&(!/^[A-Za-z0-9_-]{1,120}$/.test(a.subjectId)||!arcSubjects(p).some(c=>c.id===a.subjectId)))fail('Invalid character thread subject.');
+          unique(array(a.changes,'Character thread changes',100).map(r=>r?.id),'character thread change');
+          if(!a.changes.length)fail('Character threads need at least one state pair, which can be blank.');
+          for(const row of a.changes){
+            if(!row||typeof row.id!=='string'||!/^[A-Za-z0-9_-]{1,160}$/.test(row.id)||typeof row.kind!=='string'||typeof row.label!=='string')fail('Character thread changes need a label.');
+            unique(array(row.outcomes||[],'Forked states',100).map(v=>v?.id),'forked state');if((row.outcomes||[]).some(v=>!v||typeof v.id!=='string'||!/^[A-Za-z0-9_-]{1,120}$/.test(v.id)))fail('Invalid forked state identity.');
+            for(const v of [row.from,row.to,...(row.outcomes||[])]){if(!v||typeof v!=='object'||Array.isArray(v)||typeof v.text!=='string'||v.text.length>2000000||typeof v.blockId!=='string'||typeof v.linked!=='boolean'||v.blockId&&!/^[A-Za-z0-9_-]{1,120}$/.test(v.blockId))fail('Character thread states must contain text and a supported block link.');}
+          }
+        }
         if(n.closingProse!==undefined&&(typeof n.closingProse!=='string'||n.closingProse.length>2000000))fail('Closing prose must be text.');
         if(n.closingWritingStatus!==undefined&&!['draft','done'].includes(n.closingWritingStatus))fail('Invalid closing writing status.');
         const c=n.closingCraft;if(c===undefined)continue;
@@ -1007,6 +1019,7 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
       for(const plot of p.plots)for(const tr of plot.cast||[]){if(!targets.has(tr.characterId))fail('A plot role references a missing person.');timing(tr.changes,'Plot roles');timing(tr.checkpoints,'Plot checkpoints');}
     }
     if(data.tutorialRecords!==undefined){if(!data.tutorialRecords||Array.isArray(data.tutorialRecords)||typeof data.tutorialRecords!=='object')fail('Tutorial saves must be records.');for(const [key,value]of Object.entries(data.tutorialRecords)){if(!/^(counterplot\.tutorial\.(custom\.index\.v1|build\.v2|definition\.[A-Za-z0-9_-]+\.v1|draft\.[A-Za-z0-9_-]+\.v2|practice\.[A-Za-z0-9_-]+\.v1|cursor\.[A-Za-z0-9_-]+\.v1)|counterplot\.guide\.(library\.v1|mgs3\.build\.v3|mgs3\.build\.v2\.[A-Za-z0-9_-]+))$/.test(key)||typeof value!=='string')fail('Unsupported tutorial storage key.');try{JSON.parse(value);}catch{fail('Invalid tutorial save JSON.');}}}
+    for(const p of [...data.projects,...list(data.trash).map(x=>x.project)])for(const n of allNodes(p))if(n.type==='C'&&n.characterArc)n.title=pieceTitle(p,n);
     data.schema=2;return data;
   }
   const timelineProject=p=>({moments:W.events(p).map(e=>({id:e.id||e.key}))});
@@ -1094,6 +1107,106 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
     if(title.length>1000)throw Error('Shorten the states so the title fits within 1,000 characters.');
     return title;
   }
+  const emptyArcState=()=>({text:'',blockId:'',linked:false});
+  const emptyArcChange=(id='state-empty')=>({id,kind:'custom',label:'',from:emptyArcState(),to:emptyArcState(),outcomes:[]});
+  const arcSubjects=p=>[...allCharacters(p),...allWorld(p).filter(w=>w.type==='group')];
+  const arcSubject=(p,a)=>arcSubjects(p).find(c=>c.id===a.subjectId);
+  function arcStateOptions(p,c){
+    if(!c)return [];
+    const source=c.type==='group'?c.faction||{}:c;
+    const blocks=[...(source.blocks||[]),...(source.changes||[]).flatMap(x=>x.block?[x.block]:[]),...(source.stateCheckpoints||source.checkpoints||[]).flatMap(x=>x.blocks)];
+    const seen=new Set();return blocks.filter(b=>{const key=b.id+'\0'+b.text;if(seen.has(key))return false;seen.add(key);return true;});
+  }
+  function arcBlocksAt(p,c,key,before=false){
+    if(c.type!=='group')return W.stateAt(p,c,key,before);
+    if(before){const events=W.events(p),i=events.findIndex(e=>e.key===key);key=events[i-1]?.key||'';}
+    return W.factionAt(p,c,key);
+  }
+  function characterArc(p,n){
+    let arc=n.characterArc;
+    if(!arc){
+      const parsed=/^From (.+?) to (.+)$/i.exec(n.title||'');
+      const changes=pieceChanges(p,n).filter(x=>/^(block|faction):/.test(x.id));
+      const match=parsed?changes.find(x=>{const [,cid,bid]=x.id.split(':'),c=arcSubjects(p).find(c=>c.id===cid),from=c?arcBlocksAt(p,c,n.id+':open').find(b=>b.id===bid)?.text||x.from:x.from;return from.toLocaleLowerCase()===parsed[1].toLocaleLowerCase()&&x.to.toLocaleLowerCase()===parsed[2].toLocaleLowerCase();}):null;
+      const subjects=[...new Set(changes.map(x=>x.id.split(':')[1]))];
+      const subjectId=match?.id.split(':')[1]||(subjects.length===1?subjects[0]:n.cast.length===1?n.cast[0]:'');
+      const c=arcSubjects(p).find(c=>c.id===subjectId),ordered=[...(match?[match]:[]),...changes.filter(x=>x!==match&&x.id.split(':')[1]===subjectId)];
+      const rows=ordered.map(x=>{const bid=x.id.split(':')[2],b=arcStateOptions(p,c).find(b=>b.id===bid);return {id:'state-'+bid,kind:b?.kind||'custom',label:b?.label||b?.title||'',from:{text:x.from,blockId:bid,linked:true},to:{text:x.to,blockId:bid,linked:true},outcomes:[]};});
+      if(parsed&&!match){const row=emptyArcChange();row.from.text=parsed[1];row.to.text=parsed[2];rows.unshift(row);}
+      arc={subjectId,changes:rows.length?rows:[emptyArcChange()],legacyTitle:parsed?'':n.title||''};
+    }
+    const c=arcSubject(p,arc);
+    return {...arc,changes:arc.changes.map(row=>{const state=(value,key)=>{value={...value};return {...value,text:value.linked&&c?arcBlocksAt(p,c,n.id+':'+key).find(b=>b.id===value.blockId)?.text||'':text(value.text)};};return {...row,from:state(row.from,'open'),to:state(row.to,'close'),outcomes:(row.outcomes||[]).map(v=>state(v,'close'))};})};
+  }
+  function pieceTitle(p,n){
+    if(!n)return '';
+    if(n.type!=='C')return n.title||W.TYPES[n.type]?.name||'Untitled';
+    const arc=characterArc(p,n),c=arcSubject(p,arc);
+    return (c?.name||'Choose character or group')+' · '+arc.changes.map(row=>(row.from.text||'Starting state')+' → '+[row.to,...(row.outcomes||[])].map(v=>v.text||'Ending state').join(' + ')).join(' · ');
+  }
+  function setArcCharacter(p,n,id){
+    if(n.type!=='C')throw Error('Choose a Character thread.');
+    const c=arcSubjects(p).find(c=>c.id===id);if(id&&!c)throw Error('Choose a character or group in this story.');
+    const old=characterArc(p,n);
+    if(old.subjectId===id){n.characterArc=old;return;}
+    n.characterArc={subjectId:id,changes:[emptyArcChange()],legacyTitle:old.legacyTitle||''};
+    const cast=c?.type==='group'?n.worldIds:n.cast;if(id&&!cast.includes(id))cast.push(id);
+    n.title=pieceTitle(p,n);
+  }
+  function addArcChange(p,n){
+    if(n.type!=='C')throw Error('Choose a Character thread.');
+    const arc=characterArc(p,n),row=emptyArcChange(W.uid());arc.changes.push(row);n.characterArc=arc;n.title=pieceTitle(p,n);return row.id;
+  }
+  function removeArcChange(p,n,id){
+    const arc=characterArc(p,n);arc.changes=arc.changes.filter(row=>row.id!==id);if(!arc.changes.length)arc.changes=[emptyArcChange()];n.characterArc=arc;n.title=pieceTitle(p,n);
+  }
+  function addArcOutcome(p,n,rowId){
+    const arc=characterArc(p,n),row=arc.changes.find(r=>r.id===rowId);if(!row)throw Error('Choose a state change.');
+    const outcome={...emptyArcState(),id:W.uid()};(row.outcomes||=[]).push(outcome);n.characterArc=arc;n.title=pieceTitle(p,n);return outcome.id;
+  }
+  function removeArcOutcome(p,n,rowId,outcomeId){
+    const arc=characterArc(p,n),row=arc.changes.find(r=>r.id===rowId);if(!row)return;row.outcomes=(row.outcomes||[]).filter(v=>v.id!==outcomeId);n.characterArc=arc;n.title=pieceTitle(p,n);
+  }
+  function setArcState(p,n,edge,{rowId='',outcomeId='',value='',blockId='',kind='custom'}={}){
+    if(n.type!=='C'||!['from','to'].includes(edge))throw Error('Choose a Character thread state.');
+    if(typeof value!=='string'||value.length>1000)throw Error('Keep each title state within 1,000 characters.');
+    const arc=characterArc(p,n),c=arcSubject(p,arc),row=arc.changes.find(r=>r.id===rowId)||(!rowId?arc.changes[0]:null);value=value.trim();
+    if(!row)throw Error('This state change is no longer in the title.');
+    const outcome=outcomeId?(row.outcomes||[]).find(v=>v.id===outcomeId):null;if(outcomeId&&(!outcome||edge!=='to'))throw Error('This outcome is no longer in the title.');
+    const assign=value=>{if(outcome)Object.assign(outcome,value);else row[edge]=value;};
+    if(edge==='to'&&blockId&&blockId!=='new'&&[row.to,...(row.outcomes||[])].some(v=>v!==(outcome||row.to)&&v.linked&&v.blockId===blockId))throw Error('Each outcome needs its own building block. Choose New building block to keep both states.');
+    if(value&&blockId){
+      if(!c)throw Error('Choose a character or group before recording a building block.');
+      const group=c.type==='group';if(group)c.faction||={blocks:[],changes:[],checkpoints:[]};
+      const records=group?c.faction.changes:c.changes,at=n.id+':'+(edge==='from'?'open':'close'),before=arcBlocksAt(p,c,at,true);
+      const existing=blockId==='new'?null:records.findLast(x=>x.blockId===blockId&&(x.at===at||x.momentId===momentId(p,at)));
+      const original=blockId==='new'?(group?{id:W.uid(),kind,key:'custom',title:'',text:'',detail:'',context:'any',knownBy:[],links:[]}:W.block(kind)):existing?.block||arcBlocksAt(p,c,at).find(b=>b.id===blockId)||arcStateOptions(p,c).find(b=>b.id===blockId);
+      if(!original)throw Error('That building block is no longer available.');
+      const block={...copy(original),text:value},present=before.some(b=>b.id===block.id);
+      const record={id:existing?.id||W.uid(),at,momentId:momentId(p,at),blockId:block.id,...(group?{operation:present?'replace':'add'}:{op:present?'develop':'add'}),block,reason:existing?.reason||'Set in character thread'};
+      if(existing)Object.assign(existing,record);else records.push(record);
+      assign({text:value,blockId:block.id,linked:true});if(!outcome){row.kind=block.kind;row.label=block.label||block.title||'';}
+    }else {assign({text:value,blockId:'',linked:false});if(!outcome&&!row.from.linked&&!row.to.linked)row.kind=kind;}
+    n.characterArc=arc;n.title=pieceTitle(p,n);
+  }
+  function applyBulk(p,ids,{cast=[],worldIds=[],plotIds=[],povId=null,status=null}={}){
+    const chosen=[...new Set(ids)].map(id=>p.nodes.find(n=>n.id===id));
+    if(!chosen.length||chosen.some(n=>!n))throw Error('Choose existing story pieces.');
+    if(cast.some(id=>!p.characters.some(c=>c.id===id))||povId&&!p.characters.some(c=>c.id===povId))throw Error('A selected person is no longer available.');
+    if(worldIds.some(id=>!p.world.some(w=>w.id===id)))throw Error('A selected World entry is no longer available.');
+    if(plotIds.some(id=>!p.plots.some(x=>x.id===id)))throw Error('A selected plot is no longer available.');
+    if(status!==null&&!['open','planned','resolved','open-ended'].includes(status))throw Error('Choose an outline status.');
+    for(const n of chosen){
+      if(n.type==='C'&&!n.characterArc)n.characterArc=characterArc(p,n);
+      if(n.type!=='B'&&(cast.length||worldIds.length||povId!==null))n.closingCraft||={cast:[...n.cast],worldIds:[]};
+      for(const c of [n,...(n.closingCraft?[n.closingCraft]:[])]){
+        c.cast=[...new Set([...(c.cast||[]),...cast,...(povId?[povId]:[])])];c.worldIds=[...new Set([...(c.worldIds||[]),...worldIds])];
+        if(povId!==null){c.povId=povId;c.focus=povId;}
+      }
+      n.plotIds=[...new Set([...(n.plotIds||[]),...plotIds])];if(status!==null)n.status=status;
+    }
+    return chosen.length;
+  }
   function consequences(p,key,changes){const candidate=copy(p),mid=momentId(candidate,key);if(!W.events(candidate).some(e=>e.id===mid))throw Error('Choose a story moment.');for(const item of changes){const record={...copy(item.value),id:item.value.id||W.uid(),momentId:mid,at:key};let target;
       if(item.kind==='block'){target=candidate.characters.find(c=>c.id===item.targetId);if(!target)throw Error('Missing character.');target.changes.push(record);}
       else if(item.kind==='life'){target=candidate.characters.find(c=>c.id===item.targetId);if(!target)throw Error('Missing character.');target.lifeChanges.push(record);}
@@ -1133,9 +1246,10 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
     return destinations;
   }
   function purgeArchive(p,ids){
-    const beforeNodes=new Map(allNodes(p).map(n=>[n.id,n]));basePurge(p,ids);
+    const beforeNodes=new Map(allNodes(p).map(n=>[n.id,n])),arcs=new Map(allNodes(p).filter(n=>n.characterArc).map(n=>[n.id,characterArc(p,n)]));basePurge(p,ids);
     const people=new Set(allCharacters(p).map(c=>c.id)),world=new Set(allWorld(p).map(w=>w.id)),targets=new Set([...people,...world]),nodes=new Set(allNodes(p).map(n=>n.id)),scenes=new Set(allNodes(p).flatMap(n=>[n.id,n.sceneId,n.writingId].filter(Boolean)));
     p.connections=p.connections.filter(r=>targets.has(r.a)&&targets.has(r.b));p.archive=p.archive.filter(a=>a.kind!=='connection'||targets.has(a.item.a)&&targets.has(a.item.b));
+    for(const n of allNodes(p))if(n.characterArc){const a=n.characterArc,c=arcSubject(p,a);if(!c)a.subjectId='';for(const row of a.changes)for(const v of [row.from,row.to,...(row.outcomes||[])])if(v.linked&&(!c||!arcStateOptions(p,c).some(b=>b.id===v.blockId))){const old=arcs.get(n.id)?.changes.find(r=>r.id===row.id),prior=v===row.from?old?.from:v===row.to?old?.to:old?.outcomes?.find(x=>x.id===v.id);Object.assign(v,emptyArcState(),{text:prior?.text||''});}}
     const prune=o=>{if(!o||typeof o!=='object')return;if(Array.isArray(o)){o.forEach(prune);return;}if(o.knownBy)o.knownBy=o.knownBy.filter(id=>targets.has(id));if(o.knownFrom)o.knownFrom=Object.fromEntries(Object.entries(o.knownFrom).filter(([id])=>targets.has(id)));if(o.links)o.links=o.links.filter(x=>targets.has(x.targetId));for(const key of ['targetId','stateTargetId'])if(o[key]&&!targets.has(o[key]))o[key]='';if(o.readerAppearances)o.readerAppearances=o.readerAppearances.filter(x=>scenes.has(x.sceneId));for(const [key,value]of Object.entries(o))if(!['source','retiredPlanning','migration','drafts','continuitySnapshot'].includes(key))prune(value);};prune(p);
     for(const n of craftRecords(p)){n.cast=(n.cast||[]).filter(id=>people.has(id));n.worldIds=(n.worldIds||[]).filter(id=>world.has(id));n.ensemble=(n.ensemble||[]).filter(x=>people.has(x.id));n.factionIds=(n.factionIds||[]).filter(id=>world.has(id));for(const key of ['povId','focus','partner','characterId'])if(n[key]&&!people.has(n[key]))n[key]='';if(n.parent&&!scenes.has(n.parent))n.parent='';n.extraParents=(n.extraParents||[]).filter(x=>scenes.has(x.id));n.miceLinks=(n.miceLinks||[]).filter(x=>nodes.has(x.miceId));n.evidenceLinks=(n.evidenceLinks||[]).filter(x=>x.sourceType==='fact'?world.has(x.sourceId):scenes.has(x.sourceId));for(const key of ['openSceneId','closeSceneId'])if(n[key]&&!scenes.has(n[key]))n[key]='';}
     for(const plot of p.plots)plot.cast=(plot.cast||[]).filter(x=>people.has(x.characterId));
@@ -1167,6 +1281,7 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
     if(entity==='character'||entity==='world'){
       for(const r of allConnections(p)){r.a=rename(r.a);r.b=rename(r.b);}
       for(const n of craftRecords(p)){
+        if(n.characterArc?.subjectId===from)n.characterArc.subjectId=to;
         if(n.cast)n.cast=n.cast.map(rename);if(n.worldIds)n.worldIds=n.worldIds.map(rename);
         for(const key of ['povId','focus','partner','characterId'])if(n[key]===from)n[key]=to;
         n.factionIds=(n.factionIds||[]).map(rename);
@@ -1175,7 +1290,7 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
       }
       for(const plot of p.plots||[])for(const tr of plot.cast||[])tr.characterId=rename(tr.characterId);
     }
-    if(entity==='block')for(const c of allCharacters(p).filter(c=>c.id===cid))for(const checkpoint of c.stateCheckpoints||[])for(const b of checkpoint.blocks)if(b.id===from)b.id=to;
+    if(entity==='block'){for(const c of allCharacters(p).filter(c=>c.id===cid))for(const checkpoint of c.stateCheckpoints||[])for(const b of checkpoint.blocks)if(b.id===from)b.id=to;for(const n of allNodes(p))if(n.characterArc?.subjectId===cid)for(const row of n.characterArc.changes)for(const v of [row.from,row.to,...(row.outcomes||[])])if(v.blockId===from)v.blockId=to;}
     const visit=o=>{
       if(!o||typeof o!=='object')return;if(Array.isArray(o)){o.forEach(visit);return;}
       if(entity==='node'){
@@ -1196,6 +1311,7 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
     normalize(p);return root;
   }
   function markdown(p){
+    p=copy(p);for(const n of allNodes(p))if(n.type==='C'){n.characterArc=characterArc(p,n);n.title=pieceTitle(p,n);}
     const label=id=>[...allCharacters(p),...allWorld(p)].find(x=>x.id===id)?.name||id;
     const when=id=>{const e=W.events(p).find(e=>e.id===id||e.key===id);return e?((e.storyDate?e.storyDate+' · ':'')+(e.title||e.node.title)):id||'Opening';};
     const lines=[baseMarkdown(p),'','## Version',p.version||'Main draft','','## Manuscript',...readingMoments(p).filter(e=>e.edge==='close'?e.node.closingProse:e.node.prose).flatMap(e=>['','### '+e.node.title+(e.edge==='close'?' · Closing':''),'',e.edge==='close'?e.node.closingProse:e.node.prose]),'','## Story chronology',...W.events(p).map(e=>'- '+when(e.id||e.key)+' · '+e.edge),'','## Scene craft'];
@@ -1218,7 +1334,7 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
     W.restore(candidate,id);if(anchor!==undefined)W.move(candidate,rootId,anchor,where);
     Object.assign(p,candidate);return rootId;
   }
-  Object.assign(W,{pieceChanges,changeTitle,drawerEntries,archivedItems,stashNode,returnFromDrawer,normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,readingMoments,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
+  Object.assign(W,{applyBulk,addArcOutcome,removeArcOutcome,arcSubjects,arcSubject,addArcChange,removeArcChange,characterArc,pieceTitle,setArcCharacter,setArcState,arcStateOptions,pieceChanges,changeTitle,drawerEntries,archivedItems,stashNode,returnFromDrawer,normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,readingMoments,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
     factionAt:(p,e,key)=>L.CounterplotEnsemble.factionAt(timelineProject(p),e,momentId(p,key)),
     roleAt:(p,track,key)=>L.CounterplotEnsemble.roleAt(timelineProject(p),track,momentId(p,key)),
     prominenceAt:(p,c,key)=>L.CounterplotEnsemble.prominenceAt(timelineProject(p),c,momentId(p,key))});

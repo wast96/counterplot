@@ -3,6 +3,7 @@ function renameTutorialEntity(pr,entity,from,to,cid){
  return W.rekeyEntity(pr,entity,from,to,cid);
 }
 window.CounterplotTutorial={
+ features:WORKSPACE_FEATURES,
  snapshot:()=>W.copy(workspace),
  activeId:()=>workspace.active,
  studioView(view){
@@ -91,7 +92,7 @@ window.CounterplotTutorial={
    const page=t.page||'outline';changed=ui.page!==page;ui.page=page;
    if(id){const simple=/data-inline|quick-piece|select-node/.test(goal.focus);const inspector=simple?'hidden':ui.inspectorMode;changed ||= ui.mode!=='outline'||ui.plot!==''||ui.selected!==id||ui.inspectorMode!==inspector||ui.detailsOpen;ui.mode='outline';ui.plot='';ui.selected=id;ui.inspectorMode=inspector;ui.detailsOpen=false;let n=node(id);while(n){changed=ui.folded.delete(n.id)||changed;n=node(n.parentId);}}
   }
-  if(t.write){ui.mode='write';changed=true;}
+  if(t.write){ui.mode=WORKSPACE_FEATURES.drafting?'write':'refine';changed=true;}
   if(t.mode){ui.mode=t.mode;changed=true;}if(t.at){ui.at=t.at;changed=true;}if(t.inspector){ui.inspectorMode=t.inspector;changed=true;}
   // A mobile piece sheet must not trap the next toolbar/page action below it.
   // Keep it only when this step deliberately targets something inside the sheet.

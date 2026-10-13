@@ -16,7 +16,7 @@ test('filters are discoverable, preserve keyboard focus, and can be cleared acro
 });
 test('main views remain accessible and fit the viewport',async({page})=>{
  test.setTimeout(90000);await page.emulateMedia({reducedMotion:'reduce'});await load(page);
- for(const view of ['Outline','Refine','Write','Read','Sequence','Chronology','Choices']){
+ for(const view of ['Outline','Refine','Sequence','Chronology','Choices']){
   await page.getByRole('tab',{name:view,exact:true}).click();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(page.viewportSize().width+1);
   const scan=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();

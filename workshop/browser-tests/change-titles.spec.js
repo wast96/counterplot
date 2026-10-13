@@ -24,7 +24,7 @@ test('manual state naming is optional for every thread type and a beat',async({p
  await load(page);await refine(page,'ui-node-1');await nameButton(page).click();await page.getByLabel('Start with a recorded change').selectOption('');await expect(page.getByRole('button',{name:'Use this title',exact:true})).toBeDisabled();await page.getByRole('textbox',{name:'From',exact:true}).fill('a fragile truce');await page.getByRole('textbox',{name:'To',exact:true}).fill('open conflict');await page.getByRole('button',{name:'Use this title',exact:true}).click();await expect(page.getByLabel('Refine title')).toHaveValue('From a fragile truce to open conflict');
  const after=await snapshot(page);expect(after.characters[0].changes).toHaveLength(2);expect(after.nodes[1].status).toBe('open');
  await page.getByRole('tab',{name:'Outline',exact:true}).click();await page.locator('[data-node=ui-node-0] > .node-head [data-action=select-node]').click();
- for(const type of ['M','I','C','E']){await page.locator(`.inspector [data-action=node-type][data-type=${type}]`).click();await expect(page.locator('.inspector [data-action=name-from-change]')).toBeVisible();}
+ for(const type of ['M','I','E']){await page.locator(`.inspector [data-action=node-type][data-type=${type}]`).click();await expect(page.locator('.inspector [data-action=name-from-change]')).toBeVisible();}
 });
 test('beats record world and connection steps and offer both as titles on desktop and mobile',async({page})=>{
  await load(page);await refine(page,'ui-node-1');await page.locator('.refine-piece [data-action=consequences]').click();
