@@ -66,3 +66,18 @@ test('a character beat remains before open Event and Inquiry closings and can ad
  await page.setViewportSize({width:test.info().project.name==='mobile'?390:1440,height:1000});await page.screenshot({path:'/tmp/thread-flow-'+test.info().project.name+'.png',fullPage:true});
  await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await expect(card(page,'beat')).toHaveAttribute('data-flow-owner','character');
 });
+
+test('custom block labels persist through existing changes, edits, forks and reload',async({page})=>{
+ const data=fixture();data.projects[0].characters[0].blocks[0].label='Status';await load(page,data);
+ const beat=card(page,'beat');await expect(beat.getByRole('button',{name:'Fork Liu Jun Status',exact:true})).toBeVisible();
+ await beat.getByRole('button',{name:'Fork Liu Jun Status',exact:true}).click();await page.getByRole('textbox',{name:'Additional state',exact:true}).fill('Wanted by the law');await page.getByRole('button',{name:'Add state',exact:true}).click();
+ await expect(beat.getByRole('button',{name:'Fork Liu Jun Status',exact:true})).toHaveCount(2);
+ await page.locator('[data-nav=characters]').first().click();await page.locator('[data-action=time][data-id="beat:open"]').click();
+ await expect(page.locator('.blocks-grid .block-label')).toHaveText(['Status','Status']);
+ await page.locator('.block[data-block=status] [data-action=edit-block]').click();await page.locator('#dialog [name=label]').fill('Standing');await page.getByRole('button',{name:'Save piece',exact:true}).click();
+ await page.locator('[data-action=time][data-id="character:close"]').click();await expect(page.locator('.block[data-block=status] .block-label')).toHaveText('Standing');await expect(page.locator('.block[data-block=status] .block-body')).toHaveText('Communist agent');
+ await page.locator('[data-action=character-tab][data-id=arc]').click();await expect(page.locator('.change-list .eyebrow').filter({hasText:'Standing'})).toHaveCount(2);
+ await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();
+ await page.locator('[data-nav=characters]').first().click();await page.locator('[data-action=character-tab][data-id=blocks]').click();await page.locator('[data-action=time][data-id="beat:open"]').click();await expect(page.locator('.block[data-block=status] .block-label')).toHaveText('Standing');await expect(page.locator('.block[data-block=status] .block-body')).toHaveText('Hunted by Palmerston’s Thralls');
+ const p=await snapshot(page);expect(p.characters[0].blocks[0].text).toBe('Safe');expect(p.characters[0].changes.find(x=>x.block.text==='Wanted by the law').block.label).toBe('Status');
+});

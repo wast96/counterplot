@@ -73,3 +73,31 @@ test('free character thread titles stay independent of linked states, blank fiel
  W.setPieceTitle(p,n,'');W.validate(data);assert.equal(W.editableTitle(p,n),'');assert.equal(W.pieceTitle(p,n),'Untitled character thread');
  const restored=W.validate(JSON.parse(JSON.stringify(data)));assert.equal(restored.projects[0].nodes[0].characterArc.title,'');
 });
+
+test('custom labels survive old state snapshots, checkpoints and forks without rewriting history on read',()=>{
+ const {data,p,n,c,b}=fixture();b.label='Status';n.characterArc=W.characterArc(p,n);n.characterArc.changes[0].label='';
+ const row=n.characterArc.changes[0],fork={...W.block('status'),text:'Wanted by the law'};
+ c.changes.push({id:'fork',at:n.id+':close',blockId:fork.id,op:'add',block:fork,reason:''});
+ row.outcomes=[{id:'fork-outcome',text:fork.text,blockId:fork.id,linked:true}]; // Older forks have no forkedFrom.
+ const before=JSON.stringify(data),end=W.stateAt(p,c,n.id+':close');
+ assert.equal(end.find(x=>x.id===b.id).label,'Status');assert.equal(end.find(x=>x.id===fork.id).label,'Status');assert.equal(W.characterArc(p,n).changes[0].label,'Status');
+ assert.equal(W.pieceChanges(p,n).find(x=>x.id==='block:'+c.id+':'+b.id).label,'Status');
+ assert.equal(JSON.stringify(data),before);
+ c.stateCheckpoints=[{id:'checkpoint',at:n.id+':open',blocks:[{...b,label:'',text:'At the checkpoint'}],lifeStatus:'alive'}];
+ assert.equal(W.characterState(p,c,n.id+':open').blocks[0].label,'Status');
+ const restored=W.validate(JSON.parse(JSON.stringify(data)));assert.equal(W.stateAt(restored.projects[0],restored.projects[0].characters[0],n.id+':close').find(x=>x.id===fork.id).label,'Status');
+});
+test('renaming and clearing a block label update saved and archived changes while preserving state text',()=>{
+ const {p,n,c,b}=fixture();n.characterArc=W.characterArc(p,n);const a=W.archiveNode(p,n.id),texts=a.changes.map(x=>x.change.block.text);
+ W.setBlockLabel(p,c.id,b.id,'Standing');assert.equal(a.changes[0].change.block.label,'Standing');assert.equal(W.stateAt(p,c,n.id+':close').find(x=>x.id===b.id).label,'Standing');
+ W.restore(p,a.id);assert.equal(W.characterArc(p,n).changes[0].label,'Standing');assert.deepEqual(c.changes.map(x=>x.block.text),texts);
+ W.setBlockLabel(p,c.id,b.id,'');assert.equal(W.stateAt(p,c,n.id+':close').find(x=>x.id===b.id).label,'');assert.equal(W.characterArc(p,n).changes[0].label,'');
+});
+test('new forked outcomes inherit a custom label and independently named forks retain their own label',()=>{
+ const {data,p,n,c,b}=fixture();b.label='Status';const row=W.characterArc(p,n).changes[0];
+ W.setArcState(p,n,'to',{rowId:row.id,value:'Hunted',blockId:b.id});
+ const outcomeId=W.addArcOutcome(p,n,row.id);W.setArcState(p,n,'to',{rowId:row.id,outcomeId,value:'Wanted',blockId:'new',kind:'status'});
+ const outcome=W.characterArc(p,n).changes[0].outcomes[0],fork=c.changes.find(x=>x.blockId===outcome.blockId).block;assert.equal(fork.label,'Status');
+ W.setBlockLabel(p,c.id,fork.id,'Legal standing');W.setBlockLabel(p,c.id,b.id,'Social standing');
+ assert.equal(W.stateAt(p,c,n.id+':close').find(x=>x.id===fork.id).label,'Legal standing');assert.equal(W.characterArc(p,n).changes[0].label,'Social standing');W.validate(data);
+});

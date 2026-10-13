@@ -31,3 +31,9 @@ Dragging a beat deeper inside its current larger thread preserves that thread au
 “Select pieces” is available in Outline, Sequence, Chronology, and Choices. Checkbox selection is independent of the inspector and deduplicates a thread's opening and closing in moment views. Shift-click selects a visible range on desktop; Select all in view includes only rendered pieces. Collapsed descendants are not implicitly selected. A new story or entering Refine clears selection.
 
 The bulk editor adds people, World links, and plot memberships without replacing existing lists. Viewpoint and outline status use explicit unchanged/replace choices; viewpoint can also be cleared. A chosen POV character joins the cast. Cast, World links, and viewpoint apply to both ends of selected threads, while their nested pieces remain unchanged unless selected. `applyBulk()` validates all references before mutation; the UI wraps the entire batch in one saved undo action. No character or World history is rewritten.
+
+## Custom building-block labels
+
+A custom label belongs to the building block across its history. State snapshots from older saves can omit that label; character-state resolution inherits the starting block's current label without changing stored state text, dates, or IDs. Forks inherit their source label, including older arc outcomes saved before `forkedFrom` existed. An independently named fork keeps its own label.
+
+Editing a starting block's label updates its saved snapshots and linked arc labels, including archived changes and checkpoints. Clearing that label restores the default kind name. Profiles, arc history, beat changes, and thread state controls use the same label resolution.
