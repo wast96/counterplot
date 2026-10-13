@@ -335,6 +335,254 @@ body:not(:has(.tray)) #toast{bottom:24px}
  .character-pieces .block,.character-pieces .add-block-tile{min-height:160px}
 }
 
+/* Shared visual rhythm: quiet surfaces, readable labels, and one clear action. */
+:root{--paper:#f6f5f0;--panel:#fffefa;--ink:#263b32;--muted:#5c695f;--line:#dce2d8;--green:#285b49;--green-soft:#e6eee5;--shadow:0 2px 5px #223c2d06,0 8px 24px #223c2d05}
+body{line-height:1.6}
+.btn{min-height:40px;padding:8px 13px;border-radius:9px;font-size:13px;font-weight:600;box-shadow:0 1px 2px #263b3208;transition:background-color .14s,box-shadow .14s}
+.btn:hover{box-shadow:0 2px 6px #263b3210;background:#fff}
+.btn.primary{box-shadow:0 2px 4px #244d3519}
+.btn.primary:hover{background:#204c3d;box-shadow:0 3px 8px #244d3520}
+button:active:not(:disabled){transform:none}
+.icon{min-width:34px;width:34px;height:34px;border-radius:8px}
+.text-btn{font-size:13px;min-height:32px}
+.eyebrow{letter-spacing:1.3px;font-size:10px;color:var(--muted)}
+:where(button,a,summary):focus-visible{outline:3px solid #367861;outline-offset:3px}
+:where(input,textarea,select):focus-visible{outline:2px solid #367861;outline-offset:2px}
+:where(button,a,summary,input,textarea,select){scroll-margin-block:90px}
+@media(hover:hover){.nav-btn:hover,.cast-item:hover{background:#e5ebe1}.block:hover,.reference-card:hover,.add-block-tile:hover{transform:none;box-shadow:0 5px 18px #263b3210}}
+/* Navigation is always in the same place, with content before secondary tools. */
+.sidebar{background:#eeefe6;border-color:var(--line);padding-top:24px}
+.brand{letter-spacing:-.9px;margin-bottom:28px}
+.brand-mark{box-shadow:0 3px 8px #285b4914}
+.sidebar .story-switch{border-color:#d8ded1;background:#f8f8f1;margin-bottom:20px;border-radius:10px}
+.story-switch:hover{border-color:#a2b9a5;background:var(--panel)}
+.nav-btn{font-size:13px;padding-block:11px;color:#536454;border-radius:9px}
+.nav-btn.active{background:#dde8d9;color:#244e3d}
+.nav-btn .count{font-size:10px;color:#52664f}
+.cast-item{font-size:13px;min-height:38px}
+.side-label{font-size:9px;line-height:1.6}
+.side-foot .text-btn{font-size:12px}
+.topbar{background:var(--paper);border-color:var(--line);height:64px}
+.breadcrumb{font-size:12px}
+.top-actions{gap:6px}
+.top-actions .btn,.story-tools-menu>summary{font-size:12px}
+.top-actions .tutorial-launch{background:none;border-color:transparent;box-shadow:none}
+.top-actions .tutorial-launch svg{width:17px;height:17px}
+.story-tools-menu>summary,.account-menu>summary{min-height:36px}
+.story-tools-popover,.account-popover,.story-filter-popover{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 14px 40px #233e3021}
+.story-tools-popover .btn,.account-popover .btn{min-height:40px;font-size:13px}
+.page-head{padding-top:24px;padding-bottom:20px;align-items:center;gap:20px}
+.page-head h1{font-size:34px;letter-spacing:-1px}
+.page-head .eyebrow{margin-bottom:6px;font-size:9px}
+.page-head p{font-size:13px;line-height:1.65;margin-top:8px;max-width:64ch}
+.page-head .page-actions{align-items:center;gap:8px}
+.page-head .page-actions .btn{white-space:normal;text-align:center}
+.story-viewbar{display:flex;align-items:center;gap:20px;padding-top:16px;margin-bottom:0;min-width:0}
+.story-viewbar nav{display:flex;flex:1;flex-wrap:nowrap;min-width:0;overflow-x:auto;scrollbar-width:thin;gap:5px;border-bottom:1px solid var(--line);padding:0 2px}
+.story-viewbar nav .btn{flex:0 0 auto;min-width:max-content;min-height:42px;padding:9px 13px;font-size:13px;box-shadow:none;border-radius:0;border:0;border-bottom:2px solid transparent;background:transparent;color:var(--muted)}
+.story-viewbar nav .btn.primary{color:var(--green);border-bottom-color:var(--green);background:transparent}
+.story-viewbar nav .btn:hover{color:var(--green);background:#e9efe566}
+.story-filter-menu{position:relative;flex:none}
+.story-filter-menu>summary{display:flex;align-items:center;gap:6px;min-height:40px;padding:6px 10px;cursor:pointer;list-style:none;font-size:12px;border:1px solid var(--line);border-radius:9px;background:var(--panel)}
+.story-filter-menu>summary::-webkit-details-marker{display:none}
+.story-filter-menu>summary svg{width:15px;height:15px}
+.story-filter-menu[open]>summary{border-color:#849e89;background:var(--green-soft)}
+.filter-count{display:grid;place-items:center;min-width:19px;height:19px;background:var(--green);color:white;font-size:11px;border-radius:50%}
+.story-filter-popover{position:absolute;top:calc(100% + 8px);right:0;z-index:40;width:245px;padding:16px;display:grid;gap:10px;font-size:13px;max-width:calc(100vw - 32px)}
+.story-filter-popover>label:first-child{font-weight:600}
+.filter-check{display:flex;align-items:center;gap:9px;min-height:38px;cursor:pointer}
+.story-filter-status{display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px;margin:12px 36px 0;padding:8px 12px;border-radius:8px;background:var(--green-soft);font-size:12px;color:var(--green)}
+.story-filter-status .btn{min-height:28px;padding:2px 6px;font-size:12px;box-shadow:none;border:0;background:none}
+.plot-toolbar{margin-bottom:16px;gap:12px}
+.plot-toolbar nav .btn{min-height:36px;border-radius:8px;box-shadow:none;font-size:12px}
+.plot-toolbar nav .btn.primary{background:var(--green-soft);border-color:#b8cbbb;color:var(--green);box-shadow:none}
+.plot-collapse .btn{background:transparent;box-shadow:none;min-height:36px}
+.board-toolbar{margin-bottom:16px}
+.board-meta{font-size:10px}
+/* Cards carry meaning through typography and a restrained color edge. */
+.node{border-color:#d7dfd1;border-radius:11px;box-shadow:0 2px 5px #223c2d06}
+.node.selected{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent),transparent 55%)}
+.node-title{font-size:15px;font-weight:650;line-height:1.5}
+.node-promise{font-size:13px;line-height:1.65;color:var(--muted)}
+.node-promise textarea{font-size:13px;line-height:1.65}
+.node-foot .text-btn{font-size:11px}
+.node-actions .icon{color:#647560}
+.node-add{color:#51674e}
+.closing{border-radius:0 0 10px 10px;font-size:12px}
+.tray{border-color:#d2dccb;box-shadow:0 8px 28px #233c301c;border-radius:15px;background:#fffefaed;backdrop-filter:blur(12px)}
+.tray-piece{border-radius:9px;box-shadow:none}
+.tray-piece:hover{box-shadow:inset 0 0 0 1px var(--accent)}
+.tray-piece small{font-size:9px}
+.tray-label{letter-spacing:1px}
+.inspector{border-color:var(--line)}
+.inspector p{font-size:12px;line-height:1.65}
+.inspector .section-head .eyebrow{font-size:10px}
+.inspector .section{margin-top:23px}
+.character-page-head{padding-top:20px;padding-bottom:14px}
+.character-page-head h1{font-size:30px}
+.character-studio .character-tools .segmented button{font-size:14px}
+.block,.world-card,.connection-card,.moment-card,.choice-card{border-color:#d6dfd1;border-radius:12px;box-shadow:var(--shadow)}
+.block[style]{background:linear-gradient(180deg,color-mix(in srgb,var(--tint),var(--panel) 40%),var(--panel) 100px)}
+.block .block-label{font-size:10px}
+.block-detail{font-size:13px;line-height:1.7}
+.library-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:20px}
+.world-card{padding:24px;display:flex;flex-direction:column;min-width:0}
+.world-card .eyebrow{color:var(--accent,var(--green));font-size:10px}
+.world-card h2{font-size:27px;line-height:1.25;margin-top:12px}
+.world-card p{font-size:14px;line-height:1.7}
+.world-card footer{margin-top:auto;padding-top:18px;border-top:1px solid var(--line)}
+.card-title-link{font:inherit;text-align:left;line-height:inherit;padding:0;color:inherit;overflow-wrap:anywhere}
+.card-title-link:hover{text-decoration:underline;text-decoration-color:#92aa8f;text-underline-offset:4px}
+.world-card .reference-summary{margin:18px 0}
+.connection-card{padding:22px;gap:18px}
+.connection-card h3{font-size:25px;line-height:1.3}
+.connection-card p{font-size:14px;line-height:1.7}
+.connection-card .eyebrow{font:12px var(--sans);letter-spacing:0;text-transform:none;color:var(--muted)}
+.connection-faces .avatar{width:42px;height:42px}
+.archive-row,.unfinished-edit{border-radius:10px;box-shadow:none}
+.archive-row h3{font-size:15px;font-weight:600}
+.archive-row p{font-size:12px}
+.moment-card h2,.choice-card h2{font-size:17px;line-height:1.45}
+.moment-description,.choice-context,.moment-placeholder{font-size:13px;line-height:1.7}
+.moment-meta{font-size:11px}
+.moment-number,.choice-number{color:#567252}
+.view-key{font-size:11px;color:var(--muted)}
+.empty{background:linear-gradient(135deg,#eef3e8,var(--panel) 70%);border:1px solid var(--line);border-radius:16px;padding:40px 24px;gap:14px}
+.empty .empty-icon{box-shadow:0 4px 12px #26452f0c;background:#dde9d7;transform:rotate(-4deg);border-radius:18px}
+.empty h2{font-size:30px;line-height:1.25;max-width:24ch}
+.empty p{font-size:14px;line-height:1.7;max-width:46ch}
+/* Writing and refining share a generous, readable canvas. */
+.workbench-grid.details-hidden .writing-layout{max-width:1140px;margin-inline:auto;grid-template-columns:185px minmax(0,1fr);gap:28px}
+.manuscript{border-radius:12px;box-shadow:var(--shadow);background:var(--panel);border:1px solid var(--line);padding:30px}
+.moment-navigation button{font-size:13px;line-height:1.5;border-radius:8px;padding:12px 10px}
+.moment-navigation button.active{background:var(--green-soft);color:var(--green)}
+.moment-navigation small{font-size:10px;line-height:1.5;letter-spacing:.2px}
+.manuscript textarea.prose{font-size:20px;line-height:1.9;max-width:68ch;display:block;margin-inline:auto}
+.manuscript .scene-prompt{font-size:13px;color:var(--muted);border-radius:0 8px 8px 0;background:#edf2e8}
+.manuscript .draft-title{font-size:32px;line-height:1.3}
+.manuscript .draft-title:focus-visible{outline:2px solid #367861;outline-offset:5px}
+.manuscript textarea.prose:focus-visible{outline:2px solid #aac0a2;outline-offset:8px}
+.manuscript footer{font-size:11px}
+.refine-save-note{font-size:12px}
+.refine-relations{background:#fafbf5;border-radius:10px}
+.refine-relations h3{font-size:21px}
+.refine-relations p,.refine-viewpoint{font-size:12px}
+.continuous-manuscript{max-width:900px;margin-inline:auto;padding:36px 50px 90px}
+.manuscript-prose{font:20px/1.9 var(--serif);max-width:68ch;margin-inline:auto}
+/* Forms use readable labels and stable, clearly separated save actions. */
+input,textarea,select{border-color:#cbd5c7;border-radius:8px;background:#fffefa;line-height:1.5}
+.field>span:first-child{font-size:13px;color:#465b49;margin-bottom:7px}
+.field small{font-size:12px;line-height:1.6}
+.field{margin-bottom:20px}
+input::placeholder,textarea::placeholder{color:#6b746d;opacity:1}
+input[type=checkbox]{flex:none;width:18px;height:18px}
+.dialog-head{padding:26px 28px 20px}
+.dialog-head h2{font-size:30px;line-height:1.2}
+.dialog-head .eyebrow{font-size:9px}
+.dialog-body p.help{font-size:13px}
+.dialog-foot{background:#f3f5ed;padding:16px 28px;border-color:var(--line);z-index:2}
+.dialog-foot .hint{font-size:12px;line-height:1.5}
+.dialog-foot .btn{min-height:42px}
+.story-disclosure{border-color:var(--line)}
+.story-disclosure>summary{font-size:13px;padding-block:14px;min-height:44px}
+.kind-grid button{min-height:48px}
+#toast{border:1px solid #52735d;box-shadow:0 8px 24px #1d342527;font-size:13px;border-radius:11px}
+#toast button{min-height:32px;font-size:12px}
+/* Touch layouts: fewer toolbar rows, readable text, and reachable targets. */
+@media(max-width:1190px){.story-viewbar{gap:12px}.workbench-grid.details-hidden .writing-layout{grid-template-columns:minmax(0,1fr);gap:18px}.continuous-manuscript{margin-inline:26px}.story-filter-status{margin-inline:26px}}
+@media(max-width:680px){
+ .sidebar{padding:12px 14px 7px}
+ .brand{margin:0;font-size:19px}
+ .sidebar nav{gap:3px;margin-top:8px}
+ .nav-btn{min-height:48px;font-size:10px;padding:7px 2px;line-height:1.25;gap:4px}
+ .nav-btn svg{width:17px;height:17px}
+ .topbar{position:relative;display:block;height:auto;min-height:0;padding:8px 14px 9px}
+ .topbar .breadcrumb{font-size:11px;max-width:calc(100% - 112px);min-height:23px;gap:5px}
+ .topbar .breadcrumb>button{max-width:none;min-width:0;padding:0}
+ .topbar .breadcrumb>span:last-child{font-size:10px}
+ .top-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:5px;margin-top:3px;margin-left:0;max-width:100%}
+ .top-actions .icon,.top-actions .tutorial-launch,.top-actions .export-button{width:34px;min-width:34px;height:36px;min-height:36px;padding:7px;border:0;box-shadow:none;background:transparent}
+ .top-actions .tutorial-launch>span,.top-actions .export-button>span,.top-actions .story-tools-menu>summary>span,.top-actions .story-tools-menu>summary>svg:last-child{display:none}
+ .story-tools-menu>summary{width:34px;min-height:36px;justify-content:center;padding:7px}
+ .history-controls{padding-inline:3px;gap:0}
+ .top-actions .account-sync-status{position:absolute;top:9px;right:14px;font-size:10px;gap:4px}
+ .account-sync-status svg{width:13px;height:13px}
+ .top-actions .account-menu{margin-left:0}
+ .account-menu>summary{padding:3px}
+ .account-popover,.story-tools-popover{right:12px}
+ .story-viewbar{gap:10px;margin:0 16px;padding-top:8px}
+ .story-viewbar nav{display:flex;flex-wrap:nowrap;overflow-x:auto;width:auto;gap:0;padding:0 1px}
+ .story-viewbar nav .btn{flex:0 0 auto;padding:9px 10px;min-height:44px;font-size:12px}
+ .story-filter-menu>summary{padding:6px 8px;min-height:36px;font-size:11px}
+ .story-filter-menu>summary svg{display:none}
+ .story-filter-status{margin:10px 16px 0}
+ .page-head{padding:18px 16px 16px;gap:12px;flex-wrap:wrap;align-items:center}
+ .page-head .eyebrow{display:none}
+ .page-head h1{font-size:28px;line-height:1.2}
+ .page-head p{font-size:12px;line-height:1.65;margin-top:6px}
+ .page-head>div:first-child{flex:1 1 180px}
+ .page-head .page-actions{flex-direction:row;justify-content:flex-start;flex-wrap:wrap;gap:7px;padding:0}
+ .page-head .page-actions .btn{min-height:38px;padding:8px 10px;font-size:12px}
+ .plot-toolbar{padding-inline:16px;margin-bottom:12px;gap:10px}
+ .plot-toolbar nav .btn,.plot-collapse .btn{font-size:11px;min-height:36px}
+ .board-toolbar{margin-bottom:12px;gap:8px}
+ .board-toolbar .btn{min-height:36px;font-size:12px;padding:6px 10px}
+ .node-title{font-size:14px}
+ .node-promise,.node-promise textarea{font-size:13px}
+ .node-actions .icon{min-width:28px;width:28px;height:32px}
+ .node .node-head{gap:6px}
+ .node-foot{padding-right:10px}
+ .tray{bottom:max(10px,env(safe-area-inset-bottom));padding:7px;gap:5px;max-width:calc(100vw - 16px)}
+ .tray-piece{min-width:40px;height:48px;padding-inline:4px}
+ .tray-piece small{font-size:8px}
+ .character-page-head{padding:16px 18px 10px}
+ .character-page-head>div:first-child{flex:0 1 auto}
+ .character-page-head h1{font-size:25px}
+ .character-page-head .page-actions .btn{font-size:10px;padding:7px 9px;min-height:36px}
+ .character-studio .character-tools .segmented button{font-size:13px}
+ .character-profile .text-btn{font-size:12px}
+ .library-grid{gap:14px;grid-template-columns:1fr}
+ .world-card{padding:20px}
+ .world-card h2{font-size:26px}
+ .connection-card{padding:18px;gap:12px}
+ .connection-card .grow{min-width:0;flex:1 1 150px}
+ .connection-card .connection-faces{flex-direction:row}
+ .connection-faces .avatar{width:32px;height:32px}
+ .connection-card h3{font-size:23px}
+ .connection-card>.icon{min-height:40px;min-width:40px}
+ .moment-card h2,.choice-card h2{font-size:16px}
+ .moment-description{font-size:13px}
+ .moment-actions .icon,.moment-edit .btn{min-height:36px}
+ .empty{padding:30px 20px;border-radius:14px}
+ .empty h2{font-size:27px}
+ .empty p{font-size:13px}
+ .workbench-grid.details-hidden .writing-layout{gap:14px}
+ .moment-navigation button{flex-basis:160px;font-size:12px;min-height:54px}
+ .manuscript{padding:22px 18px;border-radius:10px}
+ .manuscript .draft-title{font-size:27px}
+ .manuscript textarea.prose,.manuscript-prose{font-size:19px;line-height:1.85}
+ .continuous-manuscript{margin:16px;padding:24px 20px 60px}
+ .reading-controls{margin-inline:16px;flex-wrap:wrap}
+ .field input:not([type=checkbox]):not([type=color]),.field textarea,.field select,.dialog-body>input,.story-filter-popover select{font-size:16px}
+ .dialog-head{padding:18px 20px 16px;gap:10px}
+ .dialog-head h2{font-size:27px}
+ .dialog-body{padding:0 20px 22px}
+ .dialog-foot{padding:14px 20px max(14px,env(safe-area-inset-bottom));gap:12px}
+ .dialog-foot .hint{font-size:11px}
+ .dialog-foot .btn{min-height:44px}
+ .field>span:first-child{font-size:13px}
+ .dialog-utilities .text-btn{min-height:36px}
+ .dialog-utilities .icon{min-width:40px;min-height:40px}
+ .account-auth-links .btn{min-height:44px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+/* Default story colors and secondary labels retain AA text contrast. */
+:root{--orange:#994b26;--blue:#42677f;--purple:#71547f}
+.inside-drop,.tray-trash{color:#55654f}
+.moment-navigation button{color:var(--muted)}
+@media(min-width:681px) and (max-width:1180px){.topbar{height:auto;min-height:64px}}
+@media print{.story-viewbar,.story-filter-status,.plot-toolbar,.reading-controls{display:none!important}.manuscript,.block,.world-card,.connection-card,.moment-card,.choice-card{box-shadow:none;background:white;break-inside:avoid}.continuous-manuscript{max-width:none;margin:0;padding:20px}body{background:white}}
+
 /* Learner guide: a stable dock, no automatic tooltip replacement, no elevated drop layers. */
 #tutorial-companion{position:fixed;z-index:420;display:flex;flex-direction:column;color:#273a31;font:var(--guide-size,13px)/1.5 system-ui,sans-serif;text-align:left;box-sizing:border-box;overflow:hidden;box-shadow:0 8px 30px #13271c26;border:1px solid #aab9a2;border-radius:12px;background:var(--guide-background,#fffdf5)}
 #tutorial-companion *{box-sizing:border-box}#tutorial-companion[hidden],#tutorial-spotlight[hidden]{display:none!important}
@@ -2779,7 +3027,7 @@ if(CounterplotAccount.user){
 'use strict';
 (() => {
 const W=Workshop, $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)], esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const paths={outline:'M5 4h14v4H5zM5 12h6v8H5zM15 12h4v3h-4zM15 19h4',characters:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M20 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75',world:'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0M3 12h18M12 3c5 6 5 12 0 18-5-6-5-12 0-18',connections:'M10 13a5 5 0 0 0 7 .2l3-3a5 5 0 0 0-7-7l-2 2M14 11a5 5 0 0 0-7-.2l-3 3a5 5 0 0 0 7 7l2-2',drawer:'M4 4h16l2 10v6H2v-6L4 4M2 14h6l2 3h4l2-3h6',archive:'M3 3h18v5H3zM5 8v13h14V8M9 12h6',plus:'M12 5v14M5 12h14',arrow:'M5 12h14M13 6l6 6-6 6',chevron:'m9 5 7 7-7 7',down:'m6 9 6 6 6-6',close:'m6 6 12 12M6 18 18 6',undo:'M3 10h11a7 7 0 0 1 0 14M3 10l5-5M3 10l5 5',redo:'M21 10H10a7 7 0 0 0 0 14M21 10l-5-5M21 10l-5 5',search:'M21 21l-6-6M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0',edit:'m16 3 5 5M3 21l5-1L21 7l-4-4L4 16z',write:'M4 20h16M5 15l1-5 11-9 4 4-11 9z',export:'M12 16V3M7 8l5-5 5 5M4 14v7h16v-7',import:'M12 3v13M7 11l5 5 5-5M4 17v4h16v-4',pin:'m8 3 8 0-1 7 4 3H5l4-3zM12 13v8',change:'M4 7h14m-4-4 4 4-4 4M20 17H6m4-4-4 4 4 4',help:'M9 9a3 3 0 1 1 5 2c-1 1-2 1-2 3M12 18h.01M22 12A10 10 0 1 1 2 12a10 10 0 0 1 20 0',check:'m5 12 4 4L19 6',focus:'M8 3H3v5M16 3h5v5M3 16v5h5M21 16v5h-5',copy:'M9 8h12v13H9zM15 8V3H3v13h6',book:'M3 3h7l2 3 2-3h7v17h-7l-2 2-2-2H3zM12 6v16',spark:'m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z',trash:'M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7',up:'m6 15 6-6 6 6'};
+const paths={filter:'M4 6h16M7 12h10M10 18h4',outline:'M5 4h14v4H5zM5 12h6v8H5zM15 12h4v3h-4zM15 19h4',characters:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M20 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75',world:'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0M3 12h18M12 3c5 6 5 12 0 18-5-6-5-12 0-18',connections:'M10 13a5 5 0 0 0 7 .2l3-3a5 5 0 0 0-7-7l-2 2M14 11a5 5 0 0 0-7-.2l-3 3a5 5 0 0 0 7 7l2-2',drawer:'M4 4h16l2 10v6H2v-6L4 4M2 14h6l2 3h4l2-3h6',archive:'M3 3h18v5H3zM5 8v13h14V8M9 12h6',plus:'M12 5v14M5 12h14',arrow:'M5 12h14M13 6l6 6-6 6',chevron:'m9 5 7 7-7 7',down:'m6 9 6 6 6-6',close:'m6 6 12 12M6 18 18 6',undo:'M3 10h11a7 7 0 0 1 0 14M3 10l5-5M3 10l5 5',redo:'M21 10H10a7 7 0 0 0 0 14M21 10l-5-5M21 10l-5 5',search:'M21 21l-6-6M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0',edit:'m16 3 5 5M3 21l5-1L21 7l-4-4L4 16z',write:'M4 20h16M5 15l1-5 11-9 4 4-11 9z',export:'M12 16V3M7 8l5-5 5 5M4 14v7h16v-7',import:'M12 3v13M7 11l5 5 5-5M4 17v4h16v-4',pin:'m8 3 8 0-1 7 4 3H5l4-3zM12 13v8',change:'M4 7h14m-4-4 4 4-4 4M20 17H6m4-4-4 4 4 4',help:'M9 9a3 3 0 1 1 5 2c-1 1-2 1-2 3M12 18h.01M22 12A10 10 0 1 1 2 12a10 10 0 0 1 20 0',check:'m5 12 4 4L19 6',focus:'M8 3H3v5M16 3h5v5M3 16v5h5M21 16v5h-5',copy:'M9 8h12v13H9zM15 8V3H3v13h6',book:'M3 3h7l2 3 2-3h7v17h-7l-2 2-2-2H3zM12 6v16',spark:'m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z',trash:'M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7',up:'m6 15 6-6 6 6'};
 const icon=(name)=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${paths[name]||paths.spark}"/></svg>`;
 const act=(action,id='',extra='')=>`data-action="${action}"${id?` data-id="${esc(id)}"`:''} ${extra}`;
 const ib=(action,id,which,label,extra='')=>`<button type="button" class="icon" ${act(action,id,extra)} aria-label="${esc(label)}" title="${esc(label)}">${icon(which)}</button>`;
@@ -2819,7 +3067,7 @@ try{const hintKey='counterplot.hint.character-first.v1';if(!CounterplotTutorialS
 if(!blocked&&CounterplotTutorialStore.status().blocked)blocked=CounterplotTutorialStore.status().blocked;
 function startingTip(){return firstStoryTip&&ui.page==='outline'&&ui.mode==='outline'&&p().example?`<aside class="first-story-tip" aria-label="Starting your first story"><strong>Start with someone.</strong><p>A Character (C) thread is a useful starting point for each story. Establish who they are; close with who they become.</p><button class="btn" data-action="dismiss-starting-tip">Got it</button></aside>`:''}
 
-const ui={plot:'',detailsOpen:false,inspectorMode:'side',page:'outline',mode:'outline',selected:'',character:'',at:'',characterTab:'blocks',folded:new Set(),focus:false,filter:'',snap:'',search:''};
+const ui={writingDetails:false,filtersOpen:false,plot:'',detailsOpen:false,inspectorMode:'side',page:'outline',mode:'outline',selected:'',character:'',at:'',characterTab:'blocks',folded:new Set(),focus:false,filter:'',snap:'',search:''};
 const p=()=>workspace.projects.find(p=>p.id===workspace.active)||workspace.projects[0];
 const person=id=>p().characters.find(c=>c.id===id),node=id=>p().nodes.find(n=>n.id===id);
 const eventLabel=key=>{const e=W.events(p()).find(e=>e.key===key);return e?(e.node.type==='B'?'After ':e.edge==='close'?'Closing · ':'Opening · ')+(e.title||name(e.node)):'At the beginning'};
@@ -2877,15 +3125,15 @@ function mutate(label,fn,{rerender=true,notify=true}={}){finishEdit();const befo
 function undo(redo=false){finishEdit();const stack=redo?future:past;if(!stack.length)return;const x=stack.pop();(redo?past:future).push({data:W.copy(workspace),label:x.label});workspace=x.data;save();render();if(modalData?.kind==='projects'&&$('#dialog').open)projects();toast((redo?'Redid: ':'Undid: ')+x.label)}
 function updateUndo(){for(const [action,stack]of [['undo',past],['redo',future]])for(const b of $$('[data-action="'+action+'"]')){b.disabled=!stack.length;b.title=stack.length?(action==='undo'?'Undo: ':'Redo: ')+stack.at(-1).label:'Nothing to '+action;b.setAttribute('aria-label',b.title)}}
 function toast(message,undoable=false){clearTimeout(toastTimer);$('#toast').innerHTML=`<span>${esc(message)}</span>${undoable?'<button data-action="undo">Undo</button>':''}`;$('#toast').classList.add('visible');toastTimer=setTimeout(()=>$('#toast').classList.remove('visible'),4500)}
-function navigate(page){finishEdit();ui.page=page;ui.focus=false;render();window.scrollTo({top:0,behavior:'instant'})}
+function navigate(page){finishEdit();ui.filtersOpen=false;ui.page=page;ui.focus=false;render();window.scrollTo({top:0,behavior:'instant'})}
 function render(){
   if(ui.plot&&!(p().plots||[]).some(x=>x.id===ui.plot))ui.plot='';
-  const scrollPositions=['.time-strip','.cast-dock','.sidebar','.character-tabs'].map(selector=>{const el=$(selector);return [selector,el?.scrollLeft||0,el?.scrollTop||0]});
+  const scrollPositions=['.time-strip','.cast-dock','.sidebar','.character-tabs','.story-viewbar nav'].map(selector=>{const el=$(selector);return [selector,el?.scrollLeft||0,el?.scrollTop||0]});
   if(!node(ui.selected))ui.selected=p().nodes[0]?.id||'';
   if(!person(ui.character))ui.character=p().characters[0]?.id||'';
   if(ui.at&&!W.events(p()).some(e=>e.key===ui.at))ui.at='';
   document.body.classList.toggle('focus-mode',ui.focus);document.body.classList.toggle('paint-mode',!!brush);document.title=p().title+' · Counterplot';
-  $('#app').innerHTML=sidebar()+`<div class="app-main">${topbar()}${paintTray()}<main id="main" tabindex="-1">${ui.page==='outline'?workbench():ui.page==='characters'?characters():ui.page==='world'?world():ui.page==='connections'?connections():archive()}</main></div>`+(ui.page==='outline'&&ui.mode!=='refine'?tray()+drawerPanel():'');
+  $('#app').innerHTML=sidebar()+`<div class="app-main">${topbar()}${paintTray()}<main id="main" tabindex="-1">${ui.page==='outline'?workbench():ui.page==='characters'?characters():ui.page==='world'?world():ui.page==='connections'?connections():archive()}</main></div>`+(ui.page==='outline'&&ui.mode==='outline'?tray()+drawerPanel():'');
   for(const [selector,left,top] of scrollPositions){const el=$(selector);if(el){el.scrollLeft=left;el.scrollTop=top;}}
   syncDetailsSheet();positionDrawer();syncPlotToolbar();updateUndo();saveBanner();$$('textarea[data-inline]').forEach(fit);if(ui.snap){const el=$(`[data-node="${CSS.escape(ui.snap)}"]`)||$(`[data-block="${CSS.escape(ui.snap)}"]`);el?.classList.add('snap');ui.snap=''}
 }
@@ -2902,7 +3150,7 @@ function syncDetailsSheet(){
 }
 matchMedia('(max-width:680px)').addEventListener('change',()=>{if($('#dialog')?.open)return;if(ui.page==='outline')render();});
 function sidebar(){const counts={outline:p().nodes.length,characters:p().characters.length,world:p().world.length,connections:p().connections.length,archive:W.archivedItems(p()).length+(p().drafts||[]).length};return `<aside class="sidebar"><div class="brand"><span class="brand-mark">${icon('outline')}</span>counterplot</div><button class="mobile-brand icon" data-action="projects" aria-label="Switch story">${icon('book')}</button><div class="eyebrow" style="padding-left:8px">Your story</div><button class="story-switch" data-action="projects"><div class="row between"><strong>${esc(p().title)}</strong>${icon('down')}</div><small class="muted" style="font-size:9px">${p().example?'EXAMPLE STORY · YOURS TO PLAY WITH':esc(p().version||'Main draft')}</small></button><nav aria-label="Main navigation">${[['outline','Workbench'],['characters','Characters'],['world','World'],['connections','Connections'],['archive','Archive']].map(([id,label])=>`<button class="nav-btn${ui.page===id?' active':''}" data-nav="${id}" ${ui.page===id?'aria-current="page"':''}>${icon(id)}<span>${label}</span><span class="count">${String(counts[id]).padStart(2,'0')}</span></button>`).join('')}</nav><div class="side-label eyebrow">Cast · drag into the story</div><div class="cast-dock">${p().characters.map(c=>`<button class="cast-item" ${paintAttrs('character',c.id)} draggable="true" data-drag="character" data-drag-id="${c.id}" ${act('open-character',c.id)} title="Drag ${esc(c.name)} onto a thread or beat">${avatar(c)}<span class="grow">${esc(c.name)}</span><span class="grip" aria-hidden="true">⠿</span></button>`).join('')}<button class="text-btn" data-action="new-character" style="padding-left:10px">${icon('plus')}Add character</button></div><div class="side-foot"><button class="text-btn" data-action="help">${icon('help')}A little field guide</button><button class="text-btn" data-action="import">${icon('import')}Import a story</button><div class="save-status" id="save-status"><span class="save-dot"></span>Saved on this device</div></div></aside>`}
-function topbar(){return `<header class="topbar"><div class="breadcrumb"><button data-action="projects">${esc(p().title)}</button><span>/</span><span>${{outline:'Workbench',characters:'Characters',world:'World',connections:'Connections',archive:'Archive'}[ui.page]}</span></div><div class="top-actions">${sessionToolbar()}<span class="local-badge">Local edition</span>${storyToolsMenu()}${ib('search','','search','Find in your story (⌘K)')}<span class="history-controls" role="group" aria-label="Edit history">${ib('undo','','undo','Undo')}${ib('redo','','redo','Redo')}</span>${btn('export','Save a copy','export')}</div></header>`}
+function topbar(){return `<header class="topbar"><div class="breadcrumb"><button data-action="projects">${esc(p().title)}</button><span>/</span><span>${{outline:'Workbench',characters:'Characters',world:'World',connections:'Connections',archive:'Archive'}[ui.page]}</span></div><div class="top-actions">${sessionToolbar()}<span class="local-badge">Local edition</span>${storyToolsMenu()}${ib('search','','search','Find in your story (⌘K)')}<span class="history-controls" role="group" aria-label="Edit history">${ib('undo','','undo','Undo')}${ib('redo','','redo','Redo')}</span><button class="btn export-button" data-action="export" aria-label="Save a copy" title="Save a copy">${icon('export')}<span>Save a copy</span></button></div></header>`}
 function heading(eyebrow,title,description,actions=''){return `<div class="page-head"><div><div class="eyebrow">${eyebrow}</div><h1>${title}</h1><p>${description}</p></div><div class="page-actions">${actions}</div></div>`}
 function visibleNodes(){return W.plotView(p(),ui.plot);}
 function plotToolbar(){return `<div class="plot-toolbar"><div class="plot-scroll"><nav aria-label="Plot views"><button class="btn ${!ui.plot?'primary':''}" data-action="plot-view" data-id="" aria-pressed="${!ui.plot}">Master plot</button>${(p().plots||[]).map(pl=>`<button class="btn ${ui.plot===pl.id?'primary':''}" ${act('plot-view',pl.id)} aria-pressed="${ui.plot===pl.id}" title="${esc(pl.label+' plot'+(pl.title?' · '+pl.title:''))}">${esc(pl.label)} plot${pl.title?' · '+esc(pl.title):''}</button>`).join('')}</nav></div>${ui.mode==='outline'?`<div class="plot-collapse">${btn('collapse-all',visibleNodes().filter(n=>n.type!=='B').every(n=>ui.folded.has(n.id))?'Expand all':'Collapse all','down')}</div>`:''}</div>`;}
@@ -2916,7 +3164,7 @@ function editPlot(id=''){const pl=(p().plots||[]).find(x=>x.id===id)||{label:Str
 function plotMembership(id){const n=node(id);modalData={kind:'plot-membership',id};dialog('SHARED OUTLINE PIECE','Plot views for '+name(n),`<p class="help">Choose any number. Master always includes this piece.</p><div class="check-list">${(p().plots||[]).map(pl=>`<label class="check-chip"><input type="checkbox" name="plots" value="${pl.id}" ${(n.plotIds||[]).includes(pl.id)?'checked':''}>${esc(pl.label)} plot · ${esc(pl.title)}</label>`).join('')||'<p>Add a plot using Manage plots first.</p>'}</div>${W.descendants(p(),id).size?'<label class="check-chip"><input type="checkbox" name="branch" checked>Apply these choices to the nested pieces too</label>':''}`,submit('Save plot views'),'plot-membership');}
 function changeSummary(id,at=''){const n=node(id);const changes=p().characters.flatMap(c=>c.changes.filter(x=>at?x.at===at:x.at.startsWith(id+':')).map(x=>({c,x})));if(!changes.length){chooseChange(at||id+':open');return;}dialog('CHARACTER CHANGES',name(n),changes.map(({c,x})=>{const before=W.stateAt(p(),c,x.at,true).find(b=>b.id===x.blockId);return `<section class="change-summary"><h3>${esc(c.name)} · ${esc(kind(x.block?.kind||before?.kind||'custom').label)}</h3><small>${x.at.endsWith(':close')?'At the closing':'At the opening'}</small><div class="change-comparison"><div><strong>Before</strong><p>${esc(before?.text||'Not present yet')}</p></div><div><strong>After</strong><p>${esc(x.op==='retire'?'Removed':x.block.text)}</p></div></div>${x.reason?`<p><strong>Reason:</strong> ${esc(x.reason)}</p>`:''}${btn('edit-change','Edit change','edit',false,`data-id="${x.id}" data-cid="${c.id}"`)}</section>`;}).join(''),btn('change-at','Add another change','plus',false,`data-id="${id}" data-at="${at||id+':open'}"`));}
 
-function workbench(){return heading('THE STORY WORKBENCH',ui.mode==='refine'?'Refine your story':ui.mode==='write'?'Write your story':'Story outline',ui.mode==='refine'?'Develop what each thread promises, how it pays off, and what each beat contributes.':ui.mode==='write'?'Choose an opening, beat, or closing and let the story unfold.':'Organize MICE threads, add optional beats, and track character changes.',btn('manage-plots','Manage plots','edit')+btn('new-piece','Add a piece','plus'))+plotToolbar()+`<div class="workbench-grid details-${ui.inspectorMode}"><section class="board-wrap" aria-label="Story workbench"><div class="board-toolbar"><div class="segmented" aria-label="Workbench view"><button ${act('mode','outline')} class="${ui.mode==='outline'?'active':''}" aria-pressed="${ui.mode==='outline'}">${icon('outline')}Outline</button><button ${act('mode','write')} class="${ui.mode==='write'?'active':''}" aria-pressed="${ui.mode==='write'}">${icon('write')}Write</button></div><div class="row">${['write','refine'].includes(ui.mode)?ib('focus','','focus',ui.focus?'Leave focus mode':ui.mode==='refine'?'Focus on refining':'Focus on writing'):''}${ui.inspectorMode==='hidden'?btn('show-inspector','Show details','edit'): ""}<span class="board-meta">${visibleNodes().filter(n=>n.type!=='B').length} threads · ${visibleNodes().filter(n=>n.type==='B').length} beats</span></div></div>${startingTip()}${ui.mode==='outline'?`<div class="outline" aria-label="Nested MICE outline">${branch('')}<div class="outline-tail" data-drop="position" data-anchor="" data-where="inside">${icon('plus')}Drop a piece here to keep going</div></div>`:ui.mode==='refine'?refining():writing()}</section>${inspector()}</div>`}
+function workbench(){const detailsMode=ui.mode==='outline'||ui.writingDetails?ui.inspectorMode:'hidden';return heading('THE STORY WORKBENCH',ui.mode==='refine'?'Refine your story':ui.mode==='write'?'Write your story':'Story outline',ui.mode==='refine'?'Shape each moment: what changes, who it affects, and why it matters.':ui.mode==='write'?'Draft each opening, beat, and closing. Your words save as you go.':'Arrange story threads and beats. Follow how your characters change.',btn('manage-plots','Manage plots','edit')+btn('new-piece','Add a piece','plus',true))+plotToolbar()+`<div class="workbench-grid details-${detailsMode}"><section class="board-wrap" aria-label="Story workbench"><div class="board-toolbar"><div class="segmented" aria-label="Workbench view"><button ${act('mode','outline')} class="${ui.mode==='outline'?'active':''}" aria-pressed="${ui.mode==='outline'}">${icon('outline')}Outline</button><button ${act('mode','write')} class="${ui.mode==='write'?'active':''}" aria-pressed="${ui.mode==='write'}">${icon('write')}Write</button></div><div class="row">${['write','refine'].includes(ui.mode)?ib('focus','','focus',ui.focus?'Leave focus mode':ui.mode==='refine'?'Focus on refining':'Focus on writing'):''}${detailsMode==='hidden'?btn('show-inspector','Show details','edit'): ""}<span class="board-meta">${visibleNodes().filter(n=>n.type!=='B').length} threads · ${visibleNodes().filter(n=>n.type==='B').length} beats</span></div></div>${startingTip()}${ui.mode==='outline'?`<div class="outline" aria-label="Nested MICE outline">${branch('')}<div class="outline-tail" data-drop="position" data-anchor="" data-where="inside">${icon('plus')}Drop a piece here to keep going</div></div>`:ui.mode==='refine'?refining():writing()}</section>${inspector()}</div>`}
 function slot(id,where){return `<div class="insert-slot" data-drop="position" data-anchor="${esc(id)}" data-where="${where}"><span class="slot-label">Release to place here</span></div>`}
 function branch(parent){const allowed=new Set(visibleNodes().map(n=>n.id));const ns=W.children(p(),parent).filter(n=>allowed.has(n.id));return ns.map(n=>slot(n.id,'before')+nodeHTML(n)).join('')+(ns.length?slot(ns.at(-1).id,'after'):'')}
 function nodeHTML(n){const t=W.TYPES[n.type],fold=ui.folded.has(n.id),changeCount=p().characters.reduce((sum,c)=>sum+c.changes.filter(x=>x.at.startsWith(n.id+':')).length,0);return `<article class="node ${n.type==='B'?'scene':'thread'} color-${t.color}${ui.selected===n.id?' selected':''}" style="${colorStyle(n.color,t.color)}" ${paintAttrs('node',n.id)} data-node="${n.id}" data-drop="node" data-anchor="${n.id}" aria-label="${esc(t.name+': '+name(n))}"><header class="node-head">${grip('node',n.id)}<span class="piece-mark" title="${t.name}">${n.type==='B'?icon('write'):n.type}</span><input class="node-title" data-inline="node" data-id="${n.id}" data-field="title" value="${esc(n.title)}" placeholder="${n.type==='B'?'An untitled moment…':'Name this '+t.name.toLowerCase()+' thread…'}" aria-label="Title · ${esc(name(n))}" maxlength="1000"><div class="node-actions">${paintButton('node',n.id)}${ib('select-node',n.id,n.type==='B'?'write':'edit','Edit details for '+name(n))}${ib('archive-node',n.id,'archive','Archive '+name(n))}</div>${n.type!=='B'?`<button class="icon node-toggle" ${act('fold',n.id)} aria-label="${fold?'Expand':'Fold'} ${esc(name(n))}" aria-expanded="${!fold}">${icon(fold?'chevron':'down')}</button>`:''}</header>${`<div class="node-promise"><textarea data-inline="node" data-id="${n.id}" data-field="opening" rows="1" placeholder="${esc(t.opening)}" aria-label="${n.type==='B'?'Plan':'Opening'} · ${esc(name(n))}">${esc(n.opening)}</textarea></div>`}${n.type==='M'?milieuWorld(n):''}<footer class="node-foot"><div class="cast-chips">${(p().plots||[]).filter(pl=>(n.plotIds||[]).includes(pl.id)).map(pl=>`<span class="plot-badge">${esc(pl.label)} plot</span>`).join('')}${ui.plot&&!(n.plotIds||[]).includes(ui.plot)?'<span class="plot-badge">Containing thread</span>':''}${n.cast.map(id=>person(id)).filter(Boolean).map(c=>`<button class="cast-chip" style="${colorStyle(c.color)}" ${act('open-at',c.id,`data-at="${n.id}:open"`)}>${avatar(c)}<span>${esc(c.name)}</span></button>`).join('')}<button class="text-btn add-cast" ${act('cast',n.id)}>+ Add someone</button>${worldChips(n)}</div>${changeCount?`<button class="mini-change" ${act('show-changes',n.id)}>${icon('change')}${changeCount} ${changeCount===1?'change':'changes'}</button>`:n.type==='B'?`<button class="text-btn" style="font-size:10px;padding:0" ${act('write-node',n.id)}>${n.prose?'Continue writing':'Write beat'} ${icon('arrow')}</button>`:''}</footer>${n.type!=='B'?`${!fold?`<div class="node-children">${branch(n.id)}<div class="inside-drop" data-drop="position" data-anchor="${n.id}" data-where="inside"><button class="text-btn" style="font-size:10px;padding:0" ${act('add-inside',n.id)}>+ A piece inside this thread</button></div></div>`:''}<div class="closing" data-drop="moment" data-at="${n.id}:close"><span class="closing-mark">↳ ${n.type}</span><textarea data-inline="node" data-id="${n.id}" data-field="closing" placeholder="${esc(t.closing)}" aria-label="Closing · ${esc(name(n))}" rows="1">${esc(n.closing)}</textarea>${ib('show-changes',n.id,'change','View character changes at closing',`data-at="${n.id}:close"`)}</div>`:''}</article>`}
@@ -2931,16 +3179,16 @@ function writing(){
 }
 function words(s){return (s.trim().match(/\S+/g)||[]).length}
 function empty(title,description,actions='',which='spark'){return `<div class="empty"><div class="empty-icon">${icon(which)}</div><h2>${esc(title)}</h2><p>${esc(description)}</p>${actions}</div>`}
-function characters(){const c=person(ui.character);const head=heading('THE CHARACTER STUDIO','Characters','A person is more than a profile. Give them something to want, keep, or become.',btn('new-character','New character','plus')).replace('class="page-head"','class="page-head character-page-head"');
+function characters(){const c=person(ui.character);const head=heading('THE CHARACTER STUDIO','Characters','A person is more than a profile. Give them something to want, keep, or become.',btn('new-character','New character','plus',true)).replace('class="page-head"','class="page-head character-page-head"');
 if(!c)return head+`<div class="character-layout character-studio">${empty('Start with someone.','A name or one intriguing detail is enough. The rest can come later.',btn('new-character','Create your first character','plus',true),'characters')}</div>`;
 const blocks=W.stateAt(p(),c,ui.at),timeEvents=W.events(p()),original=ui.at==='';
 return head+`<div class="character-layout character-studio">${W.review(p(),c).length?'<div class="review-note">Some character changes need a timing check. Open Their arc to see which pieces are affected.</div>':''}<div class="character-tabs">${p().characters.map(c2=>`<button class="character-tab${c2.id===c.id?' active':''}" style="${colorStyle(c2.color)}" ${paintAttrs('character',c2.id)} draggable="true" data-drag="character" data-drag-id="${c2.id}" ${act('open-character',c2.id)} aria-pressed="${c2.id===c.id}">${avatar(c2)}${esc(c2.name)}</button>`).join('')}</div><div class="character-workspace"><aside class="character-profile" aria-label="Character profile"><header class="character-hero" ${paintAttrs('character',c.id)}><div class="row"><button class="portrait-button" ${act('portrait',c.id)} aria-label="Change portrait for ${esc(c.name)}">${avatar(c,true)}<span>＋</span></button><div class="character-summary"><div class="character-name-row"><h1>${esc(c.name)}</h1>${ib('edit-character',c.id,'edit','Edit '+c.name)}</div><p class="identity">${esc(c.identity||'A person you’re still getting to know.')}</p>${characterPresence(c)}</div></div></header>${referenceSummary('character',c.id)}</aside><section class="character-pieces" aria-label="Character building blocks and arc"><div class="character-tools"><div class="segmented"><button class="${ui.characterTab==='blocks'?'active':''}" ${act('character-tab','blocks')} aria-pressed="${ui.characterTab==='blocks'}">Building blocks <small>${blocks.length}</small></button><button class="${ui.characterTab==='arc'?'active':''}" ${act('character-tab','arc')} aria-pressed="${ui.characterTab==='arc'}">Their arc <small>${c.changes.length}</small></button></div>${btn('add-block','Add block','plus',true,`data-cid="${c.id}"`)}</div><div class="character-moments${timeEvents.length?'':' is-beginning'}"><div class="row between"><span class="eyebrow">Story moment</span><span class="eyebrow">${c.changes.length} ${c.changes.length===1?'block change':'block changes'}</span></div><div class="time-strip" aria-label="Character state along the story"><button class="time-stop${original?' active':''}" ${act('time','')} aria-pressed="${original}"><small>Before the story</small><span>The beginning</span></button>${timeEvents.map((e,i)=>`<button class="time-stop${ui.at===e.key?' active':''}" ${act('time',e.key)} data-drop="moment" data-at="${e.key}" aria-pressed="${ui.at===e.key}"><small>${e.edge==='close'?'Thread closes':e.node.type==='B'?'After beat':'Thread opens'} ${String(i+1).padStart(2,'0')}</small><span>${esc(name(e.node))}</span></button>`).join('')}</div><div class="state-caption">${icon(original?'book':'change')}<span>${original?(timeEvents.length?'Drag a block onto a moment to make it change.':'Their starting pieces. Add what matters to this character.'):esc(eventLabel(ui.at))+'. Changes up to this point are reflected below.'}</span></div></div>${ui.characterTab==='blocks'?`<div class="blocks-grid">${blocks.map(b=>blockHTML(c,b,original)).join('')}<button class="add-block-tile" ${act('add-block','',`data-cid="${c.id}"`)}><span class="plus">+</span>Something else about them<small>${Object.keys(KINDS).length} kinds of possibility</small></button></div>`:arcHTML(c)}<details class="character-note"><summary>Loose notes about ${esc(c.name)}</summary><textarea data-inline="character" data-id="${c.id}" data-field="notes" placeholder="Anything that does not need a block yet…" aria-label="Character notes">${esc(c.notes)}</textarea></details></section></div></div>`}
 function blockHTML(c,b,original){return `<article class="block${b.pinned?' pinned':''}" style="${colorStyle(b.color||c.color)}" ${paintAttrs('block',b.id,c.id)} data-block="${b.id}" data-drop="block" data-cid="${c.id}" data-anchor="${b.id}"><div class="block-head">${grip('block',b.id,c.id)}<span class="block-label">${esc(b.label||kind(b.kind).label)}</span>${original?paintButton('block',b.id,c.id):''}${original?ib('pin-block',b.id,'pin',b.pinned?'Unpin block':'Pin block',`data-cid="${c.id}" aria-pressed="${!!b.pinned}"`):''}</div><button class="block-body" style="text-align:left;padding:0" ${act(original?'edit-block':'evolve',b.id,`data-cid="${c.id}" data-at="${esc(ui.at)}"`)}>${esc(b.text||'An unfinished thought…')}</button>${b.detail?`<p class="block-detail">${esc(b.detail)}</p>`:''}<footer class="block-footer"><button class="text-btn" ${act('evolve',b.id,`data-cid="${c.id}" data-at="${esc(ui.at)}"`)}>${icon('change')}Let this change</button>${original?ib('archive-block',b.id,'archive','Archive block',`data-cid="${c.id}"`):ib('edit-block',b.id,'edit','Edit starting block',`data-cid="${c.id}"`)}</footer></article>`}
 function arcHTML(c){const order=new Map(W.events(p()).map((e,i)=>[e.key,i]));const changes=[...c.changes].sort((a,b)=>order.get(a.at)-order.get(b.at));if(!changes.length)return empty('They don’t have to stay this way.','Drag a building block onto a story moment, or choose “Let this change” on a block.',btn('character-tab','Back to their pieces','arrow',false,'data-id="blocks"'),'change');return `<div class="change-list">${changes.map(x=>{const before=W.stateAt(p(),c,x.at,true).find(b=>b.id===x.blockId);return `<article class="change-card"><div><div class="eyebrow">${esc(kind(x.block?.kind||before?.kind||'custom').label)}</div><button class="change-when" ${act('jump-moment',x.at)} style="text-align:left;padding:7px 0">${esc(eventLabel(x.at))} ↗</button></div><div><div class="change-before">${esc(before?.text||'Not yet part of them')}</div><div class="change-after">↳ ${x.op==='retire'?'They let this go':esc(x.block.text)}</div>${W.review(p(),c).find(i=>i.id===x.id)?'<p class="review-note">'+esc(W.review(p(),c).find(i=>i.id===x.id).message)+'</p>':''}${x.reason?`<p>Because ${esc(x.reason)}</p>`:''}<button class="text-btn" ${act('edit-change',x.id,`data-cid="${c.id}"`)}>Edit this change</button></div></article>`}).join('')}</div>`}
-function world(){return heading('THE WORLD AROUND THEM','World','Places, objects, secrets, and rules. Keep what gives your people something to touch.',btn('new-world','Add to the world','plus'))+`<div class="content-page">${p().world.length?`<div class="library-grid">${p().world.map(w=>`<article class="world-card" style="${colorStyle(w.color)}" ${paintAttrs('world',w.id)}><div class="eyebrow">${esc(WORLD_TYPES[w.type]||w.type)}</div><h2>${esc(w.name)}</h2><p>${esc(w.notes||'A detail waiting to happen.')}</p>${referenceSummary('world',w.id)}<footer><button class="text-btn" ${act('edit-world',w.id)}>Open detail ${icon('arrow')}</button>${ib('archive-world',w.id,'archive','Archive '+w.name)}</footer></article>`).join('')}</div>`:empty('Start with a place. Or a strange little object.','World details can be linked to any piece in the outline.',btn('new-world','Add a world detail','plus',true),'world')}</div>`}
-function connections(){return heading('THE SPACE BETWEEN PEOPLE','Connections','Record relationships and how the people involved affect each other.',btn('new-connection','Connect two people','plus'))+`<div class="content-page">${p().connections.length?p().connections.map(r=>`<article class="connection-card" style="${colorStyle(r.color)}" ${paintAttrs('connection',r.id)}><div class="connection-faces">${avatar(person(r.a))}<span>↕</span>${avatar(person(r.b))}</div><div class="grow"><div class="eyebrow">${esc(person(r.a)?.name||'Archived character')} & ${esc(person(r.b)?.name||'Archived character')}</div><h3>${esc(r.label)}</h3><p>${esc(r.notes)}</p></div>${ib('edit-connection',r.id,'edit','Edit connection')}${ib('archive-connection',r.id,'archive','Archive connection')}</article>`).join(''):empty('Put two people in the same room.','A debt, a shared joke, a rivalry, or a reason to stay. Name what connects them.',btn('new-connection','Make a connection','connections',true),'connections')}</div>`}
+function world(){return heading('THE WORLD AROUND THEM','World','Places, objects, groups, and the rules that make your story real.',btn('new-world','Add to the world','plus',true))+`<div class="content-page">${p().world.length?`<div class="library-grid">${p().world.map(w=>`<article class="world-card" style="${colorStyle(w.color)}" ${paintAttrs('world',w.id)}><div class="eyebrow">${esc(WORLD_TYPES[w.type]||w.type)}</div><h2><button class="card-title-link" ${act('edit-world',w.id)}>${esc(w.name)}</button></h2><p>${esc(w.notes||'A detail waiting to happen.')}</p>${referenceSummary('world',w.id)}<footer><button class="text-btn" ${act('edit-world',w.id)}>Open detail ${icon('arrow')}</button>${ib('archive-world',w.id,'archive','Archive '+w.name)}</footer></article>`).join('')}</div>`:empty('Start with a place. Or a strange little object.','World details can be linked to any piece in the outline.',btn('new-world','Add a world detail','plus',true),'world')}</div>`}
+function connections(){return heading('THE SPACE BETWEEN PEOPLE','Connections','Record relationships and how the people involved affect each other.',btn('new-connection','Connect two people','plus',true))+`<div class="content-page">${p().connections.length?p().connections.map(r=>`<article class="connection-card" style="${colorStyle(r.color)}" ${paintAttrs('connection',r.id)}><div class="connection-faces">${avatar(person(r.a))}<span>↕</span>${avatar(person(r.b))}</div><div class="grow"><div class="eyebrow">${esc(person(r.a)?.name||'Archived character')} & ${esc(person(r.b)?.name||'Archived character')}</div><h3><button class="card-title-link" ${act('edit-connection',r.id)}>${esc(r.label)}</button></h3><p>${esc(r.notes)}</p></div>${ib('edit-connection',r.id,'edit','Edit connection')}${ib('archive-connection',r.id,'archive','Archive connection')}</article>`).join(''):empty('Put two people in the same room.','A debt, a shared joke, a rivalry, or a reason to stay. Name what connects them.',btn('new-connection','Make a connection','connections',true),'connections')}</div>`}
 function archiveRows(query=''){const q=query.toLowerCase();return W.archivedItems(p()).filter(a=>(a.title+' '+a.kind).toLowerCase().includes(q)).map(a=>`<article class="archive-row"><span style="color:#8e9a80">${icon('archive')}</span><div class="grow"><h3>${esc(a.title)}</h3><p>${a.kind==='branch'?a.nodes.length+' outline pieces · '+a.changes.length+' character changes':a.kind==='block'?'Character building block':a.kind} · ${new Date(a.created).toLocaleDateString()}</p></div><div class="row wrap"><button class="btn small" ${act('restore',a.id)}>Restore ${icon('undo')}</button>${ib('purge-item',a.id,'trash','Delete permanently: '+a.title)}</div></article>`).join('')||'<p class="list-note">No archived items match.</p>'}
-function archive(){return heading('ROOM FOR SECOND THOUGHTS','Archive','Restore something worth keeping. Permanently delete what you are ready to let go.',W.archivedItems(p()).length?btn('purge-all','Empty archive','trash'):'')+`<div class="content-page">${W.archivedItems(p()).length?`<input id="archive-search" class="archive-search" placeholder="Find an archived idea…" aria-label="Search archive"><div id="archive-rows">${archiveRows()}</div>`:empty('Room for the ideas you set aside.','Drop a piece onto Archive in the tray. Its nested pieces, writing, and character changes will wait here.','','archive')}</div>`}
+function archive(){return heading('ROOM FOR SECOND THOUGHTS','Archive','Restore something worth keeping. Permanently delete what you are ready to let go.',W.archivedItems(p()).length?btn('purge-all','Empty archive','trash'):'')+`<div class="content-page">${W.archivedItems(p()).length?`<input id="archive-search" class="archive-search" placeholder="Find an archived idea…" aria-label="Search archive"><div id="archive-rows">${archiveRows()}</div>`:empty('Room for the ideas you set aside.','Archived pieces keep their writing and character changes. Restore them whenever you need them.','','archive')}</div>`}
 function dialog(eyebrow,title,body,foot='',form='') {finishEdit();const d=$('#dialog');if(!d.open)returnFocus=document.activeElement;d.innerHTML=`${form?`<form data-form="${form}">`:''}<header class="dialog-head"><div><div class="eyebrow">${eyebrow}</div><h2 id="dialog-title">${title}</h2></div><div class="dialog-utilities"><button type="button" class="text-btn dialog-tutorials" data-tutorial="browse">Tutorials</button><button type="button" class="icon" data-action="close-dialog" aria-label="Close dialog">${icon('close')}</button></div></header><div class="dialog-body">${body}<div class="error" id="form-error" role="alert"></div></div>${foot?`<footer class="dialog-foot">${foot}</footer>`:''}${form?'</form>':''}`;const editor=d.querySelector('form');if(editor)for(const key of ['kind','id','cid','bid','kindId','type','rid','changeId','linkNode'])if(typeof modalData?.[key]==='string')editor.dataset['context'+key[0].toUpperCase()+key.slice(1)]=modalData[key];if(!d.open)d.showModal();requestAnimationFrame(()=>{if(d.open)[...d.querySelectorAll('[autofocus],input:not([type=checkbox]):not([type=radio]),textarea,select,button')].find(el=>!el.closest('[data-tutorial-ui]')&&!el.disabled)?.focus({preventScroll:true})})}
 function closeDialog(){if(!$('#dialog').open)return;$('#dialog').close();modalData=null;if(returnFocus?.isConnected)returnFocus.focus({preventScroll:true});else $('#main')?.focus({preventScroll:true})}
 const submit=(label='Keep this',extra='')=>`<span class="hint">${extra||'Every piece can change later.'}</span><button class="btn primary" type="submit">${label}${icon('check')}</button>`;
@@ -2993,7 +3241,7 @@ function paintAttrs(type,id,cid=''){return `data-paint="${type}" data-paint-id="
 function paintButton(type,id,cid=''){return ib('piece-color',id,'spark','Color this piece',`data-owner="${type}" data-cid="${esc(cid)}"`)}
 function owner(type,id,cid=''){return type==='project'?p():type==='character'?person(id):type==='node'?node(id):type==='world'?p().world.find(w=>w.id===id):type==='connection'?p().connections.find(r=>r.id===id):type==='block'?person(cid)?.blocks.find(b=>b.id===id):null}
 function paint(type,id,cid,color){const obj=owner(type,id,cid);if(!obj){toast('Color this block at the beginning of the story.');return}mutate('Changed piece color',()=>{obj.color=color;if(type==='block'){for(const x of person(cid).changes)if(x.blockId===id&&x.block)x.block.color=color;}ui.snap=id})}
-function colorField(value='',automatic=true){return `<div class="field"><span>Color</span><div class="color-picker">${automatic?`<label class="auto-swatch"><input type="radio" name="color" value="" aria-label="Automatic color"${!value?' checked':''}><span>Auto</span></label>`:''}${[...swatches(),...([...W.PALETTE,...(workspace.swatches||[])].filter(s=>s.id===value&&!swatches().some(v=>v.id===s.id)))].map(s=>`<label style="${colorStyle(s.id)}" title="${esc(s.name)}"><input type="radio" name="color" value="${s.id}" aria-label="${esc(s.name)}"${s.id===value?' checked':''}></label>`).join('')}</div><small class="hint">Create your own swatches in Colors, at the top of the workshop.</small></div>`}
+function colorField(value='',automatic=true){return `<div class="field"><span>Color</span><div class="color-picker">${automatic?`<label class="auto-swatch"><input type="radio" name="color" value="" aria-label="Automatic color"${!value?' checked':''}><span>Auto</span></label>`:''}${[...swatches(),...([...W.PALETTE,...(workspace.swatches||[])].filter(s=>s.id===value&&!swatches().some(v=>v.id===s.id)))].map(s=>`<label style="${colorStyle(s.id)}" title="${esc(s.name)}"><input type="radio" name="color" value="${s.id}" aria-label="${esc(s.name)}"${s.id===value?' checked':''}></label>`).join('')}</div><small class="hint">Create your own swatches in Story tools → Colors.</small></div>`}
 function paintTray(){return paintOpen?`<section class="paint-tray" aria-label="Color tray"><div><strong>${brush?'Now touch a piece':'A little color goes a long way.'}</strong><small>${brush?'Tap a scene, thread, character, world detail, or block. Escape puts the brush down.':'Drag a swatch onto a piece. Or click a swatch, then click a piece.'}</small></div><div class="paint-swatches">${swatches().map(s=>`<button class="paint-chip${brush===s.id?' chosen':''}" style="${colorStyle(s.id)}" draggable="true" data-drag="swatch" data-drag-id="${s.id}" ${act('choose-brush',s.id)} aria-label="Paint with ${esc(s.name)}" aria-pressed="${brush===s.id}" title="${esc(s.name)}"><span></span><small>${esc(s.name)}</small></button>`).join('')}</div>${btn('palette-manager','Edit palette','edit')}${ib('toggle-paint','','close','Close color tray')}</section>`:''}
 function paletteManager(){modalData={kind:'palette'};dialog('YOUR COLORS, ACROSS THE WORKSHOP','Make it yours.',`<p class="help">Use the same colors across all your stories. Editing a custom swatch recolors every piece that uses it. Deleting a swatch removes it from the palette. Pieces already using it keep their color. Undo restores the swatch. MICE letters still tell you what each thread does.</p><div class="palette-list">${swatches().map(s=>`<div class="palette-row" style="${colorStyle(s.id)}"><span class="color-sample"></span><div class="grow"><strong>${esc(s.name)}</strong><small>${s.hex.toUpperCase()}</small></div>${W.PALETTE.some(x=>x.id===s.id)?'<small class="hint">Classic</small>':ib('edit-swatch',s.id,'edit','Edit '+s.name)}${ib('delete-swatch',s.id,'trash','Delete '+s.name+' swatch')}</div>`).join('')}</div>`,btn('new-swatch','Create a swatch','plus',true))}
 function editSwatch(id=''){const s=swatches().find(s=>s.id===id)||{name:'',hex:'#708f8b'};modalData={kind:'swatch',id};dialog('MIX SOMETHING OF YOUR OWN',id?'Refine this color.':'A new color for your stories.',field('Swatch name','name',s.name,'Rain on glass')+`<div class="two-fields">${field('Pick a color','picker',s.hex,'','color')}${field('Hex color','hex',s.hex,'#708f8b')}</div><div id="swatch-preview" class="swatch-preview" style="${tokenStyle(s.hex)}"><span class="color-sample"></span><div><strong>Your words stay readable.</strong><p>Cards use a gentle tint and a darker ink version of this color.</p></div></div>`,submit(id?'Save swatch':'Add swatch',id?'Updates every piece using this swatch.':'Available across every story in this workshop.'),'swatch')}
@@ -3043,7 +3291,7 @@ let sessionSwitching = false, authoringSession = null;
 function sessionToolbar(){
  if(sessionMode==='@author')return `<span class="sample-session-label">Tutorial sample · edits are isolated</span><button type="button" class="btn primary" data-tutorial="keep-sample">Keep sample & return</button><button type="button" class="btn" data-tutorial="discard-sample">Discard sample edits</button>`;
  const label=sessionMode?(tutorialDefinitionFor(sessionMode)?.title||'Tutorial'):'';
- return `<button type="button" class="btn tutorial-launch" data-tutorial="browse">Tutorials${label?' · '+esc(label):''}</button>${sessionMode?'<button type="button" class="btn" data-action="copy-to-my-work">Copy to My work</button><button type="button" class="btn tutorial-return" data-tutorial="leave">My work</button>':''}`;
+ return `<button type="button" class="btn tutorial-launch" data-tutorial="browse" aria-label="Tutorials" title="Tutorials">${icon('help')}<span>Tutorials${label?' · '+esc(label):''}</span></button>${sessionMode?'<button type="button" class="btn" data-action="copy-to-my-work">Copy to My work</button><button type="button" class="btn tutorial-return" data-tutorial="leave">My work</button>':''}`;
 }
 function captureDialog(){
  const d=$('#dialog');if(!d.open)return null;
@@ -3333,7 +3581,7 @@ const actions={
  'duplicate-block':el=>duplicateBlock(el.dataset.cid,el.dataset.id),
  'duplicate-node':el=>{mutate('Made a beat variation',pr=>{const n=W.duplicateNode(pr,el.dataset.id);ui.selected=n.id;ui.snap=n.id});closeDialog()},
  'dismiss-starting-tip':()=>{firstStoryTip=false;render()},'close-dialog':closeDialog,help,projects,'new-project':()=>projectName(true),'rename-project':el=>projectName(false,el?.dataset.id),
- 'collapse-inspector':()=>{ui.detailsOpen=false;ui.inspectorMode='hidden';render()},'expand-inspector':()=>{ui.inspectorMode=ui.inspectorMode==='full'?'side':'full';render()},'show-inspector':()=>{ui.inspectorMode='side';ui.detailsOpen=true;render()},
+ 'collapse-inspector':()=>{ui.writingDetails=false;ui.detailsOpen=false;ui.inspectorMode='hidden';render()},'expand-inspector':()=>{ui.inspectorMode=ui.inspectorMode==='full'?'side':'full';render()},'show-inspector':()=>{ui.writingDetails=true;ui.inspectorMode='side';ui.detailsOpen=true;render()},
  'plot-view':el=>{finishEdit();ui.plot=el.dataset.id;ui.selected=visibleNodes()[0]?.id||'';render();},'manage-plots':managePlots,'new-plot':()=>editPlot(),'edit-plot':el=>editPlot(el.dataset.id),'remove-plot':el=>{mutate('Removed plot view',()=>W.removePlot(p(),el.dataset.id));managePlots();},'plot-membership':el=>plotMembership(el.dataset.id),'show-changes':el=>changeSummary(el.dataset.id,el.dataset.at||''),
  'mode':el=>{finishEdit();ui.mode=el.dataset.id;render()},
  'focus':()=>{ui.focus=!ui.focus;render()},
@@ -3483,19 +3731,21 @@ visibleNodes=function(){const ids=branchFocus?W.descendants(p(),branchFocus):nul
 const oldWorkbench=workbench;
 workbench=function(){
   const views=[['outline','Outline'],['refine','Refine'],['write','Write'],['read','Read'],['sequence','Sequence'],['chronology','Chronology'],['choices','Choices']];
-  const nav=`<div class="story-viewbar"><nav role="tablist" aria-label="Story views">${views.map(([id,label])=>`<button class="btn ${ui.mode===id?'primary':''}" ${act('story-view',id)} id="story-tab-${id}" role="tab" aria-selected="${ui.mode===id}" aria-controls="story-panel" tabindex="${ui.mode===id?0:-1}">${label}</button>`).join('')}</nav></div>`;
-  const filters=`<div class="story-filters">${branchFocus?btn('branch-focus','Whole story / '+esc(name(node(branchFocus))),'outline'):''}<label>Cast <select id="story-cast-filter">${opts([['','Everyone'],...p().characters.map(c=>[c.id,c.name])],storyFilter)}</select></label><label><input id="story-review-filter" type="checkbox" ${onlyReview?'checked':''}> Needs review</label></div>`;
+  const filterCount=Number(!!storyFilter)+Number(onlyReview);
+  const filters=`<details class="story-filter-menu" ${ui.filtersOpen?'open':''}><summary>${icon('filter')}<span>Filters</span>${filterCount?`<span class="filter-count">${filterCount}</span>`:''}</summary><div class="story-filter-popover"><label for="story-cast-filter">Show a character</label><select id="story-cast-filter">${opts([['','Everyone'],...p().characters.map(c=>[c.id,c.name])],storyFilter)}</select><label class="filter-check"><input id="story-review-filter" type="checkbox" ${onlyReview?'checked':''}> Needs review</label>${filterCount?btn('clear-story-filters','Clear filters','close'):''}</div></details>`;
+  const nav=`<div class="story-viewbar"><nav role="tablist" aria-label="Story views">${views.map(([id,label])=>`<button class="btn ${ui.mode===id?'primary':''}" ${act('story-view',id)} id="story-tab-${id}" role="tab" aria-selected="${ui.mode===id}" aria-controls="story-panel" tabindex="${ui.mode===id?0:-1}">${label}</button>`).join('')}</nav>${filters}</div>`;
+  const filterStatus=branchFocus||filterCount?`<div class="story-filter-status" role="status">${branchFocus?btn('branch-focus','Whole story / '+esc(name(node(branchFocus))),'outline'):''}${storyFilter?`<span>Cast: ${esc(person(storyFilter)?.name||'Selected character')}</span>`:''}${onlyReview?'<span>Needs review</span>':''}${filterCount?btn('clear-story-filters','Clear filters','close'):''}</div>`:'';
   const content=()=>{
-  if(['outline','refine','write'].includes(ui.mode))return filters+oldWorkbench().replace(/<div class="segmented" aria-label="Workbench view">[\s\S]*?<\/div>/,'');
+  if(['outline','refine','write'].includes(ui.mode))return oldWorkbench().replace(/<div class="segmented" aria-label="Workbench view">[\s\S]*?<\/div>/,'');
   const visible=new Set(visibleNodes().map(n=>n.id));
-  if(ui.mode==='read')return filters+readingView();
-  if(ui.mode==='choices')return filters+heading('CHARACTER CHOICES','What they choose','Goals, decisions, and the consequences they leave behind.')+`<div class="story-choices choice-list">${W.reading(p()).filter(n=>visible.has(n.id)).map(choiceCard).join('')||'<p class="list-note">No pieces match these filters.</p>'}</div>`;
-  if(ui.mode==='sequence'){const moments=W.readingMoments(p()).filter(e=>visible.has(e.node.id));return filters+heading('MANUSCRIPT ORDER','The reader’s journey','Every opening, beat, and closing. Drag moments into the order your reader encounters them.')+`<div class="story-sequence moment-list"><div class="view-key"><span>${moments.length} moments</span><span>Outline and chronology stay independent</span></div>${moments.map((e,i)=>momentCard(e,i,'readingSequence')).join('')||'<p class="list-note">No moments match these filters.</p>'}</div>`;}
+  if(ui.mode==='read')return readingView();
+  if(ui.mode==='choices')return heading('CHARACTER CHOICES','What they choose','Goals, decisions, and the consequences they leave behind.')+`<div class="story-choices choice-list">${W.reading(p()).filter(n=>visible.has(n.id)).map(choiceCard).join('')||'<p class="list-note">No pieces match these filters.</p>'}</div>`;
+  if(ui.mode==='sequence'){const moments=W.readingMoments(p()).filter(e=>visible.has(e.node.id));return heading('MANUSCRIPT ORDER','The reader’s journey','Every opening, beat, and closing. Drag moments into the order your reader encounters them.')+`<div class="story-sequence moment-list"><div class="view-key"><span>${moments.length} moments</span><span>Outline and chronology stay independent</span></div>${moments.map((e,i)=>momentCard(e,i,'readingSequence')).join('')||'<p class="list-note">No moments match these filters.</p>'}</div>`;}
   const events=W.events(p()).filter(e=>(!storyFilter||e.node.cast?.includes(storyFilter))&&(!onlyReview||node(e.node.id)&&W.continuity(p(),e.node).stale));
   const ordered=calendarView?[...events].sort((a,b)=>(a.storyDate||'9999').localeCompare(b.storyDate||'9999')):events;let previousDate=null;
-  return filters+heading('STORY CHRONOLOGY','When things happen',calendarView?'Moments grouped by date. Switch to story order to drag moments and change their history.':'Follow the story through time. Drag moments to retime character, world, and relationship history.',btn('calendar-view',calendarView?'Story order':'Group by date','book')+btn('new-moment','Add moment','plus'))+`<div class="story-sequence chronology-track"><div class="view-key"><span>${events.length} moments</span><span>${calendarView?'Grouped by date':'Story order · earliest to latest'}</span></div>${ordered.map((e,i)=>{const date=e.storyDate||'Undated',group=calendarView&&date!==previousDate?`<h2 class="timeline-date">${esc(date)}</h2>`:'';previousDate=date;return group+momentCard(e,i,'timeline',!calendarView);}).join('')||'<p class="list-note">No moments match these filters.</p>'}</div>`;
+  return heading('STORY CHRONOLOGY','When things happen',calendarView?'Moments grouped by date. Switch to story order to drag moments and change their history.':'Follow the story through time. Drag moments to retime character, world, and relationship history.',btn('calendar-view',calendarView?'Story order':'Group by date','book')+btn('new-moment','Add moment','plus',true))+`<div class="story-sequence chronology-track"><div class="view-key"><span>${events.length} moments</span><span>${calendarView?'Grouped by date':'Story order · earliest to latest'}</span></div>${ordered.map((e,i)=>{const date=e.storyDate||'Undated',group=calendarView&&date!==previousDate?`<h2 class="timeline-date">${esc(date)}</h2>`:'';previousDate=date;return group+momentCard(e,i,'timeline',!calendarView);}).join('')||'<p class="list-note">No moments match these filters.</p>'}</div>`;
   };
-  return nav+`<section id="story-panel" role="tabpanel" aria-labelledby="story-tab-${ui.mode}">${content()}</section>`;
+  return nav+`<section id="story-panel" role="tabpanel" aria-labelledby="story-tab-${ui.mode}">${filterStatus}${content()}</section>`;
 };
 function storyToolButtons(){return btn('story-settings','Story settings','edit')+btn('outline-text','Text outline','import')+btn('structure-review','Review structure','check');}
 actions['story-tools']=()=>{modalData={kind:'story-tools'};dialog('YOUR STORY','Story tools',`<div class="stack">${storyToolButtons()}</div>`);};
@@ -3524,7 +3774,7 @@ document.addEventListener('dragover',e=>{const row=e.target.closest('[data-sort-
 document.addEventListener('dragleave',e=>e.target.closest('[data-sort-collection]')?.classList.remove('sequence-landing'));
 document.addEventListener('drop',e=>{const row=e.target.closest('[data-sort-collection]');if(!sequenceDrag||row?.dataset.sortCollection!==sequenceDrag.collection)return;e.preventDefault();const d=sequenceDrag;sequenceDrag=null;mutate('Moved '+(d.collection==='timeline'?'story moment':'reading position'),pr=>W.reorder(pr,d.collection,d.id,row.dataset.sortId));});
 document.addEventListener('dragend',()=>{sequenceDrag=null;$$('.sequence-landing').forEach(x=>x.classList.remove('sequence-landing'));});
-document.addEventListener('change',e=>{if(e.target.id==='story-cast-filter'){storyFilter=e.target.value;render();}if(e.target.id==='story-review-filter'){onlyReview=e.target.checked;render();}});
+document.addEventListener('change',e=>{if(e.target.id==='story-cast-filter'){ui.filtersOpen=true;storyFilter=e.target.value;render();$('#story-cast-filter')?.focus({preventScroll:true});}if(e.target.id==='story-review-filter'){ui.filtersOpen=true;onlyReview=e.target.checked;render();$('#story-review-filter')?.focus({preventScroll:true});}});
 const oldInspector=inspector;
 inspector=function(){const html=oldInspector(),n=node(ui.selected);return n?html.replace('</aside>',`<div class="section stack">${btn('scene-details','Scene craft & links','edit',false,`data-id="${n.id}"`)}${btn('continuity','Review continuity'+(W.continuity(p(),n).stale?' · changed':''),'change',false,`data-id="${n.id}"`)}${btn('branch-focus','Focus on this branch','focus',false,`data-id="${n.id}"`)}${btn('continue-scene','Continue from here','arrow',false,`data-id="${n.id}"`)}${recordTools('node',n.id)}${n.type!=='B'?btn('remove-frame','Remove frame; keep contents','close',false,`data-id="${n.id}"`):''}</div></aside>`):html;};
 function sceneDetails(id){const n=node(id);if(!n)return;modalData={kind:'scene-details',id};dialog('A CLOSER LOOK',name(n),sceneDetailFields(n,id),submit('Keep details'),'scene-details');}
@@ -3601,7 +3851,7 @@ extraSubmit=function(form,data,m){const v=k=>String(data.get(k)||'').trim(),kind
   return oldExtraSubmit(form,data,m);
 };
 Object.assign(actions,{
-  'story-view':el=>{finishEdit();ui.mode=el.dataset.id;if(ui.mode!=='write')ui.focus=false;render();},
+  'story-view':el=>{finishEdit();ui.mode=el.dataset.id;ui.filtersOpen=false;if(ui.mode!=='write')ui.focus=false;render();document.getElementById('story-tab-'+ui.mode)?.scrollIntoView({block:'nearest',inline:'nearest'});},
   'branch-focus':el=>{closeDialog();branchFocus=el.dataset.id||'';ui.mode='outline';render();},
   'scene-details':el=>sceneDetails(el.dataset.id), 'story-settings':storySettings,
   'calendar-view':()=>{calendarView=!calendarView;render();},'new-moment':()=>editMoment(),'edit-moment':el=>editMoment(el.dataset.id),
@@ -3847,9 +4097,15 @@ actions['return-drawer']=el=>returnPiece(el.dataset.id);
 actions['place-drawer']=el=>{const a=W.drawerEntries(p()).find(a=>a.id===el.dataset.id);if(!a)return;modalData={kind:'place-drawer',id:a.id};dialog('BRING IT BACK',a.title,select('Destination','anchor',[['','The outermost outline'],...W.ordered(p()).map(x=>[x.node.id,'— '.repeat(Math.min(x.depth,6))+name(x.node)])],'')+select('Position','where',[['inside','Inside, at the end'],['before','Before this piece'],['after','After this piece']],'inside'),submit('Place in outline'),'place-drawer');};
 const drawerSubmit=extraSubmit;extraSubmit=function(form,data,m){if(form.dataset.form==='place-drawer'){returnPiece(m.id,String(data.get('anchor')||''),String(data.get('where')||'inside'));return true;}return drawerSubmit(form,data,m);};
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ui.drawerOpen&&!$('#dialog').open){e.preventDefault();if(drag)endDrag();actions['toggle-drawer']();}});
-function storyToolsMenu(){return `<details class="story-tools-menu"><summary>${icon('book')}<span>Story tools</span>${icon('down')}</summary><div class="story-tools-popover"><span class="tools-label">Story</span>${btn('story-settings','Story settings','edit')}${btn('story-references','Pictures & references','book')}${btn('structure-review','Review structure','check')}<span class="tools-label">Workspace & export</span>${btn('toggle-paint','Colors','spark')}${btn('outline-text','Text outline','import')}</div></details>`;}
+function storyToolsMenu(){return `<details class="story-tools-menu"><summary aria-label="Story tools" title="Story tools">${icon('book')}<span>Story tools</span>${icon('down')}</summary><div class="story-tools-popover"><span class="tools-label">Story</span>${btn('story-settings','Story settings','edit')}${btn('story-references','Pictures & references','book')}${btn('structure-review','Review structure','check')}<span class="tools-label">Workspace & export</span>${btn('toggle-paint','Colors','spark')}${btn('outline-text','Text outline','import')}</div></details>`;}
 document.addEventListener('click',e=>{const menu=$('.story-tools-menu[open]');if(menu&&(!menu.contains(e.target)||e.target.closest('[data-action]')))menu.open=false;});
 document.addEventListener('keydown',e=>{const menu=$('.story-tools-menu[open]');if(e.key==='Escape'&&menu){menu.open=false;menu.querySelector('summary').focus();}});
+
+// Filters retain their state through edits, and follow native disclosure keyboard behavior.
+actions['clear-story-filters']=()=>{storyFilter='';onlyReview=false;ui.filtersOpen=false;render();$('.story-filter-menu>summary')?.focus({preventScroll:true});};
+document.addEventListener('toggle',e=>{if(e.target.matches?.('.story-filter-menu')&&e.target.isConnected)ui.filtersOpen=e.target.open;},true);
+document.addEventListener('click',e=>{const menu=$('.story-filter-menu[open]');if(menu&&!menu.contains(e.target)){ui.filtersOpen=false;menu.open=false;}});
+document.addEventListener('keydown',e=>{const menu=$('.story-filter-menu[open]');if(e.key==='Escape'&&menu){ui.filtersOpen=false;menu.open=false;menu.querySelector('summary').focus();}});
 
 /* Existing credentials and server history, with owner-scoped local recovery. */
 const account=CounterplotAccount, syncCore=CounterplotSyncCore;

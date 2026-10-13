@@ -332,3 +332,251 @@ body:not(:has(.tray)) #toast{bottom:24px}
  .character-pieces .block-body{font-size:22px}
  .character-pieces .block,.character-pieces .add-block-tile{min-height:160px}
 }
+
+/* Shared visual rhythm: quiet surfaces, readable labels, and one clear action. */
+:root{--paper:#f6f5f0;--panel:#fffefa;--ink:#263b32;--muted:#5c695f;--line:#dce2d8;--green:#285b49;--green-soft:#e6eee5;--shadow:0 2px 5px #223c2d06,0 8px 24px #223c2d05}
+body{line-height:1.6}
+.btn{min-height:40px;padding:8px 13px;border-radius:9px;font-size:13px;font-weight:600;box-shadow:0 1px 2px #263b3208;transition:background-color .14s,box-shadow .14s}
+.btn:hover{box-shadow:0 2px 6px #263b3210;background:#fff}
+.btn.primary{box-shadow:0 2px 4px #244d3519}
+.btn.primary:hover{background:#204c3d;box-shadow:0 3px 8px #244d3520}
+button:active:not(:disabled){transform:none}
+.icon{min-width:34px;width:34px;height:34px;border-radius:8px}
+.text-btn{font-size:13px;min-height:32px}
+.eyebrow{letter-spacing:1.3px;font-size:10px;color:var(--muted)}
+:where(button,a,summary):focus-visible{outline:3px solid #367861;outline-offset:3px}
+:where(input,textarea,select):focus-visible{outline:2px solid #367861;outline-offset:2px}
+:where(button,a,summary,input,textarea,select){scroll-margin-block:90px}
+@media(hover:hover){.nav-btn:hover,.cast-item:hover{background:#e5ebe1}.block:hover,.reference-card:hover,.add-block-tile:hover{transform:none;box-shadow:0 5px 18px #263b3210}}
+/* Navigation is always in the same place, with content before secondary tools. */
+.sidebar{background:#eeefe6;border-color:var(--line);padding-top:24px}
+.brand{letter-spacing:-.9px;margin-bottom:28px}
+.brand-mark{box-shadow:0 3px 8px #285b4914}
+.sidebar .story-switch{border-color:#d8ded1;background:#f8f8f1;margin-bottom:20px;border-radius:10px}
+.story-switch:hover{border-color:#a2b9a5;background:var(--panel)}
+.nav-btn{font-size:13px;padding-block:11px;color:#536454;border-radius:9px}
+.nav-btn.active{background:#dde8d9;color:#244e3d}
+.nav-btn .count{font-size:10px;color:#52664f}
+.cast-item{font-size:13px;min-height:38px}
+.side-label{font-size:9px;line-height:1.6}
+.side-foot .text-btn{font-size:12px}
+.topbar{background:var(--paper);border-color:var(--line);height:64px}
+.breadcrumb{font-size:12px}
+.top-actions{gap:6px}
+.top-actions .btn,.story-tools-menu>summary{font-size:12px}
+.top-actions .tutorial-launch{background:none;border-color:transparent;box-shadow:none}
+.top-actions .tutorial-launch svg{width:17px;height:17px}
+.story-tools-menu>summary,.account-menu>summary{min-height:36px}
+.story-tools-popover,.account-popover,.story-filter-popover{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 14px 40px #233e3021}
+.story-tools-popover .btn,.account-popover .btn{min-height:40px;font-size:13px}
+.page-head{padding-top:24px;padding-bottom:20px;align-items:center;gap:20px}
+.page-head h1{font-size:34px;letter-spacing:-1px}
+.page-head .eyebrow{margin-bottom:6px;font-size:9px}
+.page-head p{font-size:13px;line-height:1.65;margin-top:8px;max-width:64ch}
+.page-head .page-actions{align-items:center;gap:8px}
+.page-head .page-actions .btn{white-space:normal;text-align:center}
+.story-viewbar{display:flex;align-items:center;gap:20px;padding-top:16px;margin-bottom:0;min-width:0}
+.story-viewbar nav{display:flex;flex:1;flex-wrap:nowrap;min-width:0;overflow-x:auto;scrollbar-width:thin;gap:5px;border-bottom:1px solid var(--line);padding:0 2px}
+.story-viewbar nav .btn{flex:0 0 auto;min-width:max-content;min-height:42px;padding:9px 13px;font-size:13px;box-shadow:none;border-radius:0;border:0;border-bottom:2px solid transparent;background:transparent;color:var(--muted)}
+.story-viewbar nav .btn.primary{color:var(--green);border-bottom-color:var(--green);background:transparent}
+.story-viewbar nav .btn:hover{color:var(--green);background:#e9efe566}
+.story-filter-menu{position:relative;flex:none}
+.story-filter-menu>summary{display:flex;align-items:center;gap:6px;min-height:40px;padding:6px 10px;cursor:pointer;list-style:none;font-size:12px;border:1px solid var(--line);border-radius:9px;background:var(--panel)}
+.story-filter-menu>summary::-webkit-details-marker{display:none}
+.story-filter-menu>summary svg{width:15px;height:15px}
+.story-filter-menu[open]>summary{border-color:#849e89;background:var(--green-soft)}
+.filter-count{display:grid;place-items:center;min-width:19px;height:19px;background:var(--green);color:white;font-size:11px;border-radius:50%}
+.story-filter-popover{position:absolute;top:calc(100% + 8px);right:0;z-index:40;width:245px;padding:16px;display:grid;gap:10px;font-size:13px;max-width:calc(100vw - 32px)}
+.story-filter-popover>label:first-child{font-weight:600}
+.filter-check{display:flex;align-items:center;gap:9px;min-height:38px;cursor:pointer}
+.story-filter-status{display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px;margin:12px 36px 0;padding:8px 12px;border-radius:8px;background:var(--green-soft);font-size:12px;color:var(--green)}
+.story-filter-status .btn{min-height:28px;padding:2px 6px;font-size:12px;box-shadow:none;border:0;background:none}
+.plot-toolbar{margin-bottom:16px;gap:12px}
+.plot-toolbar nav .btn{min-height:36px;border-radius:8px;box-shadow:none;font-size:12px}
+.plot-toolbar nav .btn.primary{background:var(--green-soft);border-color:#b8cbbb;color:var(--green);box-shadow:none}
+.plot-collapse .btn{background:transparent;box-shadow:none;min-height:36px}
+.board-toolbar{margin-bottom:16px}
+.board-meta{font-size:10px}
+/* Cards carry meaning through typography and a restrained color edge. */
+.node{border-color:#d7dfd1;border-radius:11px;box-shadow:0 2px 5px #223c2d06}
+.node.selected{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent),transparent 55%)}
+.node-title{font-size:15px;font-weight:650;line-height:1.5}
+.node-promise{font-size:13px;line-height:1.65;color:var(--muted)}
+.node-promise textarea{font-size:13px;line-height:1.65}
+.node-foot .text-btn{font-size:11px}
+.node-actions .icon{color:#647560}
+.node-add{color:#51674e}
+.closing{border-radius:0 0 10px 10px;font-size:12px}
+.tray{border-color:#d2dccb;box-shadow:0 8px 28px #233c301c;border-radius:15px;background:#fffefaed;backdrop-filter:blur(12px)}
+.tray-piece{border-radius:9px;box-shadow:none}
+.tray-piece:hover{box-shadow:inset 0 0 0 1px var(--accent)}
+.tray-piece small{font-size:9px}
+.tray-label{letter-spacing:1px}
+.inspector{border-color:var(--line)}
+.inspector p{font-size:12px;line-height:1.65}
+.inspector .section-head .eyebrow{font-size:10px}
+.inspector .section{margin-top:23px}
+.character-page-head{padding-top:20px;padding-bottom:14px}
+.character-page-head h1{font-size:30px}
+.character-studio .character-tools .segmented button{font-size:14px}
+.block,.world-card,.connection-card,.moment-card,.choice-card{border-color:#d6dfd1;border-radius:12px;box-shadow:var(--shadow)}
+.block[style]{background:linear-gradient(180deg,color-mix(in srgb,var(--tint),var(--panel) 40%),var(--panel) 100px)}
+.block .block-label{font-size:10px}
+.block-detail{font-size:13px;line-height:1.7}
+.library-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:20px}
+.world-card{padding:24px;display:flex;flex-direction:column;min-width:0}
+.world-card .eyebrow{color:var(--accent,var(--green));font-size:10px}
+.world-card h2{font-size:27px;line-height:1.25;margin-top:12px}
+.world-card p{font-size:14px;line-height:1.7}
+.world-card footer{margin-top:auto;padding-top:18px;border-top:1px solid var(--line)}
+.card-title-link{font:inherit;text-align:left;line-height:inherit;padding:0;color:inherit;overflow-wrap:anywhere}
+.card-title-link:hover{text-decoration:underline;text-decoration-color:#92aa8f;text-underline-offset:4px}
+.world-card .reference-summary{margin:18px 0}
+.connection-card{padding:22px;gap:18px}
+.connection-card h3{font-size:25px;line-height:1.3}
+.connection-card p{font-size:14px;line-height:1.7}
+.connection-card .eyebrow{font:12px var(--sans);letter-spacing:0;text-transform:none;color:var(--muted)}
+.connection-faces .avatar{width:42px;height:42px}
+.archive-row,.unfinished-edit{border-radius:10px;box-shadow:none}
+.archive-row h3{font-size:15px;font-weight:600}
+.archive-row p{font-size:12px}
+.moment-card h2,.choice-card h2{font-size:17px;line-height:1.45}
+.moment-description,.choice-context,.moment-placeholder{font-size:13px;line-height:1.7}
+.moment-meta{font-size:11px}
+.moment-number,.choice-number{color:#567252}
+.view-key{font-size:11px;color:var(--muted)}
+.empty{background:linear-gradient(135deg,#eef3e8,var(--panel) 70%);border:1px solid var(--line);border-radius:16px;padding:40px 24px;gap:14px}
+.empty .empty-icon{box-shadow:0 4px 12px #26452f0c;background:#dde9d7;transform:rotate(-4deg);border-radius:18px}
+.empty h2{font-size:30px;line-height:1.25;max-width:24ch}
+.empty p{font-size:14px;line-height:1.7;max-width:46ch}
+/* Writing and refining share a generous, readable canvas. */
+.workbench-grid.details-hidden .writing-layout{max-width:1140px;margin-inline:auto;grid-template-columns:185px minmax(0,1fr);gap:28px}
+.manuscript{border-radius:12px;box-shadow:var(--shadow);background:var(--panel);border:1px solid var(--line);padding:30px}
+.moment-navigation button{font-size:13px;line-height:1.5;border-radius:8px;padding:12px 10px}
+.moment-navigation button.active{background:var(--green-soft);color:var(--green)}
+.moment-navigation small{font-size:10px;line-height:1.5;letter-spacing:.2px}
+.manuscript textarea.prose{font-size:20px;line-height:1.9;max-width:68ch;display:block;margin-inline:auto}
+.manuscript .scene-prompt{font-size:13px;color:var(--muted);border-radius:0 8px 8px 0;background:#edf2e8}
+.manuscript .draft-title{font-size:32px;line-height:1.3}
+.manuscript .draft-title:focus-visible{outline:2px solid #367861;outline-offset:5px}
+.manuscript textarea.prose:focus-visible{outline:2px solid #aac0a2;outline-offset:8px}
+.manuscript footer{font-size:11px}
+.refine-save-note{font-size:12px}
+.refine-relations{background:#fafbf5;border-radius:10px}
+.refine-relations h3{font-size:21px}
+.refine-relations p,.refine-viewpoint{font-size:12px}
+.continuous-manuscript{max-width:900px;margin-inline:auto;padding:36px 50px 90px}
+.manuscript-prose{font:20px/1.9 var(--serif);max-width:68ch;margin-inline:auto}
+/* Forms use readable labels and stable, clearly separated save actions. */
+input,textarea,select{border-color:#cbd5c7;border-radius:8px;background:#fffefa;line-height:1.5}
+.field>span:first-child{font-size:13px;color:#465b49;margin-bottom:7px}
+.field small{font-size:12px;line-height:1.6}
+.field{margin-bottom:20px}
+input::placeholder,textarea::placeholder{color:#6b746d;opacity:1}
+input[type=checkbox]{flex:none;width:18px;height:18px}
+.dialog-head{padding:26px 28px 20px}
+.dialog-head h2{font-size:30px;line-height:1.2}
+.dialog-head .eyebrow{font-size:9px}
+.dialog-body p.help{font-size:13px}
+.dialog-foot{background:#f3f5ed;padding:16px 28px;border-color:var(--line);z-index:2}
+.dialog-foot .hint{font-size:12px;line-height:1.5}
+.dialog-foot .btn{min-height:42px}
+.story-disclosure{border-color:var(--line)}
+.story-disclosure>summary{font-size:13px;padding-block:14px;min-height:44px}
+.kind-grid button{min-height:48px}
+#toast{border:1px solid #52735d;box-shadow:0 8px 24px #1d342527;font-size:13px;border-radius:11px}
+#toast button{min-height:32px;font-size:12px}
+/* Touch layouts: fewer toolbar rows, readable text, and reachable targets. */
+@media(max-width:1190px){.story-viewbar{gap:12px}.workbench-grid.details-hidden .writing-layout{grid-template-columns:minmax(0,1fr);gap:18px}.continuous-manuscript{margin-inline:26px}.story-filter-status{margin-inline:26px}}
+@media(max-width:680px){
+ .sidebar{padding:12px 14px 7px}
+ .brand{margin:0;font-size:19px}
+ .sidebar nav{gap:3px;margin-top:8px}
+ .nav-btn{min-height:48px;font-size:10px;padding:7px 2px;line-height:1.25;gap:4px}
+ .nav-btn svg{width:17px;height:17px}
+ .topbar{position:relative;display:block;height:auto;min-height:0;padding:8px 14px 9px}
+ .topbar .breadcrumb{font-size:11px;max-width:calc(100% - 112px);min-height:23px;gap:5px}
+ .topbar .breadcrumb>button{max-width:none;min-width:0;padding:0}
+ .topbar .breadcrumb>span:last-child{font-size:10px}
+ .top-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:5px;margin-top:3px;margin-left:0;max-width:100%}
+ .top-actions .icon,.top-actions .tutorial-launch,.top-actions .export-button{width:34px;min-width:34px;height:36px;min-height:36px;padding:7px;border:0;box-shadow:none;background:transparent}
+ .top-actions .tutorial-launch>span,.top-actions .export-button>span,.top-actions .story-tools-menu>summary>span,.top-actions .story-tools-menu>summary>svg:last-child{display:none}
+ .story-tools-menu>summary{width:34px;min-height:36px;justify-content:center;padding:7px}
+ .history-controls{padding-inline:3px;gap:0}
+ .top-actions .account-sync-status{position:absolute;top:9px;right:14px;font-size:10px;gap:4px}
+ .account-sync-status svg{width:13px;height:13px}
+ .top-actions .account-menu{margin-left:0}
+ .account-menu>summary{padding:3px}
+ .account-popover,.story-tools-popover{right:12px}
+ .story-viewbar{gap:10px;margin:0 16px;padding-top:8px}
+ .story-viewbar nav{display:flex;flex-wrap:nowrap;overflow-x:auto;width:auto;gap:0;padding:0 1px}
+ .story-viewbar nav .btn{flex:0 0 auto;padding:9px 10px;min-height:44px;font-size:12px}
+ .story-filter-menu>summary{padding:6px 8px;min-height:36px;font-size:11px}
+ .story-filter-menu>summary svg{display:none}
+ .story-filter-status{margin:10px 16px 0}
+ .page-head{padding:18px 16px 16px;gap:12px;flex-wrap:wrap;align-items:center}
+ .page-head .eyebrow{display:none}
+ .page-head h1{font-size:28px;line-height:1.2}
+ .page-head p{font-size:12px;line-height:1.65;margin-top:6px}
+ .page-head>div:first-child{flex:1 1 180px}
+ .page-head .page-actions{flex-direction:row;justify-content:flex-start;flex-wrap:wrap;gap:7px;padding:0}
+ .page-head .page-actions .btn{min-height:38px;padding:8px 10px;font-size:12px}
+ .plot-toolbar{padding-inline:16px;margin-bottom:12px;gap:10px}
+ .plot-toolbar nav .btn,.plot-collapse .btn{font-size:11px;min-height:36px}
+ .board-toolbar{margin-bottom:12px;gap:8px}
+ .board-toolbar .btn{min-height:36px;font-size:12px;padding:6px 10px}
+ .node-title{font-size:14px}
+ .node-promise,.node-promise textarea{font-size:13px}
+ .node-actions .icon{min-width:28px;width:28px;height:32px}
+ .node .node-head{gap:6px}
+ .node-foot{padding-right:10px}
+ .tray{bottom:max(10px,env(safe-area-inset-bottom));padding:7px;gap:5px;max-width:calc(100vw - 16px)}
+ .tray-piece{min-width:40px;height:48px;padding-inline:4px}
+ .tray-piece small{font-size:8px}
+ .character-page-head{padding:16px 18px 10px}
+ .character-page-head>div:first-child{flex:0 1 auto}
+ .character-page-head h1{font-size:25px}
+ .character-page-head .page-actions .btn{font-size:10px;padding:7px 9px;min-height:36px}
+ .character-studio .character-tools .segmented button{font-size:13px}
+ .character-profile .text-btn{font-size:12px}
+ .library-grid{gap:14px;grid-template-columns:1fr}
+ .world-card{padding:20px}
+ .world-card h2{font-size:26px}
+ .connection-card{padding:18px;gap:12px}
+ .connection-card .grow{min-width:0;flex:1 1 150px}
+ .connection-card .connection-faces{flex-direction:row}
+ .connection-faces .avatar{width:32px;height:32px}
+ .connection-card h3{font-size:23px}
+ .connection-card>.icon{min-height:40px;min-width:40px}
+ .moment-card h2,.choice-card h2{font-size:16px}
+ .moment-description{font-size:13px}
+ .moment-actions .icon,.moment-edit .btn{min-height:36px}
+ .empty{padding:30px 20px;border-radius:14px}
+ .empty h2{font-size:27px}
+ .empty p{font-size:13px}
+ .workbench-grid.details-hidden .writing-layout{gap:14px}
+ .moment-navigation button{flex-basis:160px;font-size:12px;min-height:54px}
+ .manuscript{padding:22px 18px;border-radius:10px}
+ .manuscript .draft-title{font-size:27px}
+ .manuscript textarea.prose,.manuscript-prose{font-size:19px;line-height:1.85}
+ .continuous-manuscript{margin:16px;padding:24px 20px 60px}
+ .reading-controls{margin-inline:16px;flex-wrap:wrap}
+ .field input:not([type=checkbox]):not([type=color]),.field textarea,.field select,.dialog-body>input,.story-filter-popover select{font-size:16px}
+ .dialog-head{padding:18px 20px 16px;gap:10px}
+ .dialog-head h2{font-size:27px}
+ .dialog-body{padding:0 20px 22px}
+ .dialog-foot{padding:14px 20px max(14px,env(safe-area-inset-bottom));gap:12px}
+ .dialog-foot .hint{font-size:11px}
+ .dialog-foot .btn{min-height:44px}
+ .field>span:first-child{font-size:13px}
+ .dialog-utilities .text-btn{min-height:36px}
+ .dialog-utilities .icon{min-width:40px;min-height:40px}
+ .account-auth-links .btn{min-height:44px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+/* Default story colors and secondary labels retain AA text contrast. */
+:root{--orange:#994b26;--blue:#42677f;--purple:#71547f}
+.inside-drop,.tray-trash{color:#55654f}
+.moment-navigation button{color:var(--muted)}
+@media(min-width:681px) and (max-width:1180px){.topbar{height:auto;min-height:64px}}
+@media print{.story-viewbar,.story-filter-status,.plot-toolbar,.reading-controls{display:none!important}.manuscript,.block,.world-card,.connection-card,.moment-card,.choice-card{box-shadow:none;background:white;break-inside:avoid}.continuous-manuscript{max-width:none;margin:0;padding:20px}body{background:white}}

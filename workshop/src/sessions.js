@@ -4,7 +4,7 @@ let sessionSwitching = false, authoringSession = null;
 function sessionToolbar(){
  if(sessionMode==='@author')return `<span class="sample-session-label">Tutorial sample · edits are isolated</span><button type="button" class="btn primary" data-tutorial="keep-sample">Keep sample & return</button><button type="button" class="btn" data-tutorial="discard-sample">Discard sample edits</button>`;
  const label=sessionMode?(tutorialDefinitionFor(sessionMode)?.title||'Tutorial'):'';
- return `<button type="button" class="btn tutorial-launch" data-tutorial="browse">Tutorials${label?' · '+esc(label):''}</button>${sessionMode?'<button type="button" class="btn" data-action="copy-to-my-work">Copy to My work</button><button type="button" class="btn tutorial-return" data-tutorial="leave">My work</button>':''}`;
+ return `<button type="button" class="btn tutorial-launch" data-tutorial="browse" aria-label="Tutorials" title="Tutorials">${icon('help')}<span>Tutorials${label?' · '+esc(label):''}</span></button>${sessionMode?'<button type="button" class="btn" data-action="copy-to-my-work">Copy to My work</button><button type="button" class="btn tutorial-return" data-tutorial="leave">My work</button>':''}`;
 }
 function captureDialog(){
  const d=$('#dialog');if(!d.open)return null;
