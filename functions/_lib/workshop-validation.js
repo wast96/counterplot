@@ -842,8 +842,15 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
   function normalize(p) {
     // Save the initial order once. Moving an outline card never retimes existing events.
     if (!p.timeline) p.timeline = W.outlineEvents(p).map(({key,node,edge}) => ({id:key.replace(':','-'),key,nodeId:node.id,edge,title:'',storyDate:node.storyDate||'',storyEndDate:node.storyEndDate||''}));
-    const covered = new Set(p.timeline.map(e => e.nodeId+':'+e.edge));
-    for (const e of W.outlineEvents(p)) if (!covered.has(e.key)) p.timeline.push({id:e.key.replace(':','-'),key:e.key,nodeId:e.node.id,edge:e.edge,title:'',storyDate:e.node.storyDate||'',storyEndDate:e.node.storyEndDate||''});
+    const covered = new Set(p.timeline.map(e => e.nodeId+':'+e.edge)),outline=W.outlineEvents(p);
+    // Seed new moments beside the next known outline moment. Existing chronology never moves.
+    // In particular, a new beat inside a thread belongs before that thread's closing.
+    let next='';
+    for(let i=outline.length-1;i>=0;i--){const e=outline[i];if(!covered.has(e.key)){
+      const at=next?p.timeline.findIndex(x=>x.nodeId+':'+x.edge===next):-1;
+      p.timeline.splice(at<0?p.timeline.length:at,0,{id:e.key.replace(':','-'),key:e.key,nodeId:e.node.id,edge:e.edge,title:'',storyDate:e.node.storyDate||'',storyEndDate:e.node.storyEndDate||''});
+      covered.add(e.key);
+    }next=e.key;}
     p.readingOrder ||= W.ordered(p).map(x => x.node.id);
     const readingIds = new Set(p.readingOrder);
     for (const n of p.nodes) if (!readingIds.has(n.id)) {p.readingOrder.push(n.id);readingIds.add(n.id);}
@@ -1032,6 +1039,61 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
   function snapshot(p,n){const key=W.events(p).find(e=>e.nodeId===n.id&&e.edge==='open')?.key||'';return {characters:n.cast.map(id=>allCharacters(p).find(c=>c.id===id)).filter(Boolean).map(c=>{const state=W.characterState(p,c,key,true);return {id:c.id,name:c.name,identity:c.identity,blocks:state.blocks,lifeStatus:state.lifeStatus};}),world:n.worldIds.map(id=>allWorld(p).find(w=>w.id===id)).filter(Boolean).map(w=>({id:w.id,...worldState(p,w,key)})),parents:[n.parent,...(n.extraParents||[]).map(x=>x.id)].filter(Boolean).map(id=>{const s=allNodes(p).find(n=>n.id===id||n.sceneId===id);return s?{id,title:s.title,prose:s.prose,action:s.action,after:s.after}: {id,missing:true};})};}
   function continuity(p,n){const current=snapshot(p,n);return {stale:!!n.continuityUnreviewed||!!n.continuitySnapshot&&JSON.stringify(current)!==JSON.stringify(n.continuitySnapshot),previous:n.continuitySnapshot||n.sourceSnapshot||null,current};}
   function acceptContinuity(p,n){n.continuitySnapshot=snapshot(p,n);n.continuityUnreviewed=false;}
+  // Read the change over a piece's span in story time, independently of reading order.
+  // A beat ends at its own moment; a thread ends at its closing, after intermediate steps.
+  function pieceChanges(p,n,{edge='',nested=true}={}) {
+    if(!n)return [];
+    const events=W.events(p),start=events.findIndex(e=>e.nodeId===n.id&&e.edge===(edge||'open'));
+    const end=n.type==='B'||edge?start:events.findIndex(e=>e.nodeId===n.id&&e.edge==='close');
+    if(start<0||end<start)return [];
+    const ids=new Set([n.id,...(nested&&!edge&&n.type!=='B'?W.descendants(p,n.id):[])]);
+    if(nested&&!edge&&n.type!=='B')for(const piece of p.nodes)if((piece.miceLinks||[]).some(link=>ids.has(link.miceId)))ids.add(piece.id);
+    const moments=new Set(events.slice(start,end+1).filter(e=>ids.has(e.nodeId)).flatMap(e=>[e.key,e.id]));
+    const touched=rows=>list(rows).some(x=>moments.has(x.at)||moments.has(x.momentId));
+    const before=events[start-1]?.key||'',after=events[end].key,out=[];
+    const add=(id,kind,subject,label,from,to)=>{
+      from=String(from??'').trim();to=String(to??'').trim();
+      if(from!==to)out.push({id,kind,subject,label,from:from||'Unspecified',to:to||'Unspecified'});
+    };
+    for(const c of allCharacters(p)){
+      const a=W.characterState(p,c,before),b=W.characterState(p,c,after);
+      const archived=p.archive.filter(x=>x.kind==='branch').flatMap(x=>x.changes.filter(y=>y.characterId===c.id).map(y=>y.change));
+      const changes=[...c.changes,...archived];
+      const checkpoints=touched(c.stateCheckpoints);
+      for(const id of new Set([...a.blocks,...b.blocks].map(x=>x.id))){
+        if(!checkpoints&&!touched(changes.filter(x=>x.blockId===id)))continue;
+        const from=a.blocks.find(x=>x.id===id),to=b.blocks.find(x=>x.id===id),block=to||from;
+        add('block:'+c.id+':'+id,'character',c.name,block.label||block.kind,from?.text??'Not yet part of them',to?.text??'Let go');
+      }
+      if(checkpoints||touched(c.lifeChanges))add('life:'+c.id,'character',c.name,'Life status',a.lifeStatus,b.lifeStatus);
+      if(touched(c.prominence?.changes)||touched(c.prominence?.checkpoints))add('prominence:'+c.id,'character',c.name,'Prominence',W.prominenceAt(p,c,before),W.prominenceAt(p,c,after));
+    }
+    const targetName=id=>[...allCharacters(p),...allWorld(p)].find(x=>x.id===id)?.name||id;
+    for(const w of allWorld(p)){
+      if(touched(w.stateChanges)){
+        const a=worldState(p,w,before),b=worldState(p,w,after);
+        add('world:'+w.id,'world',w.name,w.stateLabel||'State',a.value,b.value);
+        add('target:'+w.id,'world',w.name,'Target',targetName(a.targetId),targetName(b.targetId));
+      }
+      if(touched(w.faction?.changes)||touched(w.faction?.checkpoints)){
+        const a=W.factionAt(p,w,before),b=W.factionAt(p,w,after);
+        for(const id of new Set([...a,...b].map(x=>x.id))){const from=a.find(x=>x.id===id),to=b.find(x=>x.id===id),block=to||from;add('faction:'+w.id+':'+id,'world',w.name,block.title||block.kind,from?.text??'Not yet part of the group',to?.text??'Let go');}
+      }
+    }
+    for(const r of allConnections(p))if(touched(r.changes)){
+      const a=connectionState(p,r,before),b=connectionState(p,r,after),subject=targetName(r.a)+' & '+targetName(r.b);
+      for(const [key,label]of [['bond','Connection'],['aWant',targetName(r.a)+' wants'],['bWant',targetName(r.b)+' wants']])add('connection:'+r.id+':'+key,'connection',subject,label,a[key],b[key]);
+      for(const [key,label]of [['membership','Membership'],['position','Position'],['visibility','Visibility'],['aTie',targetName(r.a)+'’s tie'],['bTie',targetName(r.b)+'’s tie']])add('terms:'+r.id+':'+key,'connection',subject,label,a.terms[key],b.terms[key]);
+    }
+    return out;
+  }
+  function changeTitle(from,to){
+    from=text(from).trim();to=text(to).trim();
+    if(!from||!to)throw Error('Add both a starting and an ending state.');
+    const title='From '+from+' to '+to;
+    if(title.length>1000)throw Error('Shorten the states so the title fits within 1,000 characters.');
+    return title;
+  }
   function consequences(p,key,changes){const candidate=copy(p),mid=momentId(candidate,key);if(!W.events(candidate).some(e=>e.id===mid))throw Error('Choose a story moment.');for(const item of changes){const record={...copy(item.value),id:item.value.id||W.uid(),momentId:mid,at:key};let target;
       if(item.kind==='block'){target=candidate.characters.find(c=>c.id===item.targetId);if(!target)throw Error('Missing character.');target.changes.push(record);}
       else if(item.kind==='life'){target=candidate.characters.find(c=>c.id===item.targetId);if(!target)throw Error('Missing character.');target.lifeChanges.push(record);}
@@ -1156,7 +1218,7 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
     W.restore(candidate,id);if(anchor!==undefined)W.move(candidate,rootId,anchor,where);
     Object.assign(p,candidate);return rootId;
   }
-  Object.assign(W,{drawerEntries,archivedItems,stashNode,returnFromDrawer,normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,readingMoments,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
+  Object.assign(W,{pieceChanges,changeTitle,drawerEntries,archivedItems,stashNode,returnFromDrawer,normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,readingMoments,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
     factionAt:(p,e,key)=>L.CounterplotEnsemble.factionAt(timelineProject(p),e,momentId(p,key)),
     roleAt:(p,track,key)=>L.CounterplotEnsemble.roleAt(timelineProject(p),track,momentId(p,key)),
     prominenceAt:(p,c,key)=>L.CounterplotEnsemble.prominenceAt(timelineProject(p),c,momentId(p,key))});

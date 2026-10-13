@@ -175,7 +175,7 @@ actions['close-dialog']=()=>closeDialog();
 document.addEventListener('submit',e=>{if(!e.target.matches('#dialog form'))return;captureFormDraft();submittingFormDraft=activeFormDraft?{id:activeFormDraft,projectId:p().id}:null;clearTimeout(formDraftTimer);},true);
 document.addEventListener('submit',e=>{if(e.target.matches('#dialog form'))submittingFormDraft=null;});
 document.addEventListener('counterplot:before-mode-change',captureFormDraft);window.addEventListener('pagehide',captureFormDraft);document.addEventListener('visibilitychange',()=>{if(document.hidden)captureFormDraft();});
-function restoreFormDraft(d){const m=d.context||{};const routes={'sequence-closing':()=>sequenceClosing(m.id),'historical-record':()=>editHistoricalRecord(m.subjectKind,m.id,m.collection,m.recordId),'earlier-self':()=>earlierSelf(m.id),'faction-transition':()=>factionTransition(m.id),evidence:()=>evidenceEditor(m.id,m.evidenceId),character:()=>editCharacter(m.id),block:()=>editBlock(m.cid,m.bid,m.kindId),change:()=>editChange(m.cid,m.bid,m.at,m.changeId),world:()=>editWorld(m.id,m.linkNode),connection:()=>editConnection(m.id),'scene-details':()=>sceneDetails(m.id),moment:()=>editMoment(m.id),knowledge:()=>knowledge(m.id,m.cid),'history-change':()=>newHistory(m.subjectKind,m.id),'story-settings':storySettings,'faction-block':()=>factionBlock(m.id,m.bid),'plot-role':()=>plotRole(m.id,m.cid),consequences:()=>consequenceDialog(m.id)};if(!routes[d.form]){toast('Export this draft to retain its original fields.');return;}try{routes[d.form]();}catch{unavailableEdit(d);return;}const form=$('#dialog[open] form');if(!form){unavailableEdit(d);return;}for(const el of form.elements){if(!el.name)continue;const values=d.values.filter(([name])=>name===el.name).map(([,value])=>value);if(el.type==='checkbox'||el.type==='radio')el.checked=values.includes(el.value);else if(values.length)el.value=values[0];}activeFormDraft=d.id;}
+function restoreFormDraft(d){const m=d.context||{};const routes={'change-title':()=>nameFromChange(m.id),'sequence-closing':()=>sequenceClosing(m.id),'historical-record':()=>editHistoricalRecord(m.subjectKind,m.id,m.collection,m.recordId),'earlier-self':()=>earlierSelf(m.id),'faction-transition':()=>factionTransition(m.id),evidence:()=>evidenceEditor(m.id,m.evidenceId),character:()=>editCharacter(m.id),block:()=>editBlock(m.cid,m.bid,m.kindId),change:()=>editChange(m.cid,m.bid,m.at,m.changeId),world:()=>editWorld(m.id,m.linkNode),connection:()=>editConnection(m.id),'scene-details':()=>sceneDetails(m.id),moment:()=>editMoment(m.id),knowledge:()=>knowledge(m.id,m.cid),'history-change':()=>newHistory(m.subjectKind,m.id),'story-settings':storySettings,'faction-block':()=>factionBlock(m.id,m.bid),'plot-role':()=>plotRole(m.id,m.cid),consequences:()=>consequenceDialog(m.id)};if(!routes[d.form]){toast('Export this draft to retain its original fields.');return;}try{routes[d.form]();}catch{unavailableEdit(d);return;}const form=$('#dialog[open] form');if(!form){unavailableEdit(d);return;}for(const el of form.elements){if(!el.name)continue;const values=d.values.filter(([name])=>name===el.name).map(([,value])=>value);if(el.type==='checkbox'||el.type==='radio')el.checked=values.includes(el.value);else if(values.length)el.value=values[0];}activeFormDraft=d.id;if(d.form==='change-title')updateChangeTitlePreview();}
 
 // Import is a two-phase operation: retain the exact input, then append validated stories.
 importFile=async function(file){if(!file)return;if(file.size>32_000_000){toast('This file exceeds the supported 32 MB capacity.');return;}
@@ -311,7 +311,7 @@ function refining(){
  const legacy=disclosure('Additional craft notes',`<p class="refine-save-note">Optional notes for the scene or scenes carrying this piece.</p>`+craftFields.map(k=>field(human(k),k,craft[k]||'','','textarea')).join('')+field('Smaller developments · one per line','beats',(craft.beats||[]).join('\n'),'','textarea')+(craft.thread?field('Previous grouping label','thread',craft.thread):'')+(craft.sceneKind&&craft.sceneKind!=='open'?field('Previous scene approach','sceneKind',craft.sceneKind):''));
  const notes=legacy.replace(/<(input|textarea|select)\b/g,`<$1 data-inline="craft" ${attrs}`);
  const evidence=n.type==='I'?disclosure('Evidence and interpretation',(n.evidenceLinks||[]).map(x=>`<article class="history-row"><strong>${esc(x.bearing)} · ${esc(p().world.find(w=>w.id===x.sourceId)?.name||W.allNodes(p()).find(s=>[s.id,s.sceneId,s.writingId].includes(x.sourceId))?.title||x.sourceId)}</strong><p>${esc(x.note)}</p>${btn('edit-evidence','Edit evidence','edit',false,`data-id="${n.id}" data-evidence-id="${x.id}"`)}</article>`).join('')+btn('edit-evidence','Link evidence','plus',false,`data-id="${n.id}"`)):'';
- return `<section class="refine-workspace writing-layout" aria-label="Refine story moments">${momentNavigation(moments,e,'refine-node')}<article class="refine-piece manuscript" data-refine-moment="${esc(e.key)}"><div class="eyebrow">${esc(W.TYPES[n.type].name).toUpperCase()} · ${momentLabel(e).toUpperCase()} · REFINE</div><input class="draft-title" data-inline="node" data-id="${n.id}" data-field="title" value="${esc(n.title)}" placeholder="Untitled piece" aria-label="Refine title" maxlength="1000">${momentSwitcher(e,'refine-node')}<label class="field refine-plan"><span>${esc(refinePlanQuestion(n,e.edge))}</span><textarea data-inline="node" data-id="${n.id}" data-field="${closing?'closing':'opening'}" aria-label="${closing?'Closing':n.type==='B'?'Beat':'Opening'} plan" placeholder="${esc(closing?W.TYPES[n.type].closing:W.TYPES[n.type].opening)}">${esc(closing?n.closing:n.opening)}</textarea></label><p class="refine-save-note">${n.type==='B'?'A beat is one development. It can affect several threads.':'A thread can unfold across several scenes. Refine what this '+(closing?'closing resolves':'opening sets in motion')+'.'} Changes save as you go.</p><div class="refine-essentials">${refinePeople(n,e.edge,craft)}${refineConnections(n,e.edge,craft)}</div><div class="refine-questions">${fields}</div><form class="refine-form" aria-label="Additional craft notes">${notes}</form>${evidence}<div class="draft-refine">${btn('write-node','Write this '+(closing?'closing':n.type==='B'?'beat':'opening'),'write',false,`data-id="${n.id}" data-edge="${e.edge}"`)}</div></article></section>`;
+ return `<section class="refine-workspace writing-layout" aria-label="Refine story moments">${momentNavigation(moments,e,'refine-node')}<article class="refine-piece manuscript" data-refine-moment="${esc(e.key)}"><div class="eyebrow">${esc(W.TYPES[n.type].name).toUpperCase()} · ${momentLabel(e).toUpperCase()} · REFINE</div><input class="draft-title" data-inline="node" data-id="${n.id}" data-field="title" value="${esc(n.title)}" placeholder="Untitled piece" aria-label="Refine title" maxlength="1000"><div class="piece-change-tools">${changeTitleButton(n)}${btn('consequences','Record a change','change',false,`data-id="${e.key}"`)}</div>${momentSwitcher(e,'refine-node')}<label class="field refine-plan"><span>${esc(refinePlanQuestion(n,e.edge))}</span><textarea data-inline="node" data-id="${n.id}" data-field="${closing?'closing':'opening'}" aria-label="${closing?'Closing':n.type==='B'?'Beat':'Opening'} plan" placeholder="${esc(closing?W.TYPES[n.type].closing:W.TYPES[n.type].opening)}">${esc(closing?n.closing:n.opening)}</textarea></label><p class="refine-save-note">${n.type==='B'?'A beat can be an intermediate step in a larger change. It can advance several threads.':'A thread can unfold across several scenes. Refine what this '+(closing?'closing resolves':'opening sets in motion')+'.'} Changes save as you go.</p><div class="refine-essentials">${refinePeople(n,e.edge,craft)}${refineConnections(n,e.edge,craft)}</div><div class="refine-questions">${fields}</div><form class="refine-form" aria-label="Additional craft notes">${notes}</form>${evidence}<div class="draft-refine">${btn('write-node','Write this '+(closing?'closing':n.type==='B'?'beat':'opening'),'write',false,`data-id="${n.id}" data-edge="${e.edge}"`)}</div></article></section>`;
 }
 function openRefine(el){
  finishEdit();const n=node(el.dataset.id);if(!n)return;
@@ -378,6 +378,56 @@ actions['stash-node']=el=>stashPiece(el.dataset.id);
 actions['return-drawer']=el=>returnPiece(el.dataset.id);
 actions['place-drawer']=el=>{const a=W.drawerEntries(p()).find(a=>a.id===el.dataset.id);if(!a)return;modalData={kind:'place-drawer',id:a.id};dialog('BRING IT BACK',a.title,select('Destination','anchor',[['','The outermost outline'],...W.ordered(p()).map(x=>[x.node.id,'— '.repeat(Math.min(x.depth,6))+name(x.node)])],'')+select('Position','where',[['inside','Inside, at the end'],['before','Before this piece'],['after','After this piece']],'inside'),submit('Place in outline'),'place-drawer');};
 const drawerSubmit=extraSubmit;extraSubmit=function(form,data,m){if(form.dataset.form==='place-drawer'){returnPiece(m.id,String(data.get('anchor')||''),String(data.get('where')||'inside'));return true;}return drawerSubmit(form,data,m);};
+
+// Titles are a deliberate, editable snapshot of a change, never a completion rule.
+function changeTitleButton(n){return `<button class="text-btn change-title-button" ${act('name-from-change',n.id)}>${icon('change')}Name from a change</button>`;}
+function nameFromChange(id){
+ finishEdit();const n=node(id);if(!n)return;
+ const choices=W.pieceChanges(p(),n),first=choices[0];
+ modalData={kind:'change-title',id,choices};
+ const options=[['','Write my own states'],...choices.map(x=>[x.id,x.subject+' · '+human(x.label)+' — '+x.from+' → '+x.to])];
+ dialog('AN OPTIONAL WAY TO NAME A PIECE','Name from a change',
+  `<p class="help">${n.type==='B'?'Name the step that happens in this beat. It can be a small shift within a larger thread.':'Name the overall shift from this thread’s opening to its closing, including the steps between.'}</p>`+
+  (choices.length?select('Start with a recorded change','changeSource',options,first.id):'<p class="list-note">No recorded changes yet. Sketch any character, world, connection, or other change below.</p>')+
+  `<div class="change-name-states">${field('From','from',first?.from||'','The starting state','textarea')}${field('To','to',first?.to||'','The next state','textarea')}</div>`+
+  '<div class="change-name-preview"><span class="field-label">Title preview</span><p id="change-title-preview" aria-live="polite"></p></div><p class="help">This only sets the title. You can edit it freely afterward; recorded states stay as they are.</p>',
+  submit('Use this title'),'change-title');
+ updateChangeTitlePreview();
+}
+function updateChangeTitlePreview(){
+ const form=$('#dialog form[data-form="change-title"]');if(!form)return;
+ const from=form.elements.from.value.trim(),to=form.elements.to.value.trim();
+ $('#change-title-preview').textContent='From '+(from||'…')+' to '+(to||'…');
+ const tooLong=('From '+from+' to '+to).length>1000;
+ form.querySelector('[type=submit]').disabled=!from||!to||tooLong;
+ $('#form-error').textContent=tooLong?'Shorten the states so the title fits within 1,000 characters.':'';
+}
+actions['name-from-change']=el=>nameFromChange(el.dataset.id);
+document.addEventListener('input',e=>{if(e.target.closest('[data-form="change-title"]'))updateChangeTitlePreview();});
+document.addEventListener('change',e=>{
+ if(e.target.name!=='changeSource'||modalData?.kind!=='change-title')return;
+ const x=modalData.choices.find(x=>x.id===e.target.value),form=e.target.form;
+ form.elements.from.value=x?.from||'';form.elements.to.value=x?.to||'';
+ updateChangeTitlePreview();captureFormDraft();
+});
+draftable.add('change-title');
+const changeNameSubmit=extraSubmit;
+extraSubmit=function(form,data,m){
+ if(form.dataset.form!=='change-title')return changeNameSubmit(form,data,m);
+ const title=W.changeTitle(String(data.get('from')||''),String(data.get('to')||''));
+ if(mutate('Named piece from a change',()=>{const n=node(m.id);if(!n)throw Error('This piece is no longer in the outline.');n.title=title;}))closeDialog();
+ return true;
+};
+function otherPieceChanges(n,at){
+ const changes=W.pieceChanges(p(),n,{nested:false}).filter(x=>x.kind!=='character');
+ return `<div class="section other-piece-changes">${changes.map(x=>`<div class="piece-state-change"><span class="field-label">${esc(x.subject)} · ${esc(human(x.label))}</span><p>${esc(x.from)} <span aria-label="to">→</span> ${esc(x.to)}</p></div>`).join('')}${btn('piece-consequences','World, connections & more','change',false,`data-id="${n.id}" data-at="${at}"`)}</div>`;
+}
+actions['piece-consequences']=el=>{
+ const n=node(el.dataset.id);if(!n)return;
+ if(n.type==='B'){consequenceDialog(n.id+':open');return;}
+ modalData={kind:'change-moment',id:n.id};
+ dialog('RECORD A CHANGE',esc(name(n)),'<p>Where does this change happen? For an intermediate step, record it on a beat inside this thread.</p><div class="piece-change-tools">'+['open','close'].map(edge=>btn('consequences',edge==='open'?'At the opening':'At the closing','change',false,`data-id="${n.id}:${edge}"`)).join('')+'</div>');
+};
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ui.drawerOpen&&!$('#dialog').open){e.preventDefault();if(drag)endDrag();actions['toggle-drawer']();}});
 function storyToolsMenu(){return `<details class="story-tools-menu"><summary aria-label="Story tools" title="Story tools">${icon('book')}<span>Story tools</span>${icon('down')}</summary><div class="story-tools-popover"><span class="tools-label">Story</span>${btn('story-settings','Story settings','edit')}${btn('story-references','Pictures & references','book')}${btn('structure-review','Review structure','check')}<span class="tools-label">Workspace & export</span>${btn('toggle-paint','Colors','spark')}${btn('outline-text','Text outline','import')}</div></details>`;}
 document.addEventListener('click',e=>{const menu=$('.story-tools-menu[open]');if(menu&&(!menu.contains(e.target)||e.target.closest('[data-action]')))menu.open=false;});
