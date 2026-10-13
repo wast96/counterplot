@@ -24,11 +24,9 @@ test('world and connection changes can name a beat and its enclosing thread',()=
  for(const n of [step,thread]){const changes=W.pieceChanges(p,n);assert.ok(changes.some(x=>x.kind==='world'&&x.from==='open'&&x.to==='blockaded'));assert.ok(changes.some(x=>x.kind==='connection'&&x.from==='strangers'&&x.to==='uneasy allies'));}
  assert.deepEqual(W.pieceChanges(p,other),[]);
 });
-test('suggestions do not mutate story data and titles remain ordinary editable text',()=>{
+test('reading changes does not mutate story data or rename a piece',()=>{
  const {p,thread}=fixture(),before=JSON.stringify(p);
- const x=W.pieceChanges(p,thread)[0];assert.equal(W.changeTitle(x.from,x.to),'From distrust to trust');assert.equal(JSON.stringify(p),before);
- assert.equal(W.changeTitle(' threatened ',' secure '),'From threatened to secure');
- assert.throws(()=>W.changeTitle('','trust'));assert.throws(()=>W.changeTitle('x'.repeat(1000),'y'));
+ assert.equal(W.pieceChanges(p,thread)[0].to,'trust');assert.equal(JSON.stringify(p),before);
 });
 test('gaining, retiring, and unchanged blocks produce honest state descriptions',()=>{
  const {p,other,c}=fixture(),b=W.block('want');b.text='leave the city';

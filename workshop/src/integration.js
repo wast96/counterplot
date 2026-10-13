@@ -2,7 +2,7 @@
 (() => {
   const W = typeof module !== 'undefined' ? require('./core.js') : Workshop;
   const L = typeof module !== 'undefined' ? require('./legacy.js') : CounterplotLegacy;
-  const baseValidate = W.validate, baseMarkdown = W.markdown,basePurge=W.purgeArchive,baseRekey=W.rekeyEntity,baseDuplicate=W.duplicateNode;
+  const baseValidate = W.validate, baseMarkdown = W.markdown,basePurge=W.purgeArchive,baseRekey=W.rekeyEntity,baseDuplicate=W.duplicateNode,baseMove=W.move;
   const copy = W.copy, text = value => typeof value === 'string' ? value : '';
   const list = value => Array.isArray(value) ? value : [];
   const allNodes = p => [...p.nodes, ...p.archive.filter(a => a.kind === 'branch').flatMap(a => a.nodes)];
@@ -283,13 +283,7 @@
     }
     return out;
   }
-  function changeTitle(from,to){
-    from=text(from).trim();to=text(to).trim();
-    if(!from||!to)throw Error('Add both a starting and an ending state.');
-    const title='From '+from+' to '+to;
-    if(title.length>1000)throw Error('Shorten the states so the title fits within 1,000 characters.');
-    return title;
-  }
+
   const emptyArcState=()=>({text:'',blockId:'',linked:false});
   const emptyArcChange=(id='state-empty')=>({id,kind:'custom',label:'',from:emptyArcState(),to:emptyArcState(),outcomes:[]});
   const arcSubjects=p=>[...allCharacters(p),...allWorld(p).filter(w=>w.type==='group')];
@@ -453,6 +447,19 @@
     const chosen=[...new Set(ids)];if(chosen.some(id=>id===n.id||!p.nodes.some(t=>t.id===id&&t.type!=='B')))throw Error('Choose existing threads for this beat to advance.');
     n.miceLinks=chosen.map(id=>(n.miceLinks||[]).find(x=>x.miceId===id)||{miceId:id,edge:'advance',role:'advance'});
   }
+  function retainedBeatThread(p,id,anchorId='',where='inside'){
+    const n=p.nodes.find(n=>n.id===id),anchor=p.nodes.find(n=>n.id===anchorId);
+    if(n?.type!=='B'||!anchor||!['inside','before','after'].includes(where))return null;
+    const parentId=where==='inside'?anchorId:anchor.parentId,owner=openThreadContext(p,n).owner;
+    return owner&&parentId!==owner.id&&W.descendants(p,owner.id).has(parentId)?owner:null;
+  }
+  function move(p,id,anchorId='',where='inside'){
+    const owner=retainedBeatThread(p,id,anchorId,where);
+    baseMove(p,id,anchorId,where);
+    // A deeper position does not change the thread this beat already advances.
+    const n=p.nodes.find(n=>n.id===id);
+    if(owner&&!(n.miceLinks||[]).some(x=>x.miceId===owner.id))(n.miceLinks||=[]).push({miceId:owner.id,edge:'advance',role:'advance'});
+  }
   function applyBulk(p,ids,{cast=[],worldIds=[],plotIds=[],povId=null,status=null}={}){
     const chosen=[...new Set(ids)].map(id=>p.nodes.find(n=>n.id===id));
     if(!chosen.length||chosen.some(n=>!n))throw Error('Choose existing story pieces.');
@@ -599,7 +606,7 @@
     W.restore(candidate,id);if(anchor!==undefined)W.move(candidate,rootId,anchor,where);
     Object.assign(p,candidate);return rootId;
   }
-  Object.assign(W,{THREAD_FIELDS,threadPlan,setThreadPlan,addThreadOutcome,removeThreadOutcome,changeStateAt,recordedThreadStates,setPieceState,openThreadContext,setAdvancedThreads,editableTitle,setPieceTitle,applyBulk,addArcOutcome,removeArcOutcome,arcSubjects,arcSubject,addArcChange,removeArcChange,characterArc,pieceTitle,setArcCharacter,setArcState,arcStateOptions,pieceChanges,changeTitle,drawerEntries,archivedItems,stashNode,returnFromDrawer,normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,readingMoments,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
+  Object.assign(W,{move,retainedBeatThread,THREAD_FIELDS,threadPlan,setThreadPlan,addThreadOutcome,removeThreadOutcome,changeStateAt,recordedThreadStates,setPieceState,openThreadContext,setAdvancedThreads,editableTitle,setPieceTitle,applyBulk,addArcOutcome,removeArcOutcome,arcSubjects,arcSubject,addArcChange,removeArcChange,characterArc,pieceTitle,setArcCharacter,setArcState,arcStateOptions,pieceChanges,drawerEntries,archivedItems,stashNode,returnFromDrawer,normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,readingMoments,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
     factionAt:(p,e,key)=>L.CounterplotEnsemble.factionAt(timelineProject(p),e,momentId(p,key)),
     roleAt:(p,track,key)=>L.CounterplotEnsemble.roleAt(timelineProject(p),track,momentId(p,key)),
     prominenceAt:(p,c,key)=>L.CounterplotEnsemble.prominenceAt(timelineProject(p),c,momentId(p,key))});

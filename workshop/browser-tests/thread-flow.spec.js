@@ -6,9 +6,27 @@ function fixture(){
  c.changes.push({id:'hunted',at:'beat:open',momentId:W.momentId(p,'beat:open'),blockId:'status',op:'develop',block:{...b,text:'Hunted by Palmerston’s Thralls'},reason:''});
  return W.validate({format:'counterplot-workshop',schema:2,active:p.id,projects:[p]});
 }
-async function load(page){await page.goto('/');await expect(page.locator('.story-viewbar')).toBeVisible();await page.locator('#import-file').setInputFiles({name:'flow.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture()))});await page.locator('[data-action=accept-import]').click();await expect(page.locator('#dialog')).not.toBeVisible();}
+async function load(page,data=fixture()){await page.goto('/');await expect(page.locator('.story-viewbar')).toBeVisible();await page.locator('#import-file').setInputFiles({name:'flow.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(data))});await page.locator('[data-action=accept-import]').click();await expect(page.locator('#dialog')).not.toBeVisible();}
 const snapshot=page=>page.evaluate(()=>{const d=CounterplotTutorial.snapshot();return d.projects.find(p=>p.id===d.active);});
 const card=(page,id)=>page.locator(`[data-node=${id}]`);
+function dragFixture(){const data=fixture(),p=data.projects[0];p.nodes.find(n=>n.id==='beat').parentId='character';p.nodes.push({...W.node('B','event'),id:'inner',title:'Inside the event'});W.normalize(p);return data;}
+test('dragging a character beat onto a nested closing keeps its larger arc with undo and reload',async({page})=>{
+ await load(page,dragFixture());const before=await snapshot(page);
+ await page.evaluate(()=>{const source=document.querySelector('[data-drag=node][data-drag-id=beat]'),target=document.querySelector('[data-node=event] > .closing');window.testDragData=new DataTransfer();source.dispatchEvent(new DragEvent('dragstart',{bubbles:true,dataTransfer:testDragData}));target.dispatchEvent(new DragEvent('dragover',{bubbles:true,cancelable:true,dataTransfer:testDragData}));});
+ await expect(card(page,'event').locator(':scope > .closing')).toHaveAttribute('data-drop-label','Release before this thread closes · stays with Character thread');
+ await page.evaluate(()=>document.querySelector('[data-node=event] > .closing').dispatchEvent(new DragEvent('drop',{bubbles:true,cancelable:true,dataTransfer:testDragData})));
+ const after=await snapshot(page),beat=after.nodes.find(n=>n.id==='beat');expect(beat.parentId).toBe('event');expect(beat.miceLinks.map(x=>x.miceId)).toEqual(['character']);expect(after.timeline).toEqual(before.timeline);expect(after.characters).toEqual(before.characters);
+ await expect(card(page,'beat')).toHaveAttribute('data-flow-owner','character');await expect(card(page,'beat').locator('.still-open')).toHaveText('I + E still open');await expect(page.locator('#dialog')).not.toBeVisible();
+ const events=W.outlineEvents(after).map(e=>e.key);expect(events.indexOf('beat:open')).toBeGreaterThan(events.indexOf('inner:open'));expect(events.indexOf('beat:open')).toBeLessThan(events.indexOf('event:close'));
+ await page.waitForTimeout(200);await page.locator('.topbar [data-action=undo]').click();expect((await snapshot(page)).nodes).toEqual(before.nodes);await page.locator('.topbar [data-action=redo]').click();await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await expect(card(page,'beat')).toHaveAttribute('data-flow-owner','character');
+});
+test('pointer dragging into an inner gap preserves the outer thread and shows the destination before release',async({page})=>{
+ await load(page,dragFixture());const source=page.locator('[data-drag=node][data-drag-id=beat]');await source.scrollIntoViewIfNeeded();let a=await source.boundingBox();
+ await source.dispatchEvent('pointerdown',{button:0,pointerId:77,clientX:a.x+a.width/2,clientY:a.y+a.height/2,pointerType:'touch'});await page.locator('body').dispatchEvent('pointermove',{pointerId:77,clientX:a.x+a.width/2+15,clientY:a.y+a.height/2,pointerType:'touch'});
+ const target=page.locator('[data-drop=position][data-anchor=inner][data-where=before]');await target.evaluate(el=>el.scrollIntoView({block:'center',behavior:'instant'}));const b=await target.boundingBox();await page.locator('body').dispatchEvent('pointermove',{pointerId:77,clientX:b.x+b.width/2,clientY:b.y+b.height/2,pointerType:'touch'});
+ await expect(target).toHaveClass(/landing/);await expect(target.locator('.slot-label')).toContainText('stays with Character thread');const landing=await target.boundingBox();await page.locator('body').dispatchEvent('pointerup',{pointerId:77,clientX:landing.x+landing.width/2,clientY:landing.y+landing.height/2,pointerType:'touch'});
+ const p=await snapshot(page),beat=p.nodes.find(n=>n.id==='beat');expect(beat.parentId).toBe('event');expect(beat.miceLinks.map(x=>x.miceId)).toEqual(['character']);const events=W.outlineEvents(p).map(e=>e.key);expect(events.indexOf('beat:open')).toBeLessThan(events.indexOf('inner:open'));await expect(card(page,'beat')).toHaveAttribute('data-flow-owner','character');await expect(page.locator('#dialog')).not.toBeVisible();
+});
 test('Beat here creates an outer-arc beat before the inner closing without moving existing moments',async({page})=>{
  await load(page);const before=await snapshot(page);await card(page,'event').locator(':scope > .node-children > .inside-drop').getByRole('button',{name:'Beat here',exact:true}).click();
  await page.locator('#dialog [name=threads][value=event]').uncheck();await page.locator('#dialog [name=threads][value=character]').check();await page.getByRole('button',{name:'Keep thread links'}).click();

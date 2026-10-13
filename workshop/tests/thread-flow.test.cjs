@@ -36,6 +36,20 @@ test('a beat advances outer threads without closing or moving inner threads',()=
  assert.deepEqual(W.outlineEvents(p).map(e=>e.key),['character:open','mystery:open','event:open','beat:open','event:close','mystery:close','character:close']);
  W.validate(data);assert.throws(()=>W.setAdvancedThreads(p,nodes[3],['beat']),/existing threads/);assert.throws(()=>W.setAdvancedThreads(p,nodes[3],['missing']),/existing threads/);
 });
+test('moving a beat deeper into its larger thread keeps that thread without retiming history',()=>{
+ for(const where of ['inside','before','after']){
+  const {p,nodes,data}=fixture(),beat=nodes[3];beat.parentId='character';const inner={...W.node('B','event'),id:'inner'};p.nodes.push(inner);W.normalize(p);
+  const timeline=JSON.stringify(p.timeline),history=JSON.stringify(p.characters),anchor=where==='inside'?'event':'inner';
+  assert.equal(W.retainedBeatThread(p,beat.id,anchor,where).id,'character');W.move(p,beat.id,anchor,where);W.validate(data);
+  assert.equal(beat.parentId,'event');assert.deepEqual(beat.miceLinks,[{miceId:'character',edge:'advance',role:'advance'}]);assert.equal(W.openThreadContext(p,beat).owner.id,'character');assert.equal(JSON.stringify(p.timeline),timeline);assert.equal(JSON.stringify(p.characters),history);
+  W.move(p,beat.id,'event','inside');assert.equal(beat.miceLinks.length,1);
+ }
+});
+test('beat moves preserve chosen links, reject invalid placements atomically, and leave unrelated moves ordinary',()=>{
+ const {p,nodes}=fixture(),beat=nodes[3];beat.parentId='character';W.setAdvancedThreads(p,beat,['character','mystery']);const links=JSON.stringify(beat.miceLinks);W.move(p,beat.id,'event','inside');assert.equal(JSON.stringify(beat.miceLinks),links);
+ const before=JSON.stringify(p);assert.throws(()=>W.move(p,beat.id,beat.id,'inside'));assert.equal(JSON.stringify(p),before);
+ delete beat.miceLinks;beat.parentId='character';const other={...W.node('M'),id:'other'};p.nodes.push(other);W.move(p,beat.id,other.id,'inside');assert.equal(beat.parentId,'other');assert.equal(beat.miceLinks,undefined);
+});
 test('a parallel status that existed before a later thread is still visible beside its tracked source',()=>{
  const {p,nodes,data}=fixture(),fork=W.setPieceState(p,nodes[3],'block:jun:status','open','Wanted by the law',{fork:true});
  const later={...W.node('C'),id:'later',cast:['jun'],title:'A later arc'};p.nodes.push(later);W.normalize(p);W.setArcCharacter(p,later,'jun');W.setArcState(p,later,'from',{blockId:'status',value:'Communist agent'});W.setArcState(p,later,'to',{blockId:'status',value:'Independent agent'});

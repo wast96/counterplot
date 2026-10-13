@@ -1,6 +1,6 @@
 # Character thread titles
 
-Character (`C`) threads have a free editable title and compact inline state fields. Starting states appear at the opening, intermediate changes on beats, and ending states at the closing. The subject can be a character or a World group; participating characters remain a separate cast list. Other thread types and beats keep free titles and optional “Name from a change”.
+Character (`C`) threads have a free editable title and compact inline state fields. Starting states appear at the opening, intermediate changes on beats, and ending states at the closing. The subject can be a character or a World group; participating characters remain a separate cast list. Every thread type and beat keeps a free title. The former “Name from a change” generator is removed. Previously saved titles are retained.
 
 `node.characterArc` stores `subjectId`, `legacyTitle`, optional independent `title`, and `changes`. Each change has an identity, kind, label, `from`, `to`, and optional additional `outcomes`. State fields store their wording and an optional building-block link. Additional outcomes have their own identity. Blank subjects and states are valid. `pieceTitle()` supplies the plain-text equivalent for search, navigation, and export.
 
@@ -23,6 +23,8 @@ Milieu, Inquiry, and Event threads use the same compact opening/closing pattern,
 “Beat here” adds a beat before the current thread closes and asks which threads it advances. The chain control on an existing piece edits these links. A beat can advance multiple threads, including an outer character arc while nested Inquiry and Event threads remain open.
 
 Position and meaning are independent: `parentId` retains the beat's structural position, while `miceLinks` identifies the threads it advances. Choosing links does not move the beat, close any thread, or reorder story chronology. The outline aligns the beat with the outermost linked ancestor and labels the threads that remain open. Its original position between surrounding openings and closings remains intact. Links to other threads are also supported without moving the piece.
+
+Dragging a beat deeper inside its current larger thread preserves that thread automatically, even if it was previously implied only by placement. The same rule applies to precise move controls. Drop onto a nested closing to place the beat immediately before that closing, or into a gap among its contents. The landing hint states which larger thread stays linked. Existing chosen links, chronology, and recorded state history remain unchanged; unrelated thread moves keep their ordinary placement behavior.
 
 # Bulk planning edits
 
