@@ -1060,7 +1060,7 @@ body:not(.drag-active) .outline .node-children>.insert-slot:last-child{min-heigh
 /* Cast and actions share the opening's height when the individual card is wide enough. */
 .outline,.outline .node-children{container-type:inline-size}
 @container(min-width:700px){
- .outline .node:not(.is-folded)>.node-opening{display:grid;grid-template-columns:minmax(0,1fr) 250px;align-items:start}
+ .outline .node:not(.is-folded)>.node-opening{display:grid;grid-template-columns:minmax(0,1fr) fit-content(55%);align-items:start}
  .outline .node-opening>.node-content{min-width:0}
  .outline .node:not(.is-folded)>.node-opening>.node-foot{justify-content:flex-end;align-items:center;padding:2px 12px 8px 4px;gap:2px 8px}
  .outline .node-opening>.node-foot .cast-chips{justify-content:flex-end}
