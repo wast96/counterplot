@@ -16,7 +16,7 @@ test('closing prose has its own draft, status, undo, reload, and manuscript posi
 
 test('Refine edits opening, closing and beat craft independently and scene craft links route there',async({page})=>{
  await load(page);await view(page,'Write');await moment(page,'write-node','ui-node-0','close').click();
- if(test.info().project.name==='mobile'){await page.getByRole('button',{name:'Refine this closing',exact:true}).click();}else{await page.getByRole('button',{name:'Scene craft & links',exact:true}).click();}
+ if(test.info().project.name==='mobile'){await page.getByRole('button',{name:'Refine this closing',exact:true}).click();}else{await page.getByRole('button',{name:'Show details',exact:true}).click();await page.getByRole('button',{name:'Scene craft & links',exact:true}).click();}
  await expect(page.getByRole('tab',{name:'Refine',exact:true})).toHaveAttribute('aria-selected','true');await expect(page.locator('#dialog')).not.toBeVisible();await expect(page.locator('.refine-piece')).toHaveAttribute('data-refine-moment','ui-node-0:close');
  await page.getByLabel('Closing plan',{exact:true}).fill('She lets it go.');await page.locator('[data-inline=prompt][data-field=earned]').fill('The clues prepare the escape.');
  await page.getByRole('button',{name:'Add someone',exact:true}).click();await page.getByLabel('Find a person').fill('Ocelot');await page.locator('#refine-picker-results [data-id=ui-other]').click();await expect(page.locator('.refine-person')).toHaveCount(2);await page.getByLabel('Role for Ocelot').selectOption('oppose');await page.getByLabel('Viewpoint',{exact:true}).selectOption('ui-other');
@@ -51,5 +51,6 @@ test('Refine and Write share page geometry and details controls',async({page})=>
   const geometry=()=>page.locator('.writing-layout').evaluate(el=>{const sels=['.scene-list','.manuscript','.draft-title','.moment-switcher'];return sels.map(s=>{const n=el.querySelector(s),r=n.getBoundingClientRect(),c=getComputedStyle(n);return {x:r.x,width:r.width,font:c.fontSize,padding:c.padding};});});
   const write=await geometry();await view(page,'Refine');expect(await geometry()).toEqual(write);await expect(page.locator('.tray')).toHaveCount(0);await expect(page.getByRole('button',{name:'Manage plots',exact:true})).toBeVisible();
  }
+ await expect(page.locator('.workbench-grid>.inspector')).not.toBeVisible();await page.getByRole('button',{name:'Show details',exact:true}).click();await expect(page.locator('.workbench-grid>.inspector')).toBeVisible();
  await page.getByRole('button',{name:'Focus on refining',exact:true}).click();await expect(page.locator('.refine-piece')).toBeVisible();await expect(page.locator('.inspector')).not.toBeVisible();await page.getByRole('button',{name:'Leave focus mode',exact:true}).click();await expect(page.locator('.workbench-grid>.inspector')).toBeVisible();
 });
