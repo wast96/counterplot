@@ -12,6 +12,16 @@ async function load(page){
 }
 const header=page=>page.locator('[data-node=ui-node-0] > .node-head .character-arc-heading');
 const edit=async(page,edge,row='state-status')=>{await header(page).locator(`[data-arc-row=${row}] [data-edge=${edge}]`).click();};
+test('an immediately focused state field keeps keyboard input when the next frame arrives',async({page})=>{
+ await load(page);
+ const focused=await page.evaluate(()=>{
+  document.querySelector('[data-node="ui-node-0"] > .node-head [data-arc-row="state-allegiance"] [data-edge="from"]').click();
+  document.querySelector('#dialog [name="arcText"]').focus();
+  return new Promise(resolve=>requestAnimationFrame(()=>resolve(document.activeElement.name)));
+ });
+ expect(focused).toBe('arcText');await page.keyboard.press('ControlOrMeta+A');await page.keyboard.press('Backspace');
+ await page.getByRole('button',{name:'Keep state',exact:true}).click();await expect(header(page).locator('[data-arc-row=state-allegiance] [data-edge=from]')).toContainText('Add state');
+});
 test('multiple modular changes edit independently, preserve history, accept blanks, and survive undo and reload',async({page})=>{
  await load(page);const h=header(page),before=await snapshot(page);
  await expect(h.locator('.arc-state')).toHaveCount(4);await expect(h).toContainText('Neutral');await expect(h).toContainText('Communist agent');await expect(h.locator('.arc-person')).toHaveAccessibleName('Change thread subject: Liu Jun');
@@ -19,7 +29,7 @@ test('multiple modular changes edit independently, preserve history, accept blan
  await edit(page,'to');await page.getByRole('textbox',{name:'State · optional',exact:true}).fill('Independent agent');await page.getByRole('button',{name:'Keep state',exact:true}).click();
  await expect(h).toContainText('Independent agent');let p=await snapshot(page);expect(p.characters[0].blocks).toEqual(before.characters[0].blocks);expect(p.characters[0].changes[1]).toEqual(before.characters[0].changes[1]);expect(p.nodes[0].cast).toEqual(['ui-person','ui-other']);
  await page.locator('.topbar [data-action=undo]').click();await expect(h).toContainText('Communist agent');await page.locator('.topbar [data-action=redo]').click();
- await edit(page,'from','state-allegiance');await page.getByRole('textbox',{name:'State · optional',exact:true}).fill('');await page.getByRole('button',{name:'Keep state',exact:true}).click();await expect(h.locator('[data-arc-row=state-allegiance] [data-edge=from]')).toContainText('Add state');
+ await edit(page,'from','state-allegiance');await page.getByRole('textbox',{name:'State · optional',exact:true}).fill('');await expect(page.getByRole('textbox',{name:'State · optional',exact:true})).toHaveValue('');await page.getByRole('button',{name:'Keep state',exact:true}).click();await expect(h.locator('[data-arc-row=state-allegiance] [data-edge=from]')).toContainText('Add state');
  await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await expect(header(page)).toContainText('Independent agent');await expect(header(page).locator('.arc-state')).toHaveCount(4);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(page.viewportSize().width+1);
  const results=await new AxeBuilder({page}).include('#main').withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();expect(results.violations).toEqual([]);
