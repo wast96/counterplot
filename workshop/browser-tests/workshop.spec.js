@@ -1,3 +1,4 @@
+const enableArchivedWriting=require('./archived-writing.cjs');
 const {test,expect}=require('@playwright/test');
 const path=require('node:path');
 const fixture=path.resolve(__dirname,'../../browser-tests/fixtures/rich-v2-workspace.json');
@@ -5,7 +6,8 @@ const action=(page,name)=>page.locator(`[data-action="${name}"]:visible`).first(
 async function openStoryTool(page,name){await expect(page.locator('.story-viewbar')).toBeVisible();if(!await action(page,name).isVisible())await page.locator('.story-tools-menu>summary').click();await action(page,name).click();}
 async function importOriginal(page){await page.goto('/');await expect(page.locator('.story-viewbar')).toBeVisible();await page.locator('#import-file').setInputFiles(fixture);await action(page,'accept-import').click();await expect(page.locator('#dialog')).not.toBeVisible();}
 const snapshot=async page=>{await page.waitForFunction(()=>!!window.CounterplotTutorial);return page.evaluate(()=>{const d=CounterplotTutorial.snapshot();return d.projects.find(p=>p.id===d.active);});};
-test('old prose, chronology, and editable scene craft survive import and reload',async({page})=>{
+test('archived Write/Read: old prose, chronology, and editable scene craft survive import and reload',async({page})=>{
+ await enableArchivedWriting(page);
   await importOriginal(page);await page.locator('[data-action="story-view"][data-id="read"]').click();await expect(page.locator('.manuscript-prose')).toContainText('First paragraph.');
   await page.locator('[data-action="story-view"][data-id="chronology"]').click();await expect(page.locator('main')).toContainText('2040-12-01');
   await page.reload();await expect(page.locator('.story-switch')).toContainText('The Harbor Archive');const p=await snapshot(page);expect(p.nodes.some(n=>n.goal==='Zirconium wish')).toBeTruthy();expect(p.characters.find(c=>c.name==='Ivo').lifeChanges[0].status).toBe('dead');
@@ -23,7 +25,7 @@ test('tutorial authoring and Play use the native viewport under CSP and isolated
   await page.goto('/');const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.locator('[data-tutorial="browse"]').first().click();await page.locator('[data-tutorial="edit"]').first().click();await page.waitForFunction(()=>window.CounterplotTutorialLibrary?.studioState()?.ready===true);const frame=page.frame({name:'studio-frame'});expect(await frame.evaluate(()=>TutorialStorage&&window.__COUNTERPLOT_STUDIO__)).toBeTruthy();expect(await frame.evaluate(()=>CounterplotTutorialLibrary.storageStatus().mode)).toBe('temporary');await page.locator('[data-studio="play"]').first().click();await page.waitForFunction(()=>CounterplotTutorialLibrary.studioState()?.playing&&CounterplotTutorialLibrary.studioState()?.ready);expect(errors).toEqual([]);
 });
 test('view controls stay inside the viewport and removed scene generator is absent',async({page})=>{
-  await page.goto('/');for(const width of [320,390,768,1440]){await page.setViewportSize({width,height:900});for(const mode of ['outline','refine','write','read','sequence','chronology','choices']){await page.locator(`[data-action="story-view"][data-id="${mode}"]`).click();expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width+1);}}await expect(page.getByText('Adopt one what-if change',{exact:true})).toHaveCount(0);
+  await page.goto('/');for(const width of [320,390,768,1440]){await page.setViewportSize({width,height:900});for(const mode of ['outline','refine','sequence','chronology','choices']){await page.locator(`[data-action="story-view"][data-id="${mode}"]`).click();expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width+1);}}await expect(page.getByText('Adopt one what-if change',{exact:true})).toHaveCount(0);
 });
 test('historical life records remain editable and durable',async({page})=>{
  await importOriginal(page);const before=await snapshot(page),c=before.characters.find(c=>c.lifeChanges.length);
@@ -34,7 +36,8 @@ test('complete library backup restores tutorial records without authentication d
  await action(page,'export').click();const download=page.waitForEvent('download');await action(page,'export-library').click();const file=testInfo.outputPath('library.json');await (await download).saveAs(file);const backup=require('node:fs').readFileSync(file,'utf8');expect(JSON.parse(backup).tutorialRecords['counterplot.tutorial.cursor.mgs3.v1']).toContain('mgs3-welcome');expect(backup).not.toContain('counterplot.sync.checkpoint');
  const context=await browser.newContext(),other=await context.newPage();await other.goto(testInfo.project.use.baseURL||'http://127.0.0.1:8791');await other.locator('#import-file').setInputFiles(file);await action(other,'accept-import').click();await expect(other.locator('#dialog')).not.toBeVisible();await expect.poll(()=>other.evaluate(()=>CounterplotTutorialStore.getItem('counterplot.tutorial.cursor.mgs3.v1'))).toContain('mgs3-welcome');await other.reload();await other.waitForFunction(()=>!!window.CounterplotTutorial);expect(await other.evaluate(()=>CounterplotTutorialStore.getItem('counterplot.tutorial.cursor.mgs3.v1'))).toContain('mgs3-welcome');await context.close();
 });
-test('portable HTML keeps literal markup as prose and starts without account requests',async({page,browser},testInfo)=>{
+test('archived Write/Read: portable HTML keeps literal markup as prose and starts without account requests',async({page,browser},testInfo)=>{
+ await enableArchivedWriting(page);
  await importOriginal(page);await page.locator('[data-action="story-view"][data-id="write"]').click();const literal='The sign reads <script>this is prose</script> & <b>hello</b>.';await page.locator('textarea[data-field="prose"]').fill(literal);await action(page,'export').click();const download=page.waitForEvent('download');await action(page,'export-html').click();const file=testInfo.outputPath('portable.html');await (await download).saveAs(file);const html=require('node:fs').readFileSync(file,'utf8');expect(html).not.toContain('data-hosted="true"');
  const context=await browser.newContext(),portable=await context.newPage(),errors=[],requests=[];portable.on('pageerror',e=>errors.push(e.message));portable.on('request',r=>{if(r.url().includes('/api/'))requests.push(r.url());});await portable.route('http://portable.test/',route=>route.fulfill({contentType:'text/html',body:html}));await portable.goto('http://portable.test/');await portable.locator('[data-action="story-view"][data-id="read"]').click();expect(await portable.locator('.continuous-manuscript').innerText()).toContain(literal);expect(errors).toEqual([]);expect(requests).toEqual([]);await context.close();
 });

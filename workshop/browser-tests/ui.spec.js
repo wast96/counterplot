@@ -16,10 +16,10 @@ test('life status and prominence stay with the character and follow the selected
 });
 test('story tabs expose selection and keyboard navigation independently of actions',async({page})=>{
  await page.goto('/');const tabs=page.getByRole('tablist',{name:'Story views'}).getByRole('tab');
- const stages=['Outline','Chronology','Sequence','Refine','Choices','Write','Read'];await expect(tabs).toHaveText(stages);
+ const stages=['Outline','Chronology','Sequence','Refine','Choices'];await expect(tabs).toHaveText(stages);
  const outline=page.getByRole('tab',{name:'Outline',exact:true});await outline.focus();
  for(const name of stages.slice(1)){await page.keyboard.press('ArrowRight');const tab=page.getByRole('tab',{name,exact:true});await expect(tab).toBeFocused();await expect(tab).toHaveAttribute('aria-selected','true');await expect(page.getByRole('tabpanel')).toHaveAttribute('aria-labelledby',await tab.getAttribute('id'));}
- await page.keyboard.press('Home');await expect(outline).toBeFocused();await page.keyboard.press('End');await expect(page.getByRole('tab',{name:'Read',exact:true})).toBeFocused();await page.keyboard.press('ArrowLeft');await expect(page.getByRole('tab',{name:'Write',exact:true})).toBeFocused();await expect(page.locator('.page-head h1')).toHaveText('Write your story');
+ await page.keyboard.press('Home');await expect(outline).toBeFocused();await page.keyboard.press('End');await expect(page.getByRole('tab',{name:'Choices',exact:true})).toBeFocused();await page.keyboard.press('ArrowLeft');await expect(page.getByRole('tab',{name:'Refine',exact:true})).toBeFocused();await expect(page.locator('.page-head h1')).toHaveText('Refine your story');
 
  await page.locator('.story-tools-menu>summary').click();await action(page,'outline-text').click();await expect(page.locator('#dialog textarea[name=outline]')).toBeVisible();
 });
@@ -27,7 +27,7 @@ test('dialog headings and account recovery links remain inside narrow dialogs',a
  await load(page);for(const width of [320,390,768,1440]){await page.setViewportSize({width,height:900});for(const name of ['account','export','projects']){if(name==='account'){await page.getByLabel('Account menu',{exact:true}).click();await action(page,'account-login').click();}else await action(page,name).click();const dialog=page.locator('#dialog'),title=dialog.locator('#dialog-title'),utilities=dialog.locator('.dialog-utilities');await inside(title,dialog);await inside(utilities,dialog);const [a,b]=await Promise.all([title.boundingBox(),utilities.boundingBox()]);expect(a.x>=b.x+b.width||a.x+a.width<=b.x||a.y>=b.y+b.height||a.y+a.height<=b.y).toBeTruthy();expect(await dialog.evaluate(e=>e.scrollWidth-e.clientWidth)).toBeLessThanOrEqual(1);if(name==='account'){await action(page,'account-reset').click();await expect(dialog.locator('[name=code]')).toBeVisible();await inside(dialog.locator('[name=code]'),dialog);}await close(page);}}
 });
 test('deep outlines and long world tags fit the page and their own cards',async({page})=>{
- await load(page,true);for(const width of [320,390,680,681,900,1180,1440]){await page.setViewportSize({width,height:950});await page.getByRole('tab',{name:'Outline',exact:true}).click();expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width+1);for(const id of ['ui-node-0','ui-node-7']){const card=page.locator(`[data-node="${id}"]`);await inside(card.locator(':scope>.node-foot>.cast-chips'),card);await inside(card.locator(':scope>.node-foot .world-chip').last(),card);expect(await card.locator(':scope>.node-head>.node-title').evaluate(e=>e.getBoundingClientRect().width)).toBeGreaterThan(35);}for(const mode of ['Sequence','Chronology','Choices','Read']){await page.getByRole('tab',{name:mode,exact:true}).click();expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width+1);}}
+ await load(page,true);for(const width of [320,390,680,681,900,1180,1440]){await page.setViewportSize({width,height:950});await page.getByRole('tab',{name:'Outline',exact:true}).click();expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width+1);for(const id of ['ui-node-0','ui-node-7']){const card=page.locator(`[data-node="${id}"]`);await inside(card.locator(':scope>.node-foot>.cast-chips'),card);await inside(card.locator(':scope>.node-foot .world-chip').last(),card);expect(await card.locator(':scope>.node-head>.node-title').evaluate(e=>e.getBoundingClientRect().width)).toBeGreaterThan(35);}for(const mode of ['Sequence','Chronology','Choices']){await page.getByRole('tab',{name:mode,exact:true}).click();expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width+1);}}
 });
 
 test('all tab labels fit their hit targets at phone and tablet widths',async({page})=>{
@@ -47,6 +47,6 @@ test('all tab labels fit their hit targets at phone and tablet widths',async({pa
    const heading=document.querySelector('.first-story-tip strong')?.getBoundingClientRect();
    const copy=document.querySelector('.first-story-tip p')?.getBoundingClientRect();
    return {tabCount:tabs.length,clipped,tipFits:!!heading&&!!copy&&heading.bottom<=copy.top+1,overflow:document.documentElement.scrollWidth>innerWidth+1};
-  }),{message:`Tab and tip layout at ${width}px`}).toEqual({tabCount:7,clipped:[],tipFits:true,overflow:false});
+  }),{message:`Tab and tip layout at ${width}px`}).toEqual({tabCount:5,clipped:[],tipFits:true,overflow:false});
  }
 });

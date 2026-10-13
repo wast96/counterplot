@@ -1,3 +1,4 @@
+const enableArchivedWriting=require('./archived-writing.cjs');
 const {test,expect}=require('@playwright/test');
 const fixture=require('./ui-fixture.cjs');
 async function load(page){const data=fixture(),p=data.projects[0];p.nodes[0].goal='Discover the truth';p.nodes[0].action='Take the pearl';p.nodes[0].gain='A clue';p.nodes[0].cost='A new enemy';p.timeline[0].storyDate='1929-03-12';await page.goto('/');await expect(page.locator('.story-viewbar')).toBeVisible();await page.locator('#import-file').setInputFiles({name:'story.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(data))});await page.locator('[data-action=accept-import]').click();return p;}
@@ -21,7 +22,8 @@ test('story view cards fit narrow screens without the outline creation tray',asy
  await load(page);for(const width of [320,390,768,1440]){await page.setViewportSize({width,height:900});for(const name of ['Sequence','Chronology','Choices']){await view(page,name);await expect(page.locator('.tray[aria-label="MICE building pieces"]')).toHaveCount(0);expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width+1);const cards=page.locator('.moment-card,.choice-card');expect(await cards.evaluateAll(xs=>xs.every(e=>e.scrollWidth<=e.clientWidth+2))).toBeTruthy();}}
 });
 
-test('Read shows an undrafted plan including closings, and keeps draft prose separate',async({page})=>{
+test('archived Write/Read: Read shows an undrafted plan including closings, and keeps draft prose separate',async({page})=>{
+ await enableArchivedWriting(page);
  const data=fixture(),p=data.projects[0];for(const n of p.nodes)n.prose='';p.nodes[0].opening='The question opens.';p.nodes[1].opening='A clue arrives.';p.nodes[0].closing='The question is answered.';
  await page.goto('/');await page.locator('#import-file').setInputFiles({name:'plan.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(data))});await page.locator('[data-action=accept-import]').click();await view(page,'Read');
  await expect(page.locator('.manuscript-prose')).toHaveText(['The question opens.','A clue arrives.','The question is answered.']);
