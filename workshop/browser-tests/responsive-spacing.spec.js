@@ -20,10 +20,12 @@ test('outline headings size to content with empty and populated stories',async({
     return !!head?.height&&!!title?.height&&!!actions?.height&&head.height<145&&actions.y-title.bottom<25;
    })).toBe(true);
    if(!empty&&width===400){
-    const card=page.locator('[data-node=new-character-thread]');expect((await card.boundingBox()).height).toBeLessThan(400);
-    const header=card.locator(':scope > .node-head'),text=await header.locator('.node-title').boundingBox(),buttons=await header.locator('.node-actions').boundingBox();
-    expect(buttons.x).toBeGreaterThanOrEqual(text.x+text.width);
-    expect(Math.abs(buttons.y-text.y)).toBeLessThan(2);
+    const card=page.locator('[data-node=new-character-thread]');
+    await expect.poll(()=>card.evaluate(el=>{
+     const box=el.getBoundingClientRect(),header=el.querySelector(':scope > .node-head');
+     const text=header.querySelector('.node-title').getBoundingClientRect(),buttons=header.querySelector('.node-actions').getBoundingClientRect();
+     return box.height>0&&box.height<400&&buttons.x>=text.right&&Math.abs(buttons.y-text.y)<2;
+    })).toBe(true);
     await expect(card.getByRole('combobox',{name:'Starting State',exact:true})).toBeVisible();
     await expect(card.getByRole('combobox',{name:'Ending State',exact:true})).toBeVisible();
    }
