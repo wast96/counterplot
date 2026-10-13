@@ -1,0 +1,468 @@
+[
+  {
+    "width": 320,
+    "name": "Story settings",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 320,
+    "name": "Text outline",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 320,
+    "name": "Structure review",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 320,
+    "name": "Story references",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 320,
+    "name": "New reference",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 320,
+    "name": "Edit plot",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 320,
+    "name": "Plot roles",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 320,
+    "name": "Create plot",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 320,
+    "name": "Portrait",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 320,
+    "name": "Block movement",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 320,
+    "name": "Scene craft",
+    "route": "Refine"
+  },
+  {
+    "width": 320,
+    "name": "Continuity",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 320,
+    "name": "Piece history",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 320,
+    "name": "Used here",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 320,
+    "name": "Thread links",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 320,
+    "name": "Move piece",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 320,
+    "name": "Opening fields",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 320,
+    "name": "Beat fields",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 320,
+    "name": "Closing fields",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 320,
+    "name": "Gain block",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 1440,
+    "name": "Story settings",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 1440,
+    "name": "Text outline",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 1440,
+    "name": "Structure review",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 1440,
+    "name": "Story references",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 1440,
+    "name": "New reference",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 1440,
+    "name": "Edit plot",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 1440,
+    "name": "Plot roles",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 1440,
+    "name": "Create plot",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 1440,
+    "name": "Portrait",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 1440,
+    "name": "Block movement",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 1440,
+    "name": "Scene craft",
+    "route": "Refine"
+  },
+  {
+    "width": 1440,
+    "name": "Continuity",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 1440,
+    "name": "Piece history",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 1440,
+    "name": "Used here",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 1440,
+    "name": "Thread links",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 1440,
+    "name": "Move piece",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 1440,
+    "name": "Opening fields",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 1440,
+    "name": "Beat fields",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 1440,
+    "name": "Closing fields",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  },
+  {
+    "width": 1440,
+    "name": "Gain block",
+    "geometry": {
+      "fits": true,
+      "overflow": false,
+      "bodyOverflow": false
+    },
+    "axe": [],
+    "focus": [],
+    "runtime": []
+  }
+]
