@@ -580,3 +580,13 @@ input[type=checkbox]{flex:none;width:18px;height:18px}
 .moment-navigation button{color:var(--muted)}
 @media(min-width:681px) and (max-width:1180px){.topbar{height:auto;min-height:64px}}
 @media print{.story-viewbar,.story-filter-status,.plot-toolbar,.reading-controls{display:none!important}.manuscript,.block,.world-card,.connection-card,.moment-card,.choice-card{box-shadow:none;background:white;break-inside:avoid}.continuous-manuscript{max-width:none;margin:0;padding:20px}body{background:white}}
+/* Optional change naming keeps the story's states readable without adding card chrome. */
+.change-title-button { font-size: 12px; }
+.piece-change-tools { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 16px; margin: 8px 0 16px; }
+.change-name-states { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.change-name-states textarea { min-height: 112px; }
+.change-name-preview { padding: 18px 20px; margin: 8px 0 14px; background: var(--green-soft); border-left: 3px solid var(--green); border-radius: 4px 12px 12px 4px; }
+.change-name-preview p { font-family: var(--serif); font-size: 24px; line-height: 1.3; overflow-wrap: anywhere; margin: 8px 0 0; }
+.piece-state-change { margin-bottom: 12px; }
+.piece-state-change p { overflow-wrap: anywhere; }
+@media (max-width: 560px) { .change-name-states { grid-template-columns: 1fr; gap: 0; } }
