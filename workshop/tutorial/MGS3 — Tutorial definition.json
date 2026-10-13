@@ -3692,7 +3692,8 @@
     "drafts": [],
     "plots": [],
     "storyWorld": {},
-    "version": "Main draft"
+    "version": "Main draft",
+    "scenes": []
   },
   "starter": {
     "format": "counterplot-workshop",
@@ -3788,6 +3789,7 @@
         "plots": [],
         "storyWorld": {},
         "version": "Main draft",
+        "scenes": [],
         "tutorialId": "mgs3"
       }
     ],

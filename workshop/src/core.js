@@ -234,7 +234,7 @@ const Workshop = (() => {
   }
   function removePlot(p,id){p.plots=(p.plots||[]).filter(x=>x.id!==id);for(const n of [...p.nodes,...p.archive.flatMap(a=>a.nodes||[])])n.plotIds=(n.plotIds||[]).filter(x=>x!==id);}
 
-  function shelfEmpty(p){return !!p.shelfPlaceholder&&p.title==='Untitled story'&&!p.subtitle&&!p.notes&&!p.nodes.length&&!p.characters.length&&!p.world.length&&!p.connections.length&&!p.archive.length&&!(p.references||[]).length&&!(p.plots||[]).length;}
+  function shelfEmpty(p){return !!p.shelfPlaceholder&&p.title==='Untitled story'&&!p.subtitle&&!p.notes&&!p.nodes.length&&!p.characters.length&&!p.world.length&&!p.connections.length&&!p.archive.length&&!(p.references||[]).length&&!(p.plots||[]).length&&!(p.scenes||[]).length;}
   function shelfProjects(data){return data.projects.filter(p=>!shelfEmpty(p));}
   function trashProject(data,id){
     const pr=data.projects.find(p=>p.id===id);if(!pr||shelfEmpty(pr))throw Error('That story is no longer on the shelf.');
@@ -327,7 +327,7 @@ const Workshop = (() => {
   function markdown(p) {
     const refs=o=>(o.references||[]).flatMap(r=>['', '**Reference: '+r.title+'**',r.url,r.note,r.image?'Image included in HTML and JSON copies.':'']);
     const lines = ['# ' + p.title, '', p.subtitle, '', '## Outline'];
-    for (const e of events(p)) { const n = e.node; if (e.edge === 'close') { lines.push('', '**Closes: ' + (n.title || TYPES[n.type].name) + '**', n.closing || '(Open ending)'); continue; } lines.push('', '### ' + (n.type === 'B' ? 'Scene' : TYPES[n.type].name) + ' · ' + (n.title || 'Untitled'), n.opening); if (n.prose) lines.push('', n.prose); if (n.notes) lines.push('', 'Notes: ' + n.notes); lines.push(...refs(n)); }
+    for (const e of events(p)) { const n = e.node; if (e.edge === 'close') { lines.push('', '**Closes: ' + (n.closingTitle || n.title || TYPES[n.type].name) + '**', n.closing || '(Open ending)'); continue; } lines.push('', '### ' + (n.type === 'B' ? 'Scene' : TYPES[n.type].name) + ' · ' + (n.title || 'Untitled'), n.opening); if (n.prose) lines.push('', n.prose); if (n.notes) lines.push('', 'Notes: ' + n.notes); lines.push(...refs(n)); }
     lines.push('', '## Characters'); for (const c of p.characters) { lines.push('', '### ' + c.name, c.identity); for (const b of c.blocks) lines.push('- **' + (b.label || b.kind) + ':** ' + b.text + (b.detail ? ' — ' + b.detail : '')); for (const x of c.changes) { const ev = events(p).find(e => e.key === x.at); lines.push('- At ' + (ev?.node.title || 'a story moment') + ' (' + ev?.edge + '): ' + (x.op === 'retire' ? 'Retire ' + x.blockId : x.block.text) + (x.reason ? ' · ' + x.reason : '')); } if (c.notes) lines.push(c.notes); lines.push(...refs(c)); }
     lines.push('', '## World'); for (const w of p.world) lines.push('', '### ' + w.name + ' · ' + w.type, w.notes,...refs(w));
     lines.push('', '## Connections'); for (const r of p.connections) lines.push('', '### ' + (p.characters.find(c => c.id === r.a)?.name || 'Archived character') + ' ↔ ' + (p.characters.find(c => c.id === r.b)?.name || 'Archived character'), r.label, r.notes);

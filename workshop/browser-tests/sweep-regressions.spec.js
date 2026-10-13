@@ -3,7 +3,7 @@ const {fixture,load}=require('../../docs/audits/2026-10-13-beat-board-sweep/audi
 const snapshot=page=>page.evaluate(()=>{const d=CounterplotTutorial.snapshot();return d.projects.find(p=>p.id===d.active);});
 test('Refine details record changes at the selected closing, including after visiting a board',async({page})=>{
  await load(page,fixture());await page.getByRole('tab',{name:'Refine',exact:true}).click();await page.locator('.moment-navigation [data-id=event][data-edge=close]').click();
- await page.locator('.refine-moment-tools [data-action=board-node]').click();await page.getByRole('button',{name:'Refine this scene',exact:true}).click();
+ await page.locator('.refine-moment-tools [data-action=board-node]').click();if(await page.getByRole('button',{name:'Include in scene',exact:true}).isVisible())await page.getByRole('button',{name:'Include in scene',exact:true}).click();await page.getByRole('button',{name:'Refine this piece',exact:true}).click();
  await page.getByRole('button',{name:'Show details',exact:true}).click();const action=page.locator('.inspector [data-action=record-piece-state]');await expect(action).toHaveAttribute('data-at','event:close');await action.click();
  await page.locator('#dialog [name=source]').selectOption('block:jun:belief');await page.getByRole('textbox',{name:'New state',exact:true}).fill('She has lost trust in the police');await page.getByRole('button',{name:'Keep change',exact:true}).click();
  const change=(await snapshot(page)).characters[0].changes.find(x=>x.block?.text==='She has lost trust in the police');expect(change.at).toBe('event:close');
@@ -27,4 +27,47 @@ test('a newly gained block supports a custom label and retains it after reload',
 test('long state text stays inside the details panel',async({page})=>{
  await load(page,fixture(true));if(await page.locator('[data-action=show-details]').isVisible())await page.locator('[data-action=show-details]').click();
  const panel=page.locator('.inspector');if(await panel.isVisible())expect(await panel.evaluate(e=>e.scrollWidth<=e.clientWidth+1)).toBe(true);
+});
+test('Add change creates a new character state at the beat without altering starting states',async({page})=>{
+ await load(page,fixture());const before=await snapshot(page);
+ await page.locator('[data-node=beat] > .node-foot [data-action=record-piece-state]').click();
+ await page.locator('#dialog [name=source]').selectOption('new-character-state');
+ await page.getByRole('combobox',{name:'Character',exact:true}).selectOption('jun');
+ await page.getByRole('combobox',{name:'Kind of state',exact:true}).selectOption('custom');
+ await page.getByLabel('State label',{exact:true}).fill('Legal status');
+ await page.getByLabel('New state',{exact:true}).fill('Wanted criminal');
+ await expect(page.locator('#piece-state-fork')).toBeHidden();
+ await page.getByRole('button',{name:'Keep change',exact:true}).click();
+ const after=await snapshot(page),c=after.characters.find(c=>c.id==='jun'),change=c.changes.find(x=>x.block?.text==='Wanted criminal');
+ expect(change).toMatchObject({at:'beat:open',op:'add',block:{kind:'custom',label:'Legal status'}});expect(c.blocks).toEqual(before.characters.find(c=>c.id==='jun').blocks);
+ await expect(page.getByRole('textbox',{name:'Liu Jun · Legal status after this beat',exact:true})).toHaveValue('Wanted criminal');
+ await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await page.locator('.story-viewbar').waitFor();expect((await snapshot(page)).characters.find(c=>c.id==='jun').changes).toContainEqual(change);
+});
+test('linking an ending state inline removes its redundant recorded field immediately',async({page})=>{
+ const W=require('../src/integration.js'),data=fixture(),p=data.projects[0],n=p.nodes.find(n=>n.type==='C'),c=p.characters[0];
+ c.changes=[];W.setArcCharacter(p,n,c.id);const row=W.characterArc(p,n).changes[0];W.setArcState(p,n,'from',{rowId:row.id,value:c.blocks[0].text,blockId:c.blocks[0].id});W.setArcState(p,n,'to',{rowId:row.id,value:''});
+ W.setPieceState(p,n,'block:'+c.id+':'+c.blocks[0].id,'close','Wanted criminal');
+ await load(page,data);const closing=page.locator(`[data-node="${n.id}"] > .closing`);
+ await expect(closing.locator('[data-piece-state]')).toHaveCount(1);
+ await closing.locator('[data-arc-inline]').first().fill('Wanted criminal');await page.keyboard.press('Tab');
+ await expect(closing.locator('[data-piece-state]')).toHaveCount(0);
+ await expect(closing.locator('[data-arc-inline]').first()).toHaveValue('Wanted criminal');
+});
+test('thread closings have independent titles and immediately writable notes',async({page})=>{
+ await load(page,fixture());const before=await snapshot(page);
+ for(const n of before.nodes.filter(n=>n.type!=='B')){
+ const closing=page.locator(`[data-node="${n.id}"] > .closing`),title=closing.locator('[data-field=closingTitle]'),note=closing.locator('[data-field=closing]');
+ await expect(title).toBeVisible();await expect(note).toBeVisible();await expect(closing.getByRole('button',{name:'Add closing note',exact:true})).toHaveCount(0);
+ await title.fill('Resolution of '+n.id);await note.fill('The ending of '+n.id);await page.keyboard.press('Tab');
+ }
+ await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await page.locator('.story-viewbar').waitFor();
+ const after=await snapshot(page);for(const n of before.nodes.filter(n=>n.type!=='B'))expect(after.nodes.find(x=>x.id===n.id)).toMatchObject({title:n.title,closingTitle:'Resolution of '+n.id,closing:'The ending of '+n.id});
+ await page.getByRole('tab',{name:'Refine',exact:true}).click();await page.locator('.moment-navigation [data-id=event][data-edge=close]').click();await expect(page.getByRole('textbox',{name:'Closing title',exact:true})).toHaveValue('Resolution of event');for(const view of ['Sequence','Chronology']){await page.getByRole('tab',{name:view,exact:true}).click();await expect(page.locator('[data-moment-key="event:close"] h2')).toHaveText('Resolution of event');}
+});
+test('collapsed threads show only the beats developing them, including explicit nested links',async({page})=>{
+ const W=require('../src/integration.js'),data=fixture(),p=data.projects[0],arc=p.nodes.find(n=>n.id==='arc'),beat=p.nodes.find(n=>n.id==='beat');
+ W.setAdvancedThreads(p,beat,[arc.id]);const unrelated={...W.node('B',beat.parentId),id:'unrelated',title:'Only develops the inner thread'},direct={...W.node('B',arc.id),id:'direct',title:'Develops the outer thread'};p.nodes.push(unrelated,direct);W.normalize(p);
+ await load(page,data);await page.locator('[data-node=arc] > .node-head [data-action=fold]').click();
+ const summary=page.locator('[data-node=arc] > .collapsed-thread-beats');await expect(summary).toBeVisible();await expect(summary.locator('[data-action=reveal-thread-beat]')).toHaveCount(2);await expect(summary).toContainText(beat.title);await expect(summary).toContainText(direct.title);await expect(summary).not.toContainText(unrelated.title);
+ await summary.locator('[data-id=beat]').click();await expect(page.locator('[data-node=beat]')).toBeVisible();await expect(summary).toHaveCount(0);
 });

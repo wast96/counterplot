@@ -80,7 +80,7 @@ const localSave=save;
 save=function(){if(suppressInitialAccountSave){suppressInitialAccountSave=false;return true;}const result=localSave();if(result)queueAccountSync();return result;};
 const localTopbar=topbar;
 function accountStatusText(){return !account.user?'Device only':syncLocked?'Account changed':syncError?'Sync needs attention':(syncBusy||syncDirty)?'Saving across devices…':syncReady?'Saved across devices':'Connecting…';}
-function accountStatusMarkup(){return syncError||syncLocked?`<button type="button" class="sync-review" ${act('account')} aria-label="Review sync issue"><span aria-hidden="true">!</span><span id="account-status">${accountStatusText()}</span></button>`:`${icon('check')}<span id="account-status">${accountStatusText()}</span>`;}
+function accountStatusMarkup(){return syncError||syncLocked?`<button type="button" class="sync-review" ${act('account')} aria-label="Review sync issue"><svg class="sync-warning-icon" aria-hidden="true" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M10 5.5v5" stroke-linecap="round"/><circle cx="10" cy="14" r=".8" fill="currentColor" stroke="none"/></svg><span id="account-status">${accountStatusText()}</span></button>`:`${icon('check')}<span id="account-status">${accountStatusText()}</span>`;}
 function accountAvatar(){
  const parts=(account.email.split('@')[0]||'').split(/[._+\s-]+/).filter(Boolean),initials=(parts.length>1?parts[0][0]+parts.at(-1)[0]:(parts[0]||'').slice(0,2)).toUpperCase();
  const colors=['#31594b','#765544','#5b577a','#3f657e'],hash=[...account.email].reduce((v,c)=>v+c.charCodeAt(0),0);
