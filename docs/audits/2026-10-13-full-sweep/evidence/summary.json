@@ -1,0 +1,33 @@
+{
+  "layout-results": {
+    "layouts": 96,
+    "pageOverflow": 0,
+    "runtimeErrors": 0,
+    "accessibilityScans": 16,
+    "accessibilityViolations": 0
+  },
+  "edge-layout-results": {
+    "layouts": 64,
+    "pageOverflow": 0,
+    "runtimeErrors": 0,
+    "accessibilityScans": 8,
+    "accessibilityViolations": 0
+  },
+  "dialogs": {
+    "configurations": 60,
+    "errors": 0,
+    "keyboardIssues": 0,
+    "accessibilityScans": 30,
+    "accessibilityViolations": 0
+  },
+  "automated": {
+    "serverPassed": 20,
+    "modelPassed": 403,
+    "chromiumPassed": 171,
+    "chromiumSkipped": 1,
+    "firefoxPassed": 86,
+    "webkitPassed": 86,
+    "finalDialogFocusedPassed": 16,
+    "builtHtmlSha256": "ff0776c1326ffc91272d493ae393efdbb6015289a862f5ab8b22c8c89beb5a9d"
+  }
+}
