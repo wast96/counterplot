@@ -1120,3 +1120,9 @@ body:not(.drag-active) .outline .node-children>.insert-slot:last-child{min-heigh
  .outline .node>.node-head>.node-toggle{grid-column:4}
  .outline .node.scene>.node-head>textarea.node-title{grid-column:3 / -1}
 }
+
+/* Beat cards start small and grow with the writing, independently of their neighbors. */
+.scene-card-grid{align-items:start}
+.scene-card textarea{flex:none;min-height:64px;overflow:hidden}
+.scene-card textarea[data-field=beats]{min-height:44px}
+.scene-card .scene-beat-writeup textarea{min-height:88px}

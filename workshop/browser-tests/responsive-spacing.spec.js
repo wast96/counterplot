@@ -45,3 +45,18 @@ test('main views and editors stay inside phone, tablet, and desktop layouts',asy
   await page.keyboard.press('Escape');
  }
 });
+
+test('scene beat fields grow with writing instead of reserving tall empty cards',async({page})=>{
+ const data=fixture();data.projects[0].scenes=[{...W.scene('The dinner'),beats:[{id:'first',title:'The unlocked door',writeup:'She hesitates before entering.'}]}];
+ await load(page,data);await page.getByRole('tab',{name:'Scene constructor',exact:true}).click();
+ const title=page.getByRole('textbox',{name:'Beat 1 title',exact:true}),writeup=page.getByRole('textbox',{name:'Beat 1 writeup',exact:true});
+ expect((await title.boundingBox()).height).toBeLessThan(80);
+ const text='She looks through the dark hallway and notices that something is wrong. '.repeat(12);
+ await writeup.fill(text);
+ for(const width of [320,400,768,1440]){
+  await page.setViewportSize({width,height:900});await fits(page);
+  await expect.poll(()=>writeup.evaluate(e=>e.scrollHeight<=e.clientHeight+1)).toBe(true);
+ }
+ await writeup.fill('She enters.');await page.keyboard.press('Tab');expect((await writeup.boundingBox()).height).toBeLessThan(110);
+ await page.reload();await page.getByRole('tab',{name:'Scene constructor',exact:true}).click();await expect(writeup).toHaveValue('She enters.');
+});
