@@ -150,3 +150,46 @@ test('many new parts perform history reconciliation once, not on every upload', 
     console.log('100 distinct uploads: 2 history scans (previously 200), constant-size quota checks.');
   } finally { env.raw.close(); }
 });
+
+test('manual cleanup frees fresh uploads immediately while preserving saved versions and other accounts', async () => {
+  const { onRequestDelete: clear } = await import('../functions/api/workspace-chunk.js');
+  const env = testDatabase();
+  try {
+    const a = await account(env, 'manual'), b = await account(env, 'manual-other');
+    for (let revision = 0; revision < 2; revision++) {
+      const data = structuredClone(fixture); data.projects[0].title = 'Version ' + revision;
+      const text = JSON.stringify(data), staged = await part(env, a, text);
+      assert.equal((await put(request(env, a, 'PUT', {revision, writeId:'manual-'+revision, manifest:{chunks:[staged.hash],bytes:Buffer.byteLength(text)}}))).status, 200);
+    }
+    const fresh = await part(env, a, 'unfinished upload from moments ago');
+    await part(env, b, 'another account');
+    assert.ok(pending(env, a) > 0);
+    const ctx = request(env, a, 'DELETE', undefined, '/api/workspace-chunk');
+    const wrongOwner = request(env, a, 'DELETE', undefined, '/api/workspace-chunk');wrongOwner.request.headers.set('X-Counterplot-Owner', b.owner);
+    assert.equal((await clear(wrongOwner)).status, 403);
+    const crossSite = request(env, a, 'DELETE', undefined, '/api/workspace-chunk');crossSite.request.headers.set('Origin','https://elsewhere.test');
+    assert.equal((await clear(crossSite)).status, 403);
+    assert.equal((await clear(ctx)).status, 200);assert.equal(pending(env, a), 0);
+    assert.equal(env.raw.prepare('SELECT hash FROM workspace_chunks WHERE user_id=? AND hash=?').get(a.owner,fresh.hash),undefined);
+    for(const revision of [1,2])assert.equal((await (await get(request(env,a,'GET',undefined,'/api/workspace?revision='+revision))).json()).workspace.projects[0].title,'Version '+(revision-1));
+    assert.equal(pending(env,b),Buffer.byteLength('another account'));
+    assert.equal((await part(env,a,'the latest upload')).response.status,200);
+  } finally {env.raw.close();}
+});
+
+test('cleanup between manifest validation and commit cannot publish missing parts', async () => {
+  const { clearTemporaryChunks } = await import('../functions/_lib/chunk-maintenance.js');
+  for(const existing of [false,true]){
+    const env=testDatabase();
+    try{
+      const a=await account(env,'racing-'+existing);
+      if(existing)assert.equal((await put(request(env,a,'PUT',{workspace:fixture,revision:0,writeId:'initial'}))).status,200);
+      const text=JSON.stringify(fixture),staged=await part(env,a,text),batch=env.DB.batch.bind(env.DB),prepare=env.DB.prepare.bind(env.DB);let committing=false;
+      env.DB.prepare=sql=>{if(/UPDATE workspaces SET|INSERT INTO workspaces/.test(sql))committing=true;return prepare(sql);};
+      env.DB.batch=async statements=>{if(committing){committing=false;await clearTemporaryChunks(env,a.owner);}return batch(statements);};
+      const response=await put(request(env,a,'PUT',{revision:existing?1:0,writeId:'race',manifest:{chunks:[staged.hash],bytes:Buffer.byteLength(text)}}));
+      assert.equal(response.status,409);assert.equal((await response.json()).code,'missing-chunk');
+      const saved=await (await get(request(env,a,'GET'))).json();assert.equal(saved.revision,existing?1:0);assert.deepEqual(saved.workspace,existing?fixture:null);
+    }finally{env.raw.close();}
+  }
+});

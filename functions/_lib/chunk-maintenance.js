@@ -97,3 +97,13 @@ export function acknowledgeChunks(env, userId, revision, writeId) {
         AND json_type(w.workspace_json, '$.projects') IS NULL)`)
     .bind(userId, userId, revision, writeId);
 }
+
+// Explicit recovery does not wait for expiry. Retained saves protect their parts,
+// and cascading deletes keep temporary-byte accounting in the same transaction.
+export async function clearTemporaryChunks(env, userId) {
+  await ensureMaintenance(env);
+  await maintainChunks(env, userId);
+  const result = await env.DB.prepare(`DELETE FROM workspace_chunks WHERE user_id = ?
+    AND hash NOT IN (${referenced})`).bind(userId, userId, userId).run();
+  return result.meta?.changes || 0;
+}

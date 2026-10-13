@@ -1,7 +1,7 @@
 import { requireUser } from '../_lib/auth.js';
 import { assertSameOrigin, errorResponse, json, readJson } from '../_lib/http.js';
 import { CHUNK_BYTES, digest, ensureStorage, requireWriter } from '../_lib/workspace-storage.js';
-import { maintainChunks, MAX_PENDING_BYTES } from '../_lib/chunk-maintenance.js';
+import { clearTemporaryChunks, maintainChunks, MAX_PENDING_BYTES } from '../_lib/chunk-maintenance.js';
 
 export async function onRequestPost(context) {
   try {
@@ -26,8 +26,18 @@ export async function onRequestPost(context) {
         new TextEncoder().encode(body.content).byteLength, MAX_PENDING_BYTES).run();
     if (!inserted.meta?.changes) {
       const raced = await context.env.DB.prepare('SELECT hash FROM workspace_chunks WHERE user_id = ? AND hash = ?').bind(user.id, body.hash).first();
-      if (!raced) return json({ error: 'Temporary upload storage is full. Your writing is retained locally. Export a backup now; unused uploads expire after one day, then saving can resume.', code: 'capacity' }, 413);
+      if (!raced) return json({ error: 'Temporary upload storage is full. Your writing is retained locally. Open Account & sync settings and choose “Clear temporary uploads & save latest” to save now.', code: 'capacity' }, 413);
     }
     return json({ owner: user.id, hash: body.hash });
+  } catch (error) { return errorResponse(error); }
+}
+
+export async function onRequestDelete(context) {
+  try {
+    assertSameOrigin(context.request);
+    const user = await requireUser(context); requireWriter(context.request, user);
+    await ensureStorage(context.env);
+    const cleared = await clearTemporaryChunks(context.env, user.id);
+    return json({ owner: user.id, cleared });
   } catch (error) { return errorResponse(error); }
 }
