@@ -9,6 +9,15 @@ function fixture(){
 async function load(page,data=fixture()){await page.goto('/');await expect(page.locator('.story-viewbar')).toBeVisible();await page.locator('#import-file').setInputFiles({name:'flow.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(data))});await page.locator('[data-action=accept-import]').click();await expect(page.locator('#dialog')).not.toBeVisible();}
 const snapshot=page=>page.evaluate(()=>{const d=CounterplotTutorial.snapshot();return d.projects.find(p=>p.id===d.active);});
 const card=(page,id)=>page.locator(`[data-node=${id}]`);
+test('Milieu context shares one compact row without repeating linked settings',async({page})=>{
+ await load(page);const milieu=card(page,'milieu'),row=milieu.locator(':scope > .node-foot > .cast-chips');
+ await expect(milieu.locator('[data-action=edit-world][data-id=harbor]')).toHaveCount(1);await expect(row.getByRole('button',{name:'Open setting: The harbor',exact:true})).toBeVisible();await expect(milieu.locator(':scope > .milieu-world')).toHaveCount(0);
+ if(test.info().project.name==='desktop')await expect.poll(()=>row.evaluate(el=>{const cast=el.querySelector('.cast-chip').getBoundingClientRect(),setting=el.querySelector('.milieu-chip').getBoundingClientRect();return Math.abs(cast.top+cast.height/2-setting.top-setting.height/2);})).toBeLessThan(2);
+ await row.getByRole('button',{name:'Open setting: The harbor',exact:true}).click();await expect(page.locator('#dialog [name=name]')).toHaveValue('The harbor');await page.keyboard.press('Escape');
+ await row.getByRole('button',{name:'Unlink The harbor from Into the harbor',exact:true}).click();await expect(row.locator('.milieu-chip')).toHaveCount(0);expect((await snapshot(page)).world.some(w=>w.id==='harbor')).toBe(true);
+ await row.getByRole('button',{name:'Link setting or culture',exact:true}).click();await page.locator('[data-action=milieu-choose][data-world=harbor]').click();await expect(row.locator('[data-action=edit-world][data-id=harbor]')).toHaveCount(1);await expect(row.locator('.cast-chip')).toContainText('Liu Jun');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(page.viewportSize().width+1);await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await expect(card(page,'milieu').locator('[data-action=edit-world][data-id=harbor]')).toHaveCount(1);
+});
 function dragFixture(){const data=fixture(),p=data.projects[0];p.nodes.find(n=>n.id==='beat').parentId='character';p.nodes.push({...W.node('B','event'),id:'inner',title:'Inside the event'});W.normalize(p);return data;}
 test('sibling beats advancing the same outer thread stay aligned after a drag animation, resize and reload',async({page})=>{
  const data=dragFixture(),p=data.projects[0];W.setAdvancedThreads(p,p.nodes.find(n=>n.id==='inner'),['character']);await load(page,data);
@@ -38,7 +47,7 @@ test('pointer dragging into an inner gap preserves the outer thread and shows th
  const p=await snapshot(page),beat=p.nodes.find(n=>n.id==='beat');expect(beat.parentId).toBe('event');expect(beat.miceLinks.map(x=>x.miceId)).toEqual(['character']);const events=W.outlineEvents(p).map(e=>e.key);expect(events.indexOf('beat:open')).toBeLessThan(events.indexOf('inner:open'));await expect(card(page,'beat')).toHaveAttribute('data-flow-owner','character');await expect(page.locator('#dialog')).not.toBeVisible();
 });
 test('Beat here creates an outer-arc beat before the inner closing without moving existing moments',async({page})=>{
- await load(page);const before=await snapshot(page);await card(page,'event').locator(':scope > .node-children > .inside-drop').getByRole('button',{name:'Beat here',exact:true}).click();
+ await load(page);const before=await snapshot(page);await card(page,'event').locator(':scope > .node-children > .inside-drop').getByRole('button',{name:'Add beat',exact:true}).click();
  await page.locator('#dialog [name=threads][value=event]').uncheck();await page.locator('#dialog [name=threads][value=character]').check();await page.getByRole('button',{name:'Keep thread links'}).click();
  const p=await snapshot(page),added=p.nodes.find(n=>!before.nodes.some(x=>x.id===n.id));expect(added.type).toBe('B');expect(added.parentId).toBe('event');expect(added.miceLinks.map(x=>x.miceId)).toEqual(['character']);
  expect(W.outlineEvents(p).map(e=>e.key)).toEqual(['character:open','mystery:open','event:open','beat:open',added.id+':open','event:close','mystery:close','character:close','milieu:open','milieu:close']);
@@ -107,4 +116,13 @@ test('the character timeline omits archived and deleted thread anchors while kee
  await page.locator('[data-nav=characters]').first().click();await expect(stops.locator('[data-id="character:close"]')).toHaveCount(0);await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await page.locator('[data-nav=characters]').first().click();
  await expect(stops.locator('[data-id="character:open"]')).toHaveCount(0);await expect(stops.locator('[data-id="previously-deleted:open"]')).toHaveCount(0);await expect(stops.locator('[data-id="backstory:moment"]')).toContainText('Historical moment');
  expect((await snapshot(page)).timeline.map(e=>e.id)).toEqual(original.timeline.map(e=>e.id));
+});
+
+test('outline and inspector Add change use the same editor and preserve the chosen endpoint',async({page})=>{
+ await load(page);const beat=card(page,'beat');await beat.getByRole('button',{name:'Add change',exact:true}).click();await expect(page.locator('#dialog [data-form=record-piece-state]')).toBeVisible();const sources=await page.locator('#dialog [name=source] option').allTextContents();await page.keyboard.press('Escape');
+ await beat.locator('[data-action=select-node]').click();await page.locator('.inspector .text-btn[data-action=record-piece-state]').click();await expect(page.locator('#dialog [name=source] option')).toHaveText(sources);
+ await page.getByRole('button',{name:'Character block options',exact:true}).click();await expect(page.locator('#dialog')).toContainText('Liu Jun');await page.keyboard.press('Escape');
+ if(test.info().project.name==='mobile')await page.locator('[data-action=collapse-inspector]').click();
+ await card(page,'event').locator(':scope > .closing [data-action=record-piece-state]').click();await page.locator('#dialog [name=source]').selectOption('block:jun:status');await page.getByLabel('New state',{exact:true}).fill('Safe again');await page.getByRole('button',{name:'Keep change',exact:true}).click();
+ const p=await snapshot(page);expect(p.characters[0].changes.find(x=>x.block?.text==='Safe again').at).toBe('event:close');await expect(card(page,'event').locator(':scope > .thread-plan-fields label > span')).toHaveText(['Before','Disruption']);
 });

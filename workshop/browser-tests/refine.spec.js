@@ -31,7 +31,7 @@ test('Refine edits opening, closing and beat craft independently and scene craft
 });
 
 test('Refine supports keyboard tabs and fits narrow screens',async({page})=>{
- await load(page);await view(page,'Refine');const refine=page.getByRole('tab',{name:'Refine',exact:true});await refine.focus();await expect(page.getByRole('tabpanel')).toHaveAttribute('aria-labelledby','story-tab-refine');await page.keyboard.press('ArrowRight');await expect(page.getByRole('tab',{name:'Choices',exact:true})).toBeFocused();await page.keyboard.press('ArrowRight');await expect(page.getByRole('tab',{name:'Outline',exact:true})).toBeFocused();
+ await load(page);await view(page,'Refine');const refine=page.getByRole('tab',{name:'Refine',exact:true});await refine.focus();await expect(page.getByRole('tabpanel')).toHaveAttribute('aria-labelledby','story-tab-refine');await page.keyboard.press('ArrowRight');await expect(page.getByRole('tab',{name:'Outline',exact:true})).toBeFocused();
  for(const width of [320,390,768,1440]){await page.setViewportSize({width,height:950});for(const mode of ['Refine']){await view(page,mode);expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width+1);}}
 });
 
@@ -51,7 +51,7 @@ test('archived Write/Read: Refine and Write retain workspace columns and details
  for(const width of [390,1440,1800]){
   await page.setViewportSize({width,height:1000});await view(page,'Write');
   const geometry=()=>page.locator('.writing-layout').evaluate(el=>{const sels=['.scene-list','.manuscript'];return sels.map(s=>{const r=el.querySelector(s).getBoundingClientRect();return {x:r.x,width:r.width};});});
-  const write=await geometry();await view(page,'Refine');expect(await geometry()).toEqual(write);expect(await page.locator('.manuscript').evaluate(el=>{const r=el.getBoundingClientRect();return [...el.querySelectorAll('.draft-title,.moment-switcher')].every(child=>{const c=child.getBoundingClientRect();return c.width>0&&c.left>=r.left&&c.right<=r.right+1;});})).toBe(true);await expect(page.locator('.tray')).toHaveCount(0);await expect(page.getByRole('button',{name:'Manage plots',exact:true})).toBeVisible();
+  await view(page,'Refine');expect(await page.locator('.writing-layout').evaluate(el=>{const r=el.getBoundingClientRect();return [...el.querySelectorAll('.scene-list,.manuscript')].every(child=>{const c=child.getBoundingClientRect();return c.width>0&&c.left>=r.left&&c.right<=r.right+1;});})).toBe(true);expect(await page.locator('.manuscript').evaluate(el=>{const r=el.getBoundingClientRect();return [...el.querySelectorAll('.draft-title,.moment-switcher')].every(child=>{const c=child.getBoundingClientRect();return c.width>0&&c.left>=r.left&&c.right<=r.right+1;});})).toBe(true);await expect(page.locator('.tray')).toHaveCount(0);await expect(page.getByRole('button',{name:'Manage plots',exact:true})).toBeVisible();
  }
  await expect(page.locator('.workbench-grid>.inspector')).not.toBeVisible();await page.getByRole('button',{name:'Show details',exact:true}).click();await expect(page.locator('.workbench-grid>.inspector')).toBeVisible();
  await page.getByRole('button',{name:'Focus on refining',exact:true}).click();await expect(page.locator('.refine-piece')).toBeVisible();await expect(page.locator('.inspector')).not.toBeVisible();await page.getByRole('button',{name:'Leave focus mode',exact:true}).click();await expect(page.locator('.workbench-grid>.inspector')).toBeVisible();

@@ -2,4 +2,4 @@
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
   X-Content-Type-Options: nosniff
-  Content-Security-Policy: default-src 'self'; script-src 'sha256-tv+Otv8TuhD+HUdllWXWPnhxowEIlEA7Xt+jT1T02AU='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'self'; form-action 'self'
+  Content-Security-Policy: default-src 'self'; script-src 'sha256-ahGRQa5kzwGCc8a6DkrgNKRxca5K8V6CbEULNV48GQw='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'self'; form-action 'self'

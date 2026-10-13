@@ -16,7 +16,7 @@ test('filters are discoverable, preserve keyboard focus, and can be cleared acro
 });
 test('main views remain accessible and fit the viewport',async({page})=>{
  test.setTimeout(90000);await page.emulateMedia({reducedMotion:'reduce'});await load(page);
- for(const view of ['Outline','Refine','Sequence','Chronology','Choices']){
+ for(const view of ['Outline','Refine','Sequence','Chronology']){
   await page.getByRole('tab',{name:view,exact:true}).click();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(page.viewportSize().width+1);
   const scan=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();
@@ -58,9 +58,9 @@ test('long outline titles wrap, save on Enter, and retain undo and reload behavi
 
 test('returning to the workbench reveals the active tab and ordering controls stop at list boundaries',async({page})=>{
  await page.setViewportSize({width:390,height:844});await load(page);
- await page.getByRole('tab',{name:'Outline',exact:true}).focus();await page.keyboard.press('End');await expect(page.getByRole('tab',{name:'Choices',exact:true})).toBeFocused();
+ await page.getByRole('tab',{name:'Outline',exact:true}).focus();await page.keyboard.press('End');await expect(page.getByRole('tab',{name:'Refine',exact:true})).toBeFocused();
  await page.locator('[data-nav=world]').first().click();await page.locator('[data-nav=outline]').first().click();
- const active=page.locator('.story-viewbar [aria-selected=true]');await expect(active).toHaveText('Choices');
+ const active=page.locator('.story-viewbar [aria-selected=true]');await expect(active).toHaveText('Refine');
  const rects=await active.evaluate(el=>[el.getBoundingClientRect(),el.parentElement.getBoundingClientRect()].map(r=>({left:r.left,right:r.right})));expect(rects[0].left).toBeGreaterThanOrEqual(rects[1].left-1);expect(rects[0].right).toBeLessThanOrEqual(rects[1].right+1);
  for(const name of ['Sequence','Chronology']){
   await page.getByRole('tab',{name,exact:true}).click();const cards=page.locator('.moment-card');

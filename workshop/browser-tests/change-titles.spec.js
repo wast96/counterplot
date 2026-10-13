@@ -23,7 +23,7 @@ test('all thread types and beats use free titles with no change-naming action in
  for(const id of ['ui-node-0','ui-node-1']){await refine(page,id);await expect(page.locator('[data-action=name-from-change]')).toHaveCount(0);await page.getByLabel('Refine title').fill('');await page.locator('.refine-plan textarea').click();await expect(page.getByLabel('Refine title')).toHaveValue('');}
 });
 test('recording World and connection changes keeps them visible without renaming the beat',async({page})=>{
- await load(page);const before=await snapshot(page);await refine(page,'ui-node-1');await page.locator('.refine-piece [data-action=consequences]').click();
+ await load(page);const before=await snapshot(page);await refine(page,'ui-node-1');await page.locator('.refine-piece [data-action=record-piece-state]').click();await page.getByRole('button',{name:'Life, world & connection options',exact:true}).click();
  await page.locator('#dialog summary').filter({hasText:'World state'}).click();await page.getByLabel('the blood pearl',{exact:true}).fill('discovered');
  await page.locator('#dialog summary').filter({hasText:'Connections'}).click();await page.getByLabel('strangers',{exact:true}).fill('uneasy allies');await page.getByRole('button',{name:'Keep consequences',exact:true}).click();
  await expect(page.locator('#dialog')).not.toBeVisible();await expect(page.locator('.refine-piece [data-beat-inline][data-change="world:ui-pearl"]')).toHaveValue('discovered');await expect(page.locator('.refine-piece [data-beat-inline][data-change="connection:bond:bond"]')).toHaveValue('uneasy allies');

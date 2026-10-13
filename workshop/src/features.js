@@ -36,8 +36,8 @@ document.addEventListener('drop',e=>{const drop=e.target.closest('[data-media-dr
 
 /* Optional Milieu links. Reuse ordinary World entries and existing worldIds. */
 function milieuWorld(n){
- const linked=n.worldIds.map(id=>p().world.find(w=>w.id===id)).filter(w=>w&&['place','culture'].includes(w.type));
- return `<div class="milieu-world" aria-label="Setting and culture for ${esc(name(n))}"><span class="milieu-label">Setting / culture <small>optional</small></span><div class="milieu-links">${linked.map(w=>`<span class="milieu-chip"><button type="button" ${act('edit-world',w.id)} aria-label="Open ${esc(w.type==='culture'?'culture':'setting')}: ${esc(w.name)}">${icon('world')}<span>${esc(w.name)}</span><small>${w.type==='culture'?'Culture':'Setting'}</small></button><button type="button" class="milieu-remove" ${act('milieu-unlink',n.id,`data-world="${esc(w.id)}"`)} aria-label="Unlink ${esc(w.name)} from ${esc(name(n))}">×</button></span>`).join('')}<button type="button" class="milieu-add" ${act('milieu-link',n.id)}>${linked.length?'+ Link':'+ Link setting or culture'}</button></div></div>`;
+ const linked=[...new Set(n.worldIds)].map(id=>p().world.find(w=>w.id===id)).filter(w=>w&&['place','culture'].includes(w.type));
+ return `<div class="milieu-world" role="group" aria-label="Setting and culture for ${esc(name(n))}"><div class="milieu-links">${linked.map(w=>`<span class="milieu-chip"><button type="button" ${act('edit-world',w.id)} aria-label="Open ${esc(w.type==='culture'?'culture':'setting')}: ${esc(w.name)}">${icon('world')}<span>${esc(w.name)}</span><small>${w.type==='culture'?'Culture':'Setting'}</small></button><button type="button" class="milieu-remove" ${act('milieu-unlink',n.id,`data-world="${esc(w.id)}"`)} aria-label="Unlink ${esc(w.name)} from ${esc(name(n))}">×</button></span>`).join('')}<button type="button" class="milieu-add" ${act('milieu-link',n.id)} aria-label="Link setting or culture">${linked.length?'Link setting':'Link setting / culture'}</button></div></div>`;
 }
 function milieuPicker(id){
  const n=node(id);if(!n)return;
@@ -48,4 +48,4 @@ function milieuPicker(id){
 document.addEventListener('input',e=>{if(e.target.name!=='milieu-search')return;const query=e.target.value.trim().toLocaleLowerCase();let visible=0;for(const option of document.querySelectorAll('.milieu-option')){option.hidden=!option.textContent.toLocaleLowerCase().includes(query);if(!option.hidden)visible++;}const empty=document.querySelector('.milieu-no-results');if(empty)empty.hidden=visible>0;});
 
 // World links share the card's plot/cast row; the existing link editor remains the source of truth.
-function worldChips(n){return [...new Set(n.worldIds||[])].map(id=>p().world.find(w=>w.id===id)).filter(Boolean).map(w=>`<button type="button" class="world-chip" ${act('edit-world',w.id)} aria-label="Open world entry: ${esc(w.name)}">${icon('world')}<span>${esc(w.name)}</span></button>`).join('');}
+function worldChips(n){return [...new Set(n.worldIds||[])].map(id=>p().world.find(w=>w.id===id)).filter(w=>w&&!(n.type==='M'&&['place','culture'].includes(w.type))).map(w=>`<button type="button" class="world-chip" ${act('edit-world',w.id)} aria-label="Open world entry: ${esc(w.name)}">${icon('world')}<span>${esc(w.name)}</span></button>`).join('');}

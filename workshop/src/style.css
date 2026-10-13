@@ -802,3 +802,52 @@ textarea.node-title:focus-visible{outline:2px solid #74947a;outline-offset:3px;b
 #story-panel:has(.outline) .page-head{padding-top:14px;padding-bottom:12px}
 .tray-label{color:#52634f}
 @media(min-width:681px){.node-head{padding-top:7px;padding-bottom:4px}.node.scene>.node-head{padding-block:2px}}
+.cast-chips>.milieu-world{display:flex;margin:0;max-width:100%;min-width:0}
+.cast-chips .milieu-links{gap:5px}
+.cast-chips .milieu-chip>button:first-child{padding:3px 6px;font-size:10px;min-height:28px}
+.cast-chips .milieu-remove{min-width:26px;min-height:28px;padding:2px 6px}
+.cast-chips .milieu-add{border:0;min-height:28px;padding:3px 6px;font-size:10px}
+@media(max-width:680px){.cast-chips .milieu-chip>button:first-child,.cast-chips .milieu-add{min-height:32px}.cast-chips .milieu-remove{min-height:32px;min-width:32px}}
+
+/* A searchable type label keeps the state editor short and keyboard friendly. */
+.arc-type-picker{position:relative;gap:6px}
+.arc-type-picker>label{font-weight:600}
+.arc-type-picker>small{color:var(--muted);font-size:12px}
+#arc-type-list{position:absolute;z-index:5;top:76px;left:0;right:0;max-height:216px;overflow-y:auto;overscroll-behavior:contain;background:var(--paper,#fff);border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px #20392d20;padding:4px}
+#arc-type-list[hidden]{display:none}
+#arc-type-list [role=option]{padding:9px 12px;min-height:36px;cursor:pointer;border-radius:5px;overflow-wrap:anywhere}
+#arc-type-list [role=option]:hover,#arc-type-list [aria-selected=true]{background:var(--sage-light,#e8eee5)}
+#arc-type-list small{display:block;color:var(--muted);font-size:11px}
+.change-editor-options{display:flex;flex-wrap:wrap;gap:8px;border-top:1px solid var(--line);padding-top:14px;margin-top:18px}
+.change-editor-options .btn{font-size:12px;padding:8px 10px}
+
+/* Name the action instead of repeating an unexplained plus on every row. */
+.arc-fork{width:auto;min-width:32px;padding:4px 7px;font:11px/1.4 var(--sans);white-space:nowrap}
+.closing>.closing-add-change{font-size:11px;white-space:nowrap;gap:5px;min-height:32px;padding:4px 6px}
+.closing-add-change svg,.beat-add-change svg{width:14px;height:14px}
+.inside-drop>.text-btn{font-size:11px!important;min-height:30px;padding:4px 10px!important}
+.refine-workspace.writing-layout,.workbench-grid.details-hidden .refine-workspace.writing-layout{max-width:none;margin:0;gap:20px;grid-template-columns:200px minmax(0,1fr)}
+.refine-workspace .moment-navigation{padding-right:12px;border-right:1px solid var(--line)}
+.refine-workspace .moment-navigation button{padding:9px 10px;font-size:12px;border-radius:6px}
+.refine-piece.manuscript{padding:20px 24px 28px}
+.refine-piece .draft-title{margin:8px 0 12px;font-size:27px}
+.refine-moment-tools{margin:0 0 14px}
+.refine-piece .refine-plan{margin-top:16px}
+.refine-questions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 18px}
+.refine-questions .field{margin-bottom:8px}
+.refine-questions .field:last-child:nth-child(odd){grid-column:1/-1}
+.refine-questions textarea{min-height:90px}
+.focus-mode .refine-workspace.writing-layout{display:block;max-width:1100px;margin-inline:auto}
+@media(max-width:1000px){
+ .refine-workspace.writing-layout,.workbench-grid.details-hidden .refine-workspace.writing-layout{grid-template-columns:minmax(0,1fr);gap:14px}
+ .refine-workspace .moment-navigation{border-right:0;border-bottom:1px solid var(--line);padding:0 0 10px}
+}
+@media(max-width:680px){
+ .closing>.closing-add-change{grid-column:2/-1;justify-self:start;margin-top:5px}
+ .refine-piece.manuscript{padding:16px}
+ .refine-questions{grid-template-columns:minmax(0,1fr);gap:6px}
+ .refine-piece .draft-title{font-size:24px}
+}
+.arc-current-state{padding:10px 12px;margin:-8px 0 16px;border-left:2px solid var(--green);background:var(--green-soft);border-radius:0 6px 6px 0;overflow-wrap:anywhere}
+.arc-current-state>span{font-size:11px;color:var(--green);font-weight:600}
+.arc-current-state>p{margin-top:3px;font-size:13px;white-space:pre-wrap}

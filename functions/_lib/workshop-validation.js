@@ -1212,9 +1212,10 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
   function removeArcOutcome(p,n,rowId,outcomeId){
     const arc=characterArc(p,n),row=arc.changes.find(r=>r.id===rowId);if(!row)return;row.outcomes=(row.outcomes||[]).filter(v=>v.id!==outcomeId);n.characterArc=arc;n.title=pieceTitle(p,n);
   }
-  function setArcState(p,n,edge,{rowId='',outcomeId='',value='',blockId='',kind='custom'}={}){
+  function setArcState(p,n,edge,{rowId='',outcomeId='',value='',blockId='',kind='custom',label}={}){
     if(n.type!=='C'||!['from','to'].includes(edge))throw Error('Choose a Character thread state.');
     if(typeof value!=='string'||value.length>1000)throw Error('Keep each title state within 1,000 characters.');
+    if(label!==undefined&&(typeof label!=='string'||label.length>1000))throw Error('Keep the type label within 1,000 characters.');
     const arc=characterArc(p,n),c=arcSubject(p,arc),row=arc.changes.find(r=>r.id===rowId)||(!rowId?arc.changes[0]:null);value=value.trim();
     if(!row)throw Error('This state change is no longer in the title.');
     const outcome=outcomeId?(row.outcomes||[]).find(v=>v.id===outcomeId):null;if(outcomeId&&(!outcome||edge!=='to'))throw Error('This outcome is no longer in the title.');
@@ -1228,11 +1229,25 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
       const original=blockId==='new'?(group?{id:W.uid(),kind,key:'custom',title:'',text:'',detail:'',context:'any',knownBy:[],links:[]}:W.block(kind)):arcBlocksAt(p,c,at).find(b=>b.id===blockId)||existing?.block||arcStateOptions(p,c).find(b=>b.id===blockId);
       if(!original)throw Error('That building block is no longer available.');
       const block={...copy(original),text:value},present=before.some(b=>b.id===block.id);
+      if(blockId==='new')block[group?'title':'label']=row.label;
       if(outcome&&blockId==='new'){block.forkedFrom=row.from.blockId||row.to.blockId||'';block[group?'title':'label']=row.label;}
       const record={id:existing?.id||W.uid(),at,momentId:momentId(p,at),blockId:block.id,...(group?{operation:present?'replace':'add'}:{op:present?'develop':'add'}),block,reason:existing?.reason||'Set in character thread'};
       if(existing)Object.assign(existing,record);else records.push(record);
       assign({text:value,blockId:block.id,linked:true});if(!outcome){row.kind=block.kind;row.label=block.label||block.title||'';}
     }else {assign({text:value,blockId:'',linked:false});if(!outcome&&!row.from.linked&&!row.to.linked)row.kind=kind;}
+    if(label!==undefined){
+      label=label.trim();const previous=row.label;
+      row.label=label;row.kind=kind;
+      // Classification belongs to the block across its history, not just this
+      // endpoint. Keep separately named forks independent when renaming a pair.
+      const values=[row.from,row.to,...(row.outcomes||[]).filter(v=>{const b=arcStateOptions(p,c).find(b=>b.id===v.blockId);return !b?.label&&!b?.title||(b.label||b.title)===previous;})];
+      const ids=new Set(values.filter(v=>v.linked).map(v=>v.blockId));
+      if(c)for(const id of ids){
+        const snapshots=c.type==='group'?[...(c.faction?.blocks||[]),...(c.faction?.changes||[]).flatMap(x=>x.block?[x.block]:[]),...(c.faction?.checkpoints||[]).flatMap(x=>x.blocks)]:characterBlockSnapshots(p,c);
+        for(const b of snapshots)if(b.id===id){b.kind=kind;b[c.type==='group'?'title':'label']=label;}
+        for(const piece of allNodes(p))if(piece.characterArc?.subjectId===c.id)for(const r of piece.characterArc.changes)if([r.from,r.to].some(v=>v.linked&&v.blockId===id)){r.label=label;r.kind=kind;}
+      }
+    }
     n.characterArc=arc;n.title=pieceTitle(p,n);
   }
   const THREAD_FIELDS={
