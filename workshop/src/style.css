@@ -851,3 +851,6 @@ textarea.node-title:focus-visible{outline:2px solid #74947a;outline-offset:3px;b
 .arc-current-state{padding:10px 12px;margin:-8px 0 16px;border-left:2px solid var(--green);background:var(--green-soft);border-radius:0 6px 6px 0;overflow-wrap:anywhere}
 .arc-current-state>span{font-size:11px;color:var(--green);font-weight:600}
 .arc-current-state>p{margin-top:3px;font-size:13px;white-space:pre-wrap}
+
+/* Prior character states remain readable alongside the changed value. */
+.change-card .change-before{color:var(--muted)}
