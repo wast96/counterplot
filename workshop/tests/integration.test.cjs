@@ -80,3 +80,11 @@ test('large imported shelves can restore a deleted story up to the supported pro
  W.trashProject(data,id);W.restoreProject(data,id);assert.equal(data.projects.length,201);assert.equal(data.trash.length,0);assert.doesNotThrow(()=>W.validate(data));
  W.trashProject(data,id);while(data.projects.length<1000)data.projects.push(W.project());const before=W.copy(data);assert.throws(()=>W.restoreProject(data,id),/shelf is full/);assert.deepEqual(data,before);
 });
+
+test('consequences validate custom colors with the workspace palette and remain atomic',()=>{
+ const data=W.legacy(fixture()),p=data.projects[0];data.swatches=[{id:'sea-glass',name:'Sea glass',hex:'#b9ebdd',hidden:true}];p.nodes[0].color='sea-glass';p.characters[0].blocks[0].color='sea-glass';W.validate(data);
+ const key=p.timeline[0].key,changes=[{kind:'life',targetId:p.characters[0].id,value:{status:'dead'}}],before=JSON.stringify(p);
+ assert.throws(()=>W.consequences(p,key,changes),/Unknown color swatch/);assert.equal(JSON.stringify(p),before);
+ W.consequences(p,key,changes,{swatches:data.swatches});assert.equal(p.characters[0].lifeChanges.at(-1).status,'dead');W.validate(data);
+ const saved=JSON.stringify(p);assert.throws(()=>W.consequences(p,key,[...changes,{kind:'world',targetId:'missing',value:{value:'Broken'}}],{swatches:data.swatches}));assert.equal(JSON.stringify(p),saved);
+});

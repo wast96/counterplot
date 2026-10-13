@@ -942,3 +942,7 @@ body:has(.story-tools-menu[open]) #toast,body:has(.account-menu[open]) #toast{op
 .thread-word.wrapping-field .story-field-text:focus{outline:0;border-bottom-color:var(--green);box-shadow:0 1px var(--green);background:var(--panel)}
 .collapsed-thread-beats{margin:8px 14px 16px 42px;border-left:2px solid var(--line);padding:10px 14px}.collapsed-thread-beats ol{list-style:none;margin:8px 0 0;padding:0}.collapsed-beat{display:block;text-align:left;width:100%;padding:9px 0;overflow-wrap:anywhere}.collapsed-beat strong,.collapsed-beat span{display:block}.collapsed-beat strong{font-size:13px}.collapsed-beat span{font-size:12px;color:var(--muted);margin-top:4px;white-space:pre-wrap}.collapsed-thread-beats li+li{border-top:1px solid var(--line)}
 @media(max-width:680px){.thread-word.wrapping-field{display:grid;grid-template-columns:minmax(0,1fr) auto;width:100%}.wrapping-field>span,.wrapping-field>.story-field-text{grid-column:1}.wrapping-field>.arc-state-options{grid-column:2;grid-row:1 / span 2}.wrapping-field>span{padding-top:0;max-width:100%}.thread-word.wrapping-field .story-field-text{width:100%}.collapsed-thread-beats{margin-left:14px}}
+
+/* Empty hints stay compact; authored text still wraps and grows. */
+.thread-word.wrapping-field .story-field-text:placeholder-shown{white-space:nowrap;text-overflow:ellipsis}
+[data-form=consequences] .story-disclosure:not([open])>.stack{display:none}
