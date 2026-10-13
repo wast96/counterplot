@@ -10,6 +10,20 @@ Editing a linked state creates or updates a timed building-block record at the t
 
 State fields support direct typing and existing-state suggestions; a small options control retains the full editor. Title changes and state changes are independent, including blank titles. Beat rows show the actual timed character, World, and connection transitions; editing the ending value updates that record without changing the initial state.
 
+# All MICE threads and parallel states
+
+Milieu, Inquiry, and Event threads use the same compact opening/closing pattern, with independent titles and optional notes. Milieu has World / Entering / Leaving fields, Inquiry has Question / Known / Answer, and Event has Disruption / Before / Resolution. Blank fields and additional closing outcomes are valid. `node.threadPlans` stores a separate plan for each type, so switching types preserves previous wording. These planning fields do not silently change character or World histories.
+
+“Add change” at an opening, beat, or closing records an actual character block, group block, World state, or connection change. Timed states remain separate from baseline definitions. Existing fields are editable directly and autosave, including on navigation or page exit. The plus beside a building-block state forks it into a parallel block while keeping the source. Undo and export include these edits.
+
+`recordedThreadStates()` reconciles stored character-arc fields with actual timed state. Changes introduced on nested or explicitly linked beats appear at enclosing thread closings, including forks created after arc metadata was saved. Related parallel states already present when a later character arc opens remain visible alongside the tracked source. New forks retain `forkedFrom`; older forks can be recognized from saved arc outcome links. States already displayed by the character arc are not repeated. Editing a closing writes at that closing, preserving intermediate beat states.
+
+# Beats while nested threads remain open
+
+“Beat here” adds a beat before the current thread closes and asks which threads it advances. The chain control on an existing piece edits these links. A beat can advance multiple threads, including an outer character arc while nested Inquiry and Event threads remain open.
+
+Position and meaning are independent: `parentId` retains the beat's structural position, while `miceLinks` identifies the threads it advances. Choosing links does not move the beat, close any thread, or reorder story chronology. The outline aligns the beat with the outermost linked ancestor and labels the threads that remain open. Its original position between surrounding openings and closings remains intact. Links to other threads are also supported without moving the piece.
+
 # Bulk planning edits
 
 “Select pieces” is available in Outline, Sequence, Chronology, and Choices. Checkbox selection is independent of the inspector and deduplicates a thread's opening and closing in moment views. Shift-click selects a visible range on desktop; Select all in view includes only rendered pieces. Collapsed descendants are not implicitly selected. A new story or entering Refine clears selection.
