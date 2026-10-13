@@ -13,6 +13,13 @@ test('Milieu context shares one compact group without repeating linked settings'
  await load(page);const milieu=card(page,'milieu'),row=milieu.locator(':scope > .node-opening > .node-foot > .cast-chips');
  await expect(milieu.locator('[data-action=edit-world][data-id=harbor]')).toHaveCount(1);await expect(row.getByRole('button',{name:'Open setting: The harbor',exact:true})).toBeVisible();await expect(milieu.locator(':scope > .milieu-world')).toHaveCount(0);
  expect(await row.evaluate(el=>el.scrollWidth<=el.clientWidth+1)).toBe(true);
+ if(page.viewportSize().width>=1400){
+  const opening=milieu.locator(':scope > .node-opening');
+  expect((await opening.boundingBox()).height).toBeLessThan(65);
+  const cast=await row.locator('.cast-chip').boundingBox(),setting=await row.locator('.milieu-world').boundingBox(),change=await opening.locator('.beat-add-change').boundingBox();
+  expect(Math.abs(cast.y-setting.y)).toBeLessThan(12);
+  expect(Math.abs(cast.y-change.y)).toBeLessThan(12);
+ }
  await row.getByRole('button',{name:'Open setting: The harbor',exact:true}).click();await expect(page.locator('#dialog [name=name]')).toHaveValue('The harbor');await page.keyboard.press('Escape');
  await row.getByRole('button',{name:'Unlink The harbor from Into the harbor',exact:true}).click();await expect(row.locator('.milieu-chip')).toHaveCount(0);expect((await snapshot(page)).world.some(w=>w.id==='harbor')).toBe(true);
  await row.getByRole('button',{name:'Link setting or culture',exact:true}).click();await page.locator('[data-action=milieu-choose][data-world=harbor]').click();await expect(row.locator('[data-action=edit-world][data-id=harbor]')).toHaveCount(1);await expect(row.locator('.cast-chip')).toContainText('Liu Jun');
