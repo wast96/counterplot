@@ -28,3 +28,28 @@ test('long state text stays inside the details panel',async({page})=>{
  await load(page,fixture(true));if(await page.locator('[data-action=show-details]').isVisible())await page.locator('[data-action=show-details]').click();
  const panel=page.locator('.inspector');if(await panel.isVisible())expect(await panel.evaluate(e=>e.scrollWidth<=e.clientWidth+1)).toBe(true);
 });
+test('Add change creates a new character state at the beat without altering starting states',async({page})=>{
+ await load(page,fixture());const before=await snapshot(page);
+ await page.locator('[data-node=beat] > .node-foot [data-action=record-piece-state]').click();
+ await page.locator('#dialog [name=source]').selectOption('new-character-state');
+ await page.getByRole('combobox',{name:'Character',exact:true}).selectOption('jun');
+ await page.getByRole('combobox',{name:'Kind of state',exact:true}).selectOption('custom');
+ await page.getByLabel('State label',{exact:true}).fill('Legal status');
+ await page.getByLabel('New state',{exact:true}).fill('Wanted criminal');
+ await expect(page.locator('#piece-state-fork')).toBeHidden();
+ await page.getByRole('button',{name:'Keep change',exact:true}).click();
+ const after=await snapshot(page),c=after.characters.find(c=>c.id==='jun'),change=c.changes.find(x=>x.block?.text==='Wanted criminal');
+ expect(change).toMatchObject({at:'beat:open',op:'add',block:{kind:'custom',label:'Legal status'}});expect(c.blocks).toEqual(before.characters.find(c=>c.id==='jun').blocks);
+ await expect(page.getByRole('textbox',{name:'Liu Jun · Legal status after this beat',exact:true})).toHaveValue('Wanted criminal');
+ await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await page.locator('.story-viewbar').waitFor();expect((await snapshot(page)).characters.find(c=>c.id==='jun').changes).toContainEqual(change);
+});
+test('linking an ending state inline removes its redundant recorded field immediately',async({page})=>{
+ const W=require('../src/integration.js'),data=fixture(),p=data.projects[0],n=p.nodes.find(n=>n.type==='C'),c=p.characters[0];
+ c.changes=[];W.setArcCharacter(p,n,c.id);const row=W.characterArc(p,n).changes[0];W.setArcState(p,n,'from',{rowId:row.id,value:c.blocks[0].text,blockId:c.blocks[0].id});W.setArcState(p,n,'to',{rowId:row.id,value:''});
+ W.setPieceState(p,n,'block:'+c.id+':'+c.blocks[0].id,'close','Wanted criminal');
+ await load(page,data);const closing=page.locator(`[data-node="${n.id}"] > .closing`);
+ await expect(closing.locator('[data-piece-state]')).toHaveCount(1);
+ await closing.locator('[data-arc-inline]').first().fill('Wanted criminal');await page.keyboard.press('Tab');
+ await expect(closing.locator('[data-piece-state]')).toHaveCount(0);
+ await expect(closing.locator('[data-arc-inline]').first()).toHaveValue('Wanted criminal');
+});

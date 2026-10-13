@@ -912,7 +912,7 @@ textarea.node-title:focus-visible{outline:2px solid #74947a;outline-offset:3px;b
 .preset-story-fields{display:grid;gap:12px}.preset-story-field,.story-field-editor{border:1px solid var(--line);border-radius:8px;padding:12px;min-width:0;background:var(--bg)}
 .preset-story-field .check-chip{width:fit-content;margin-bottom:8px}.preset-story-field .field,.story-field-editor .field{margin-bottom:10px}.preset-story-field .field:last-child{margin-bottom:0}.preset-story-field p{overflow-wrap:anywhere;font-size:13px;line-height:1.5}
 .custom-fields-heading{font:23px var(--serif);margin:24px 0 8px}#custom-story-fields{display:grid;gap:12px;margin-bottom:12px}.story-field-editor .text-btn{font-size:12px}
-.account-sync-status.needs-attention{color:#8b4329}.sync-review{display:inline-flex;align-items:center;gap:6px;color:inherit;font:inherit;text-decoration:underline;text-underline-offset:3px;min-height:30px}.sync-review>span:first-child{display:grid;place-items:center;width:15px;height:15px;border:1px solid currentColor;border-radius:50%;font-weight:700;text-decoration:none}
+.account-sync-status.needs-attention{color:#8b4329}.sync-review{display:inline-flex;align-items:center;gap:6px;color:inherit;font:inherit;text-decoration:underline;text-underline-offset:3px;min-height:30px}.sync-warning-icon{width:18px;height:18px;flex:none}.thread-recorded-states[hidden]{display:none}
 
 .inspector{min-width:0;overflow-wrap:anywhere}.inspector .after-change,.inspector .text-btn{overflow-wrap:anywhere;max-width:100%}.inspector-tools>.btn{white-space:normal;min-width:0}.inspector-tools>.btn svg{flex:none}
 
