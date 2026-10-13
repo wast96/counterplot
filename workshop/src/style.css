@@ -251,3 +251,84 @@ body:not(:has(.tray)) #toast{bottom:24px}
 
 /* Save status is informational; account actions live behind the profile circle. */
 .account-sync-status{display:flex;align-items:center;gap:7px;color:var(--green);font-size:11px;white-space:nowrap}.account-sync-status svg{width:15px;height:15px}.account-menu{position:relative;flex:none;margin-left:5px}.account-menu>summary{display:block;list-style:none;cursor:pointer;border-radius:50%;padding:3px}.account-menu>summary::-webkit-details-marker{display:none}.account-menu>summary:hover,.account-menu[open]>summary{box-shadow:0 0 0 2px var(--line)}.account-avatar{width:34px;height:34px;display:grid;place-items:center;flex:none;border-radius:50%;background:var(--profile-color,var(--green));color:#fff;font:600 12px/1 var(--sans);letter-spacing:.5px}.account-avatar svg{width:18px;height:18px}.account-popover{position:absolute;right:0;top:calc(100% + 10px);z-index:50;width:290px;max-width:calc(100vw - 24px);padding:8px;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 35px #23362426}.account-identity{display:flex;align-items:center;gap:12px;padding:13px 10px 17px;margin-bottom:6px;border-bottom:1px solid var(--line)}.account-identity>div{min-width:0}.account-identity strong{display:block;font-size:13px;font-weight:600}.account-identity span:not(.account-avatar){display:block;font-size:11px;color:var(--muted);overflow-wrap:anywhere;line-height:1.5;margin-top:4px}.account-popover nav{display:grid;gap:2px}.account-popover .btn{width:100%;justify-content:flex-start;text-align:left;box-shadow:none;border:0;background:none;padding:10px;font-size:12px;font-weight:400;border-radius:6px}.account-popover .btn:hover{background:var(--green-soft)}.account-menu-divider{height:1px;background:var(--line);margin:6px 0}@media(max-width:680px){.account-menu{margin-left:2px}.account-avatar{width:30px;height:30px}.account-sync-status{font-size:10px}.account-popover{position:fixed;right:12px;top:auto;margin-top:10px}}
+
+/* Character studio: keep the person in view and their pieces within reach. */
+.character-page-head{padding-top:22px;padding-bottom:16px;align-items:center}
+.character-page-head .eyebrow{margin-bottom:5px;font-size:9px}
+.character-page-head h1{font-size:30px}
+.character-page-head p{display:none}
+.character-studio .character-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;padding:2px 0 10px;margin-bottom:16px}
+.character-studio .character-tab{flex:none;max-width:260px;text-align:left;overflow-wrap:anywhere}
+.character-workspace{display:grid;grid-template-columns:220px minmax(0,1fr);gap:32px;align-items:start}
+.character-profile{min-width:0;border-right:1px solid var(--line);padding-right:24px}
+.character-studio .character-hero{display:block;margin:0}
+.character-studio .character-hero>.row{display:flex;flex-direction:column;align-items:stretch;gap:18px}
+.character-studio .portrait-button{align-self:flex-start;width:100%}
+.character-studio .character-hero .avatar.large{display:flex;width:100%;height:auto;aspect-ratio:1 / 1;font-size:52px;border-radius:12px}
+.character-studio .character-name-row{align-items:flex-start;gap:6px}
+.character-studio .character-hero h1{font-size:32px;line-height:1.08;letter-spacing:-.7px}
+.character-studio .character-summary{width:100%}
+.character-studio .identity{font-size:12px;line-height:1.6}
+.character-studio .character-presence{gap:6px;margin-top:14px}
+.character-studio .presence-badge{font-size:11px}
+.character-studio .character-presence small{font-size:11px;line-height:1.5}
+.character-profile .reference-summary{margin:18px 0 0;padding-top:14px;border-top:1px solid var(--line)}
+.character-profile .reference-peeks{gap:6px}
+.character-profile .reference-peeks img{width:54px;height:54px}
+.character-profile .reference-peeks button{max-width:100%}
+.character-pieces{min-width:0}
+.character-studio .character-tools{margin:0 0 16px;gap:12px;flex-wrap:wrap}
+.character-studio .character-tools .segmented{background:transparent;padding:0;gap:16px;border-radius:0}
+.character-studio .character-tools .segmented button{font-size:14px;padding:9px 0;border-radius:0;border-bottom:2px solid transparent}
+.character-studio .character-tools .segmented button.active{box-shadow:none;background:transparent;border-color:var(--green);color:var(--green);font-weight:650}
+.character-studio .character-tools .segmented small{font:10px var(--mono);padding:3px 6px;background:var(--green-soft);border-radius:4px}
+.character-moments{padding:12px 16px;margin-bottom:20px;border:1px solid var(--line);border-radius:9px;background:#eeeee580}
+.character-moments>.row{gap:12px;flex-wrap:wrap}
+.character-moments .eyebrow{font-size:9px;letter-spacing:1.2px}
+.character-moments .time-strip{margin:10px 0 0;padding-bottom:8px}
+.character-moments .time-stop{padding-top:12px}
+.character-moments .state-caption{margin:0;padding:4px 0 0;border:0;background:none;font-size:11px;line-height:1.5}
+.character-moments .state-caption svg{display:none}
+.character-moments.is-beginning{display:flex;align-items:center;flex-wrap:wrap;gap:8px 18px}
+.character-moments.is-beginning>.row>span:last-child{display:none}
+.character-moments.is-beginning .time-strip{padding:0;margin:0;overflow:visible}
+.character-moments.is-beginning .time-stop{min-width:0;max-width:none;border:0;padding:4px 0 4px 16px;font-size:12px}
+.character-moments.is-beginning .time-stop:before{top:9px;left:0}
+.character-moments.is-beginning .time-stop small{display:none}
+.character-moments.is-beginning .state-caption{display:none}
+.character-pieces .blocks-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:16px;align-items:start}
+.character-pieces .block,.character-pieces .add-block-tile{min-height:190px}
+.character-pieces .block-body{font-size:23px;line-height:1.4}
+.character-pieces .character-note{margin-top:22px}
+@media(min-width:1500px){.character-workspace{grid-template-columns:260px minmax(0,1fr);gap:36px}.character-profile{padding-right:28px}}
+@media(max-width:1100px){
+ .character-workspace{grid-template-columns:minmax(0,1fr);gap:20px}
+ .character-profile{border-right:0;padding-right:0}
+ .character-studio .character-hero>.row{flex-direction:row;align-items:center;gap:18px}
+ .character-studio .portrait-button{width:112px;flex:none}
+ .character-studio .character-summary{width:auto}
+ .character-profile .reference-summary{border:0;padding:0;margin:10px 0 0}
+ .character-profile .reference-peeks{flex-wrap:nowrap;overflow-x:auto}
+ .character-profile .reference-peeks button{flex:none}
+}
+@media(max-width:680px){
+ .character-page-head{padding-top:16px;padding-bottom:10px;gap:12px;flex-wrap:wrap}
+ .character-page-head h1{font-size:25px}
+ .character-page-head .eyebrow{display:none}
+ .character-page-head .page-actions{padding:0;gap:6px;flex-direction:row}
+ .character-studio .character-tabs{margin-bottom:12px;padding-bottom:8px}
+ .character-workspace{gap:16px}
+ .character-studio .portrait-button{width:80px}
+ .character-studio .character-hero>.row{gap:14px;align-items:flex-start}
+ .character-studio .character-hero h1{font-size:27px}
+ .character-studio .character-hero .identity{font-size:11px;margin-top:5px}
+ .character-studio .character-presence{margin-top:8px}
+ .character-studio .character-tools{margin-bottom:12px;gap:10px}
+ .character-studio .character-tools .segmented{gap:14px}
+ .character-studio .character-tools .segmented button{font-size:13px}
+ .character-studio .character-tools>.btn{font-size:11px;padding:8px 10px;min-height:36px}
+ .character-moments{padding:10px 12px;margin-bottom:14px}
+ .character-pieces .blocks-grid{grid-template-columns:minmax(0,1fr);gap:12px}
+ .character-pieces .block-body{font-size:22px}
+ .character-pieces .block,.character-pieces .add-block-tile{min-height:160px}
+}
