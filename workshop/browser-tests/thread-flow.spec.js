@@ -9,10 +9,10 @@ function fixture(){
 async function load(page,data=fixture()){await page.goto('/');await expect(page.locator('.story-viewbar')).toBeVisible();await page.locator('#import-file').setInputFiles({name:'flow.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(data))});await page.locator('[data-action=accept-import]').click();await expect(page.locator('#dialog')).not.toBeVisible();}
 const snapshot=page=>page.evaluate(()=>{const d=CounterplotTutorial.snapshot();return d.projects.find(p=>p.id===d.active);});
 const card=(page,id)=>page.locator(`[data-node=${id}]`);
-test('Milieu context shares one compact row without repeating linked settings',async({page})=>{
- await load(page);const milieu=card(page,'milieu'),row=milieu.locator(':scope > .node-foot > .cast-chips');
+test('Milieu context shares one compact group without repeating linked settings',async({page})=>{
+ await load(page);const milieu=card(page,'milieu'),row=milieu.locator(':scope > .node-opening > .node-foot > .cast-chips');
  await expect(milieu.locator('[data-action=edit-world][data-id=harbor]')).toHaveCount(1);await expect(row.getByRole('button',{name:'Open setting: The harbor',exact:true})).toBeVisible();await expect(milieu.locator(':scope > .milieu-world')).toHaveCount(0);
- if(test.info().project.name==='desktop')await expect.poll(()=>row.evaluate(el=>{const cast=el.querySelector('.cast-chip').getBoundingClientRect(),setting=el.querySelector('.milieu-chip').getBoundingClientRect();return Math.abs(cast.top+cast.height/2-setting.top-setting.height/2);})).toBeLessThan(2);
+ expect(await row.evaluate(el=>el.scrollWidth<=el.clientWidth+1)).toBe(true);
  await row.getByRole('button',{name:'Open setting: The harbor',exact:true}).click();await expect(page.locator('#dialog [name=name]')).toHaveValue('The harbor');await page.keyboard.press('Escape');
  await row.getByRole('button',{name:'Unlink The harbor from Into the harbor',exact:true}).click();await expect(row.locator('.milieu-chip')).toHaveCount(0);expect((await snapshot(page)).world.some(w=>w.id==='harbor')).toBe(true);
  await row.getByRole('button',{name:'Link setting or culture',exact:true}).click();await page.locator('[data-action=milieu-choose][data-world=harbor]').click();await expect(row.locator('[data-action=edit-world][data-id=harbor]')).toHaveCount(1);await expect(row.locator('.cast-chip')).toContainText('Liu Jun');
@@ -50,7 +50,7 @@ test('the MICE bar adds an outer-arc beat at a compact thread closing without mo
  await load(page);const before=await snapshot(page);
  await expect(page.locator('.outline .inside-drop')).toHaveCount(0);
  expect(await card(page,'event').evaluate(el=>el.querySelector(':scope > .closing').getBoundingClientRect().top-el.querySelector('[data-node=beat]').getBoundingClientRect().bottom)).toBeLessThanOrEqual(14);
- await page.mouse.move(0,0);await expect(card(page,'event').locator(':scope > .node-foot .add-cast')).toHaveCSS('opacity','1');await expect(card(page,'event').locator(':scope > .node-foot .beat-add-change')).toHaveCSS('opacity','1');
+ await page.mouse.move(0,0);await expect(card(page,'event').locator(':scope > .node-opening > .node-foot .add-cast')).toHaveCSS('opacity','1');await expect(card(page,'event').locator(':scope > .node-opening > .node-foot .beat-add-change')).toHaveCSS('opacity','1');
  await page.evaluate(()=>{const source=document.querySelector('[data-drag=palette][data-drag-id=B]'),target=document.querySelector('[data-node=event] > .closing'),transfer=new DataTransfer();source.dispatchEvent(new DragEvent('dragstart',{bubbles:true,dataTransfer:transfer}));target.dispatchEvent(new DragEvent('dragover',{bubbles:true,cancelable:true,dataTransfer:transfer}));target.dispatchEvent(new DragEvent('drop',{bubbles:true,cancelable:true,dataTransfer:transfer}));});
  const created=(await snapshot(page)).nodes.find(n=>!before.nodes.some(x=>x.id===n.id));await page.waitForTimeout(200);await card(page,created.id).locator(':scope > .node-head .piece-menu>summary').click();await card(page,created.id).locator(':scope > .node-head [data-action=thread-links]').click();
  await page.locator('#dialog [name=threads][value=event]').uncheck();await page.locator('#dialog [name=threads][value=character]').check();await page.getByRole('button',{name:'Keep thread links'}).click();
@@ -71,8 +71,8 @@ test('a beat fork stays in history without repeated closing fields and can chang
 test('Milieu, Inquiry and Event fields retain independent titles, notes, blank fields and parallel outcomes',async({page})=>{
  await load(page);
  for(const [id,type,focus,from,to]of [['milieu','Milieu','World','Entering','Leaving'],['mystery','Inquiry','Question','Known','Answer'],['event','Event','Disruption','Before','Resolution']]){
-  const n=card(page,id);await n.locator(':scope > .node-head .node-title').click();await n.locator(':scope > .thread-plan-fields').getByRole('textbox',{name:type+' '+focus,exact:true}).fill(type+' focus');await page.keyboard.press('Enter');
-  await n.locator(':scope > .thread-plan-fields').getByRole('textbox',{name:type+' '+from,exact:true}).fill('');
+  const n=card(page,id);await n.locator(':scope > .node-head .node-title').click();await n.locator(':scope > .node-opening > .node-content > .thread-plan-fields').getByRole('textbox',{name:type+' '+focus,exact:true}).fill(type+' focus');await page.keyboard.press('Enter');
+  await n.locator(':scope > .node-opening > .node-content > .thread-plan-fields').getByRole('textbox',{name:type+' '+from,exact:true}).fill('');
   await n.locator(':scope > .closing').getByRole('textbox',{name:type+' '+to,exact:true}).fill(type+' ending');await page.keyboard.press('Enter');
   await n.locator(':scope > .closing').getByRole('button',{name:'Add another '+to.toLowerCase(),exact:true}).click();await n.locator(':scope > .closing').getByRole('textbox',{name:type+' '+to+' · additional outcome',exact:true}).fill('A second outcome');await page.keyboard.press('Enter');
  }
@@ -136,9 +136,9 @@ test('outline and inspector Add change use the same editor and preserve the chos
  await load(page);const beat=card(page,'beat');await beat.getByRole('button',{name:'Add change',exact:true}).click();await expect(page.locator('#dialog [data-form=record-piece-state]')).toBeVisible();const sources=await page.locator('#dialog [name=source] option').allTextContents();await page.keyboard.press('Escape');
  await beat.locator('[data-action=select-node]').click();await page.locator('.inspector .text-btn[data-action=record-piece-state]').click();await expect(page.locator('#dialog [name=source] option')).toHaveText(sources);
  await page.getByRole('button',{name:'Character block options',exact:true}).click();await expect(page.locator('#dialog')).toContainText('Liu Jun');await page.keyboard.press('Escape');
- if(test.info().project.name==='mobile')await page.locator('[data-action=collapse-inspector]').click();
+ if(test.info().project.name==='mobile')await page.locator('.inspector [data-action=collapse-inspector]').click();
  await card(page,'event').locator(':scope > .closing [data-action=record-piece-state]').click();await page.locator('#dialog [name=source]').selectOption('block:jun:status');await page.getByLabel('New state',{exact:true}).fill('Safe again');await page.getByRole('button',{name:'Keep change',exact:true}).click();
- const p=await snapshot(page);expect(p.characters[0].changes.find(x=>x.block?.text==='Safe again').at).toBe('event:close');await expect(card(page,'event').locator(':scope > .thread-plan-fields label > span')).toHaveText(['Before','Disruption']);
+ const p=await snapshot(page);expect(p.characters[0].changes.find(x=>x.block?.text==='Safe again').at).toBe('event:close');await expect(card(page,'event').locator(':scope > .node-opening > .node-content > .thread-plan-fields label > span')).toHaveText(['Before','Disruption']);
 });
 
 test('selected nested beats keep their position when hovered',async({page})=>{
