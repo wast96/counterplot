@@ -30,7 +30,7 @@ test('main views remain accessible and fit the viewport',async({page})=>{
  }
 });
 test('world titles open their editor and mobile form fields stay readable',async({page})=>{
- await load(page);await page.locator('[data-nav=world]').click();const title=await page.locator('.world-card h2').first().innerText();await page.locator('.world-card h2 button').first().click();await expect(page.locator('#dialog [name=name]')).toHaveValue(title);
+ await page.emulateMedia({reducedMotion:'reduce'});await load(page);await page.locator('[data-nav=world]').click();const title=await page.locator('.world-card h2').first().innerText();await page.locator('.world-card h2 button').first().click();await expect(page.locator('#dialog [name=name]')).toHaveValue(title);
  if(page.viewportSize().width<=680)expect(await page.locator('#dialog [name=name]').evaluate(el=>parseFloat(getComputedStyle(el).fontSize))).toBeGreaterThanOrEqual(16);
  const scan=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(scan.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([]);
  await page.keyboard.press('Escape');await expect(page.locator('.world-card h2 button').first()).toBeFocused();

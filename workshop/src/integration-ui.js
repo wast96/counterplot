@@ -515,7 +515,7 @@ function arcTypeOptions(c){
 }
 function arcTypePicker(row,c){
  const label=row.label||(row.kind==='custom'?'':kind(row.kind).label);modalData.typeOptions=arcTypeOptions(c);modalData.typeLabel=label;modalData.typeKind=row.kind;
- return `<div class="field arc-type-picker"><label for="arc-type-input">Type of change</label><input id="arc-type-input" name="arcLabel" value="${esc(label)}" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="arc-type-list" aria-describedby="arc-type-help" autocomplete="off" placeholder="Search types or write your own label…" maxlength="1000"><input type="hidden" name="arcKind" value="${esc(row.kind)}"><div id="arc-type-list" role="listbox" aria-label="Types of change" hidden></div><small id="arc-type-help">Choose a type, or type a custom label.</small></div>`;
+ return `<div class="field arc-type-picker"><label for="arc-type-input">Type of change</label><input id="arc-type-input" name="arcLabel" value="${esc(label)}" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="arc-type-list" aria-describedby="arc-type-help" autocomplete="off" placeholder="Search types or write your own label…" maxlength="1000"><input type="hidden" name="arcKind" value="${esc(row.kind)}"><div id="arc-type-list" role="listbox" tabindex="-1" aria-label="Types of change" hidden></div><small id="arc-type-help">Choose a type, or type a custom label.</small></div>`;
 }
 function closeArcTypes(){const input=$('#arc-type-input'),list=$('#arc-type-list');if(!input||!list)return;list.hidden=true;input.setAttribute('aria-expanded','false');input.removeAttribute('aria-activedescendant');}
 function showArcTypes(all=false){
@@ -536,6 +536,7 @@ document.addEventListener('pointerdown',e=>{const option=e.target.closest('[data
 document.addEventListener('click',e=>{const option=e.target.closest('[data-arc-type-option]');if(option)chooseArcType(Number(option.dataset.arcTypeOption));});
 document.addEventListener('keydown',e=>{
  if(e.target.id!=='arc-type-input'||e.isComposing)return;const list=$('#arc-type-list'),input=e.target;
+ if(e.key==='Tab'){closeArcTypes();return;}
  if(e.key==='Escape'&&!list.hidden){e.preventDefault();e.stopImmediatePropagation();closeArcTypes();return;}
  if(['ArrowDown','ArrowUp'].includes(e.key)){e.preventDefault();if(list.hidden)showArcTypes(true);const options=[...list.children],old=options.findIndex(x=>x.getAttribute('aria-selected')==='true'),index=old<0?(e.key==='ArrowDown'?0:options.length-1):(old+(e.key==='ArrowDown'?1:-1)+options.length)%options.length;
  options.forEach((x,i)=>x.setAttribute('aria-selected',String(i===index)));if(options[index]){input.setAttribute('aria-activedescendant',options[index].id);options[index].scrollIntoView({block:'nearest'});}return;}

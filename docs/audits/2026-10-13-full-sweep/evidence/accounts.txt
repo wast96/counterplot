@@ -1,0 +1,6 @@
+PASS registration and initial workspace sync
+PASS second-device login and outline
+PASS offline conflict preserves both stories across reload
+PASS cross-device tutorial progress and deletion
+PASS changed-account lock and owner isolation
+PASS single-use recovery, session revocation, and retained writing; no browser errors

@@ -1,0 +1,1616 @@
+[
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "view": "Outline",
+    "width": 320,
+    "documentWidth": 320,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 127,
+    "errors": [],
+    "axe": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "view": "Chronology",
+    "width": 320,
+    "documentWidth": 320,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 53,
+    "errors": [],
+    "axe": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "view": "Sequence",
+    "width": 320,
+    "documentWidth": 320,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 52,
+    "errors": [],
+    "axe": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "view": "Refine",
+    "width": 320,
+    "documentWidth": 320,
+    "overflow": [
+      {
+        "tag": "BUTTON",
+        "cls": "btn ",
+        "text": "Outline"
+      }
+    ],
+    "clipped": [],
+    "renderMs": 117,
+    "errors": [],
+    "axe": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "view": "characters",
+    "width": 320,
+    "documentWidth": 320,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 97,
+    "errors": [],
+    "axe": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "view": "world",
+    "width": 320,
+    "documentWidth": 320,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 45,
+    "errors": [],
+    "axe": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "view": "connections",
+    "width": 320,
+    "documentWidth": 320,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 40,
+    "errors": [],
+    "axe": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "view": "archive",
+    "width": 320,
+    "documentWidth": 320,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 62,
+    "errors": [],
+    "axe": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 640,
+      "height": 450
+    },
+    "view": "Outline",
+    "width": 640,
+    "documentWidth": 640,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 78,
+    "errors": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 640,
+      "height": 450
+    },
+    "view": "Chronology",
+    "width": 640,
+    "documentWidth": 640,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 94,
+    "errors": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 640,
+      "height": 450
+    },
+    "view": "Sequence",
+    "width": 640,
+    "documentWidth": 640,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 73,
+    "errors": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 640,
+      "height": 450
+    },
+    "view": "Refine",
+    "width": 640,
+    "documentWidth": 640,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 62,
+    "errors": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 640,
+      "height": 450
+    },
+    "view": "characters",
+    "width": 640,
+    "documentWidth": 640,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 52,
+    "errors": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 640,
+      "height": 450
+    },
+    "view": "world",
+    "width": 640,
+    "documentWidth": 640,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 92,
+    "errors": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 640,
+      "height": 450
+    },
+    "view": "connections",
+    "width": 640,
+    "documentWidth": 640,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 75,
+    "errors": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 640,
+      "height": 450
+    },
+    "view": "archive",
+    "width": 640,
+    "documentWidth": 640,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 74,
+    "errors": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 768,
+      "height": 600
+    },
+    "view": "Outline",
+    "width": 768,
+    "documentWidth": 768,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 29,
+    "errors": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 768,
+      "height": 600
+    },
+    "view": "Chronology",
+    "width": 768,
+    "documentWidth": 768,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 51,
+    "errors": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 768,
+      "height": 600
+    },
+    "view": "Sequence",
+    "width": 768,
+    "documentWidth": 768,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 63,
+    "errors": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 768,
+      "height": 600
+    },
+    "view": "Refine",
+    "width": 768,
+    "documentWidth": 768,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 75,
+    "errors": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 768,
+      "height": 600
+    },
+    "view": "characters",
+    "width": 768,
+    "documentWidth": 768,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 75,
+    "errors": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 768,
+      "height": 600
+    },
+    "view": "world",
+    "width": 768,
+    "documentWidth": 768,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 113,
+    "errors": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 768,
+      "height": 600
+    },
+    "view": "connections",
+    "width": 768,
+    "documentWidth": 768,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 80,
+    "errors": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 768,
+      "height": 600
+    },
+    "view": "archive",
+    "width": 768,
+    "documentWidth": 768,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 60,
+    "errors": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "view": "Outline",
+    "width": 1440,
+    "documentWidth": 1440,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 133,
+    "errors": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "view": "Chronology",
+    "width": 1440,
+    "documentWidth": 1440,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 58,
+    "errors": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "view": "Sequence",
+    "width": 1440,
+    "documentWidth": 1440,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 78,
+    "errors": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "view": "Refine",
+    "width": 1440,
+    "documentWidth": 1440,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 62,
+    "errors": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "view": "characters",
+    "width": 1440,
+    "documentWidth": 1440,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 73,
+    "errors": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "view": "world",
+    "width": 1440,
+    "documentWidth": 1440,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 63,
+    "errors": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "view": "connections",
+    "width": 1440,
+    "documentWidth": 1440,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 97,
+    "errors": []
+  },
+  {
+    "variant": "empty",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "view": "archive",
+    "width": 1440,
+    "documentWidth": 1440,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 69,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "view": "Outline",
+    "width": 320,
+    "documentWidth": 320,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 430,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "view": "Chronology",
+    "width": 320,
+    "documentWidth": 320,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 117,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "view": "Sequence",
+    "width": 320,
+    "documentWidth": 320,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 87,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "view": "Refine",
+    "width": 320,
+    "documentWidth": 320,
+    "overflow": [
+      {
+        "tag": "BUTTON",
+        "cls": "btn ",
+        "text": "Outline"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "MLiu Jun in Shanghai Liu Jun in ShanghaiLiu Jun in ShanghaiLiu Jun in ShanghaiLiu Jun in S"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "IWhat happened to her father? What happened to her father?What happened to her father?What"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "EThe pickpocket on the train The pickpocket on the trainThe pickpocket on the trainThe pic"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·The police turn on the witness The police turn on the witnessThe police turn on the witne"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "EA dense outline moment 0: tracking clues across the cityThread opens"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "↳A dense outline moment 0: tracking clues across the cityThread closes"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·A dense outline moment 1: tracking clues across the cityBeat"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·A dense outline moment 2: tracking clues across the cityBeat"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·A dense outline moment 3: tracking clues across the cityBeat"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·A dense outline moment 4: tracking clues across the cityBeat"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "EA dense outline moment 5: tracking clues across the cityThread opens"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "↳A dense outline moment 5: tracking clues across the cityThread closes"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·A dense outline moment 6: tracking clues across the cityBeat"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·A dense outline moment 7: tracking clues across the cityBeat"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·A dense outline moment 8: tracking clues across the cityBeat"
+      }
+    ],
+    "clipped": [],
+    "renderMs": 83,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "view": "characters",
+    "width": 320,
+    "documentWidth": 320,
+    "overflow": [
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P0Person 0 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 1 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P2Person 2 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P3Person 3 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P4Person 4 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P5Person 5 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P6Person 6 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P7Person 7 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P8Person 8 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P9Person 9 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 10 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 11 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 12 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 13 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 14 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 15 with a long family name"
+      }
+    ],
+    "clipped": [
+      {
+        "cls": "portrait-button",
+        "text": "LJ＋",
+        "overflow": 4
+      }
+    ],
+    "renderMs": 61,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "view": "world",
+    "width": 320,
+    "documentWidth": 320,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 41,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "view": "connections",
+    "width": 320,
+    "documentWidth": 320,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 49,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 320,
+      "height": 568
+    },
+    "view": "archive",
+    "width": 320,
+    "documentWidth": 320,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 46,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 640,
+      "height": 450
+    },
+    "view": "Outline",
+    "width": 640,
+    "documentWidth": 640,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 408,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 640,
+      "height": 450
+    },
+    "view": "Chronology",
+    "width": 640,
+    "documentWidth": 640,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 115,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 640,
+      "height": 450
+    },
+    "view": "Sequence",
+    "width": 640,
+    "documentWidth": 640,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 89,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 640,
+      "height": 450
+    },
+    "view": "Refine",
+    "width": 640,
+    "documentWidth": 640,
+    "overflow": [
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "EThe pickpocket on the train The pickpocket on the trainThe pickpocket on the trainThe pic"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·The police turn on the witness The police turn on the witnessThe police turn on the witne"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "EA dense outline moment 0: tracking clues across the cityThread opens"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "↳A dense outline moment 0: tracking clues across the cityThread closes"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·A dense outline moment 1: tracking clues across the cityBeat"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·A dense outline moment 2: tracking clues across the cityBeat"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·A dense outline moment 3: tracking clues across the cityBeat"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·A dense outline moment 4: tracking clues across the cityBeat"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "EA dense outline moment 5: tracking clues across the cityThread opens"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "↳A dense outline moment 5: tracking clues across the cityThread closes"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·A dense outline moment 6: tracking clues across the cityBeat"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·A dense outline moment 7: tracking clues across the cityBeat"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·A dense outline moment 8: tracking clues across the cityBeat"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·A dense outline moment 9: tracking clues across the cityBeat"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "EA dense outline moment 10: tracking clues across the cityThread opens"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "↳A dense outline moment 10: tracking clues across the cityThread closes"
+      }
+    ],
+    "clipped": [],
+    "renderMs": 88,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 640,
+      "height": 450
+    },
+    "view": "characters",
+    "width": 640,
+    "documentWidth": 640,
+    "overflow": [
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 1 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P2Person 2 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P3Person 3 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P4Person 4 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P5Person 5 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P6Person 6 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P7Person 7 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P8Person 8 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P9Person 9 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 10 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 11 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 12 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 13 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 14 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 15 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 16 with a long family name"
+      }
+    ],
+    "clipped": [
+      {
+        "cls": "portrait-button",
+        "text": "LJ＋",
+        "overflow": 4
+      }
+    ],
+    "renderMs": 71,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 640,
+      "height": 450
+    },
+    "view": "world",
+    "width": 640,
+    "documentWidth": 640,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 45,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 640,
+      "height": 450
+    },
+    "view": "connections",
+    "width": 640,
+    "documentWidth": 640,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 53,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 640,
+      "height": 450
+    },
+    "view": "archive",
+    "width": 640,
+    "documentWidth": 640,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 58,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 768,
+      "height": 600
+    },
+    "view": "Outline",
+    "width": 768,
+    "documentWidth": 768,
+    "overflow": [
+      {
+        "tag": "BUTTON",
+        "cls": "icon",
+        "text": "Collapse details"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "icon",
+        "text": "Expand details to full width"
+      },
+      {
+        "tag": "H2",
+        "cls": "",
+        "text": "Liu Jun finds her allegiance Liu Jun finds her allegianceLiu Jun finds her allegianceLiu J"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "thread-type color-blue",
+        "text": "I Inquiry"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "thread-type color-orange active",
+        "text": "C Character"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "thread-type color-purple",
+        "text": "E Event"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "btn",
+        "text": "Choose plot views"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "text-btn",
+        "text": "+ Add"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "person-name grow",
+        "text": "Liu Jun"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "icon",
+        "text": "Remove Liu Jun from this piece"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "text-btn",
+        "text": "Add change"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "after-change",
+        "text": "Liu Jun · Belief · openingAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "after-change",
+        "text": "Liu Jun · Belief · closingPower protects its own"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "btn",
+        "text": "World, connections & more"
+      },
+      {
+        "tag": "TEXTAREA",
+        "cls": "",
+        "text": ""
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "text-btn",
+        "text": "+ Link"
+      }
+    ],
+    "clipped": [],
+    "renderMs": 401,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 768,
+      "height": 600
+    },
+    "view": "Chronology",
+    "width": 768,
+    "documentWidth": 768,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 119,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 768,
+      "height": 600
+    },
+    "view": "Sequence",
+    "width": 768,
+    "documentWidth": 768,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 91,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 768,
+      "height": 600
+    },
+    "view": "Refine",
+    "width": 768,
+    "documentWidth": 768,
+    "overflow": [
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "EThe pickpocket on the train The pickpocket on the trainThe pickpocket on the trainThe pic"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·The police turn on the witness The police turn on the witnessThe police turn on the witne"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "EA dense outline moment 0: tracking clues across the cityThread opens"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "↳A dense outline moment 0: tracking clues across the cityThread closes"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·A dense outline moment 1: tracking clues across the cityBeat"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·A dense outline moment 2: tracking clues across the cityBeat"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·A dense outline moment 3: tracking clues across the cityBeat"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·A dense outline moment 4: tracking clues across the cityBeat"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "EA dense outline moment 5: tracking clues across the cityThread opens"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "↳A dense outline moment 5: tracking clues across the cityThread closes"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·A dense outline moment 6: tracking clues across the cityBeat"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·A dense outline moment 7: tracking clues across the cityBeat"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·A dense outline moment 8: tracking clues across the cityBeat"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "·A dense outline moment 9: tracking clues across the cityBeat"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "EA dense outline moment 10: tracking clues across the cityThread opens"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "",
+        "text": "↳A dense outline moment 10: tracking clues across the cityThread closes"
+      }
+    ],
+    "clipped": [],
+    "renderMs": 76,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 768,
+      "height": 600
+    },
+    "view": "characters",
+    "width": 768,
+    "documentWidth": 768,
+    "overflow": [
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 1 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P2Person 2 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P3Person 3 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P4Person 4 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P5Person 5 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P6Person 6 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P7Person 7 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P8Person 8 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P9Person 9 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 10 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 11 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 12 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 13 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 14 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 15 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 16 with a long family name"
+      }
+    ],
+    "clipped": [
+      {
+        "cls": "portrait-button",
+        "text": "LJ＋",
+        "overflow": 4
+      }
+    ],
+    "renderMs": 76,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 768,
+      "height": 600
+    },
+    "view": "world",
+    "width": 768,
+    "documentWidth": 768,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 44,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 768,
+      "height": 600
+    },
+    "view": "connections",
+    "width": 768,
+    "documentWidth": 768,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 46,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 768,
+      "height": 600
+    },
+    "view": "archive",
+    "width": 768,
+    "documentWidth": 768,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 70,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "view": "Outline",
+    "width": 1440,
+    "documentWidth": 1440,
+    "overflow": [
+      {
+        "tag": "BUTTON",
+        "cls": "text-btn",
+        "text": "ShanghaiShanghaiShanghaiShanghaiShanghaiShanghaiShanghaiShanghaiShanghaiShanghaiShanghaiSh"
+      }
+    ],
+    "clipped": [
+      {
+        "cls": "after-change",
+        "text": "Liu Jun · Belief · openingAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "overflow": 1073
+      },
+      {
+        "cls": "btn",
+        "text": "Scene craft & links",
+        "overflow": 8
+      },
+      {
+        "cls": "btn",
+        "text": "Review continuity",
+        "overflow": 4
+      },
+      {
+        "cls": "btn",
+        "text": "Focus on this branch",
+        "overflow": 21
+      },
+      {
+        "cls": "btn",
+        "text": "Continue from here",
+        "overflow": 11
+      }
+    ],
+    "renderMs": 450,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "view": "Chronology",
+    "width": 1440,
+    "documentWidth": 1440,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 116,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "view": "Sequence",
+    "width": 1440,
+    "documentWidth": 1440,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 91,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "view": "Refine",
+    "width": 1440,
+    "documentWidth": 1440,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 103,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "view": "characters",
+    "width": 1440,
+    "documentWidth": 1440,
+    "overflow": [
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P4Person 4 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P5Person 5 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P6Person 6 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P7Person 7 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P8Person 8 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P9Person 9 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 10 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 11 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 12 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 13 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 14 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 15 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 16 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 17 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 18 with a long family name"
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "character-tab",
+        "text": "P1Person 19 with a long family name"
+      }
+    ],
+    "clipped": [
+      {
+        "cls": "portrait-button",
+        "text": "LJ＋",
+        "overflow": 4
+      }
+    ],
+    "renderMs": 92,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "view": "world",
+    "width": 1440,
+    "documentWidth": 1440,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 49,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "view": "connections",
+    "width": 1440,
+    "documentWidth": 1440,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 45,
+    "errors": []
+  },
+  {
+    "variant": "dense",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "view": "archive",
+    "width": 1440,
+    "documentWidth": 1440,
+    "overflow": [],
+    "clipped": [],
+    "renderMs": 71,
+    "errors": []
+  }
+]
