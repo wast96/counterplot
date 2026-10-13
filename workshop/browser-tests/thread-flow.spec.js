@@ -158,5 +158,6 @@ test('gained pieces have grouped kinds and keep the selected kind after saving',
  await expect(kinds.locator('optgroup[label="Presence"] option[value="alias"]')).toHaveText('Names & aliases');
  await kinds.selectOption('alias');await page.getByLabel('What is true afterward?',{exact:true}).fill('Known as the night courier');
  await page.getByRole('button',{name:'Keep this change',exact:true}).click();await expect(page.locator('#dialog')).not.toBeVisible();
+ await expect(page.locator('#save-status')).toContainText('Saved on this device');
  await page.reload();await expect(page.locator('.story-viewbar')).toBeVisible();const p=await snapshot(page);expect(p.characters[0].changes.find(x=>x.block?.text==='Known as the night courier').block.kind).toBe('alias');
 });
