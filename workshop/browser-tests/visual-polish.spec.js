@@ -36,7 +36,7 @@ test('the details editor distinguishes Development from the beat plan and mirror
 });
 
 test('Development wraps long text without clipping while typing or resizing',async({page})=>{
- await load(page,fixture());const field=page.locator('[data-node=beat] [data-field=development]');
+ await load(page,fixture());await page.locator('[data-node=beat] > .node-head .node-title').click();const field=page.locator('[data-node=beat] [data-field=development]');
  await field.fill('Help');const short=(await field.boundingBox()).height;
  const text='She questions the officers and realizes that the system may not be perfect. '.repeat(8);await field.fill(text);
  expect((await field.boundingBox()).height).toBeGreaterThan(short+20);

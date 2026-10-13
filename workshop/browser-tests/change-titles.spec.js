@@ -18,7 +18,7 @@ test('titles edit independently of recorded changes and survive undo and reload'
 });
 test('all thread types and beats use free titles with no change-naming action in Outline or Refine',async({page})=>{
  await load(page);await page.locator('[data-node=ui-node-0] > .node-head [data-action=select-node]').click();
- for(const type of ['M','I','C','E']){await page.locator(`.inspector [data-action=node-type][data-type=${type}]`).click();await expect(page.locator('[data-action=name-from-change]')).toHaveCount(0);await expect(page.locator('[data-node=ui-node-0] > .node-head [data-field=title]')).toBeVisible();}
+ for(const type of ['M','I','C','E']){await page.locator('.inspector-type>summary').click();await page.locator(`.inspector [data-action=node-type][data-type=${type}]`).click();await expect(page.locator('[data-action=name-from-change]')).toHaveCount(0);await expect(page.locator('[data-node=ui-node-0] > .node-head [data-field=title]')).toBeVisible();}
  if(await page.locator('#details-sheet[open]').count())await page.locator('#details-sheet [data-action=collapse-inspector]').click();
  for(const id of ['ui-node-0','ui-node-1']){await refine(page,id);await expect(page.locator('[data-action=name-from-change]')).toHaveCount(0);await page.getByLabel('Refine title').fill('');await page.locator('.refine-plan textarea').click();await expect(page.getByLabel('Refine title')).toHaveValue('');}
 });

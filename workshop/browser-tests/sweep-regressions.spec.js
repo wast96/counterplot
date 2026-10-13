@@ -47,7 +47,7 @@ test('linking an ending state inline removes its redundant recorded field immedi
  const W=require('../src/integration.js'),data=fixture(),p=data.projects[0],n=p.nodes.find(n=>n.type==='C'),c=p.characters[0];
  c.changes=[];W.setArcCharacter(p,n,c.id);const row=W.characterArc(p,n).changes[0];W.setArcState(p,n,'from',{rowId:row.id,value:c.blocks[0].text,blockId:c.blocks[0].id});W.setArcState(p,n,'to',{rowId:row.id,value:''});
  W.setPieceState(p,n,'block:'+c.id+':'+c.blocks[0].id,'close','Wanted criminal');
- await load(page,data);const closing=page.locator(`[data-node="${n.id}"] > .closing`);
+ await load(page,data);await page.locator(`[data-node="${n.id}"] > .node-head .node-title`).click();const closing=page.locator(`[data-node="${n.id}"] > .closing`);
  await expect(closing.locator('[data-piece-state]')).toHaveCount(1);
  await closing.locator('[data-arc-inline]').first().fill('Wanted criminal');await page.keyboard.press('Tab');
  await expect(closing.locator('[data-piece-state]')).toHaveCount(0);
@@ -56,7 +56,7 @@ test('linking an ending state inline removes its redundant recorded field immedi
 test('thread closings have independent titles and immediately writable notes',async({page})=>{
  await load(page,fixture());const before=await snapshot(page);
  for(const n of before.nodes.filter(n=>n.type!=='B')){
- const closing=page.locator(`[data-node="${n.id}"] > .closing`),title=closing.locator('[data-field=closingTitle]'),note=closing.locator('[data-field=closing]');
+ await page.locator(`[data-node="${n.id}"] > .node-head .node-title`).click();const closing=page.locator(`[data-node="${n.id}"] > .closing`),title=closing.locator('[data-field=closingTitle]'),note=closing.locator('[data-field=closing]');
  await expect(title).toBeVisible();await expect(note).toBeVisible();await expect(closing.getByRole('button',{name:'Add closing note',exact:true})).toHaveCount(0);
  await title.fill('Resolution of '+n.id);await note.fill('The ending of '+n.id);await page.keyboard.press('Tab');
  }
