@@ -37,6 +37,7 @@ const EXTRA_KINDS = {
   relationship: ['Relationship', 'Their world', 'Who matters to them?', 'What exists between them that no one else sees?', []],
   language: ['Languages', 'Their world', 'How do they make themselves understood?', 'Which words feel like home?', []]
 };
+const KIND_GROUPS = ['Inner life','Presence','History','Everyday life','Their world','Your own'];
 const GROUPS = {want:'Inner life',method:'Inner life',value:'Inner life',boundary:'Inner life',belief:'Inner life',contradiction:'Inner life',joy:'Everyday life',capability:'Presence',obligation:'Their world',allegiance:'Their world',secret:'Inner life',experience:'History',custom:'Your own'};
 const KINDS = Object.fromEntries(Object.entries(ORIGINAL_KINDS).map(([id,k])=>[id,{...k,group:GROUPS[id],examples:k.options.map(x=>x[1])}]));
 for (const [id,[label,group,question,detail,examples]] of Object.entries(EXTRA_KINDS)) KINDS[id]={label,group,question,description:detail,detail,examples,symbol:'◇'};

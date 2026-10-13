@@ -126,3 +126,28 @@ test('outline and inspector Add change use the same editor and preserve the chos
  await card(page,'event').locator(':scope > .closing [data-action=record-piece-state]').click();await page.locator('#dialog [name=source]').selectOption('block:jun:status');await page.getByLabel('New state',{exact:true}).fill('Safe again');await page.getByRole('button',{name:'Keep change',exact:true}).click();
  const p=await snapshot(page);expect(p.characters[0].changes.find(x=>x.block?.text==='Safe again').at).toBe('event:close');await expect(card(page,'event').locator(':scope > .thread-plan-fields label > span')).toHaveText(['Before','Disruption']);
 });
+
+test('selected nested beats keep their position when hovered',async({page})=>{
+ await load(page);
+ const beat=card(page,'beat');
+ await beat.getByRole('button',{name:'Edit details for A target on her back',exact:true}).click();
+ if(await page.locator('#details-sheet').isVisible())await page.keyboard.press('Escape');
+ await beat.locator(':scope > .node-head').scrollIntoViewIfNeeded();
+ await page.mouse.move(0,0);
+ const before=await beat.boundingBox();
+ await beat.locator(':scope > .node-head').hover();
+ const after=await beat.boundingBox();
+ expect(after.x).toBeCloseTo(before.x,1);expect(after.width).toBeCloseTo(before.width,1);
+});
+test('gained pieces have grouped kinds and keep the selected kind after saving',async({page})=>{
+ await load(page);await card(page,'beat').getByRole('button',{name:'Add change',exact:true}).click();
+ await page.getByRole('button',{name:'Character block options',exact:true}).click();
+ await page.locator('[data-action=gain-block]').click();
+ const kinds=page.getByRole('combobox',{name:'Kind of piece',exact:true});await expect(kinds).toBeVisible();
+ expect(await kinds.locator('optgroup').evaluateAll(xs=>xs.map(x=>x.label))).toEqual(['Inner life','Presence','History','Everyday life','Their world','Your own']);
+ const values=await kinds.locator('option').evaluateAll(xs=>xs.map(x=>x.value));expect(values).toHaveLength(50);expect(new Set(values).size).toBe(50);
+ await expect(kinds.locator('optgroup[label="Presence"] option[value="alias"]')).toHaveText('Names & aliases');
+ await kinds.selectOption('alias');await page.getByLabel('What is true afterward?',{exact:true}).fill('Known as the night courier');
+ await page.getByRole('button',{name:'Keep this change',exact:true}).click();await expect(page.locator('#dialog')).not.toBeVisible();
+ await page.reload();await expect(page.locator('.story-viewbar')).toBeVisible();const p=await snapshot(page);expect(p.characters[0].changes.find(x=>x.block?.text==='Known as the night courier').block.kind).toBe('alias');
+});

@@ -613,7 +613,7 @@ input[type=checkbox]{flex:none;width:18px;height:18px}
 @media(max-width:680px){.node>.character-arc-heading{margin:0 10px 8px 14px}.arc-subject select{min-height:40px;font-size:16px;max-width:260px}.arc-state-text,.beat-state-after{min-height:38px;font-size:16px}.arc-state-options,.arc-fork{min-height:38px;width:30px;min-width:30px;opacity:1}.arc-add-change,.beat-add-change{min-height:38px}.closing{padding:9px 10px}.closing-mark{margin-left:0}.beat-states{margin-left:32px;margin-right:8px}.arc-state-group{width:auto}}
 
 /* Beats mark a turn within a thread; the thread owns the surrounding frame. */
-.node.scene,.node.scene.selected,.node.scene.selected:hover{border:0;border-top:1px solid color-mix(in srgb,var(--accent),#dedfd5 62%);border-radius:0;background:transparent;box-shadow:none;margin:10px 0;padding:0}
+.node.scene,.node.scene.selected,.node.scene.selected:hover{border:0;border-top:1px solid color-mix(in srgb,var(--accent),#dedfd5 62%);border-radius:0;background:transparent;box-shadow:none;margin-block:10px;padding:0}
 .node.scene[style]{border-left:0}
 .node.scene>.node-head{padding:9px 4px;gap:8px;position:relative}
 .node.scene>.node-head>.piece-mark{width:8px;height:8px;min-width:8px;border:0;border-radius:2px;transform:rotate(45deg);background:var(--accent);margin:0 5px}.node.scene>.node-head>.piece-mark svg{display:none}
