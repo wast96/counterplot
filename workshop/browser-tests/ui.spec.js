@@ -47,6 +47,6 @@ test('all tab labels fit their hit targets at phone and tablet widths',async({pa
    const heading=document.querySelector('.first-story-tip strong')?.getBoundingClientRect();
    const copy=document.querySelector('.first-story-tip p')?.getBoundingClientRect();
    return {tabCount:tabs.length,clipped,tipFits:!!heading&&!!copy&&heading.bottom<=copy.top+1,overflow:document.documentElement.scrollWidth>innerWidth+1};
-  }),{message:`Tab and tip layout at ${width}px`}).toEqual({tabCount:5,clipped:[],tipFits:true,overflow:false});
+  }),{message:`Tab and tip layout at ${width}px`}).toEqual({tabCount:4,clipped:[],tipFits:true,overflow:false});
  }
 });
