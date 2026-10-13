@@ -101,7 +101,7 @@ test('custom block labels persist through existing changes, edits, forks and rel
  const p=await snapshot(page);expect(p.characters[0].blocks[0].text).toBe('Safe');expect(p.characters[0].changes.find(x=>x.block.text==='Wanted by the law').block.label).toBe('Status');
 });
 
-test('the character timeline omits archived and deleted thread anchors while keeping explicit moments and restorable history',async({page})=>{
+test('character and chronology timelines omit archived and deleted anchors while keeping explicit moments and restorable history',async({page})=>{
  const data=fixture(),p=data.projects[0];p.nodes.push({...W.node('I'),id:'previously-deleted'});W.normalize(p);const removed=W.archiveNode(p,'previously-deleted');W.purgeArchive(p,[removed.id]);
  p.timeline.push({id:'backstory',key:'backstory:moment',nodeId:'',edge:'open',title:'Historical moment'});
  await load(page,data);const original=await snapshot(page),stops=page.locator('.time-strip');
@@ -110,12 +110,21 @@ test('the character timeline omits archived and deleted thread anchors while kee
  await page.locator('[data-nav=outline]').first().click();await card(page,'character').locator(':scope > .node-head [data-action=archive-node]').click();
  await page.locator('[data-nav=characters]').first().click();await expect(stops.locator('[data-id="character:close"]')).toHaveCount(0);await expect(stops.locator('[data-id="beat:open"]')).toHaveCount(0);await expect(stops.getByRole('button',{name:'Before the story The beginning',exact:true})).toHaveAttribute('aria-pressed','true');await expect(page.locator('.character-presence')).toContainText('At the beginning');
  await expect(stops.locator('[data-id="milieu:open"]')).toBeVisible();await expect(stops.locator('[data-id="backstory:moment"]')).toContainText('Historical moment');
+ await page.locator('[data-nav=outline]').first().click();await page.getByRole('tab',{name:'Chronology',exact:true}).click();
+ await expect(page.locator('.timeline-moment')).toHaveCount(3);
+ await expect(page.locator('.chronology-track')).not.toContainText('Archived piece');
+ await expect(page.locator('[data-moment-key="previously-deleted:open"]')).toHaveCount(0);
+ await expect(page.locator('[data-moment-key="backstory:moment"]')).toContainText('Historical moment');
+ await page.getByRole('button',{name:'Group by date',exact:true}).click();await expect(page.locator('.timeline-moment')).toHaveCount(3);
+ await page.getByRole('button',{name:'Story order',exact:true}).click();await page.getByRole('tab',{name:'Outline',exact:true}).click();
  let archived=await snapshot(page);expect(archived.timeline).toEqual(original.timeline);expect(archived.archive[0].changes).toHaveLength(2);
  await page.locator('[data-nav=archive]').first().click();await page.locator('[data-action=restore]').first().click();await page.locator('[data-nav=characters]').first().click();await expect(stops.locator('[data-id="character:close"]')).toBeVisible();expect((await snapshot(page)).characters[0].changes).toEqual(original.characters[0].changes);
  await page.locator('[data-nav=outline]').first().click();await card(page,'character').locator(':scope > .node-head [data-action=archive-node]').click();await page.locator('[data-nav=archive]').first().click();await page.locator('[data-action=purge-item]').first().click();await page.locator('#dialog').getByRole('button',{name:'Delete permanently',exact:true}).click();
  await page.locator('[data-nav=characters]').first().click();await expect(stops.locator('[data-id="character:close"]')).toHaveCount(0);await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await page.locator('[data-nav=characters]').first().click();
  await expect(stops.locator('[data-id="character:open"]')).toHaveCount(0);await expect(stops.locator('[data-id="previously-deleted:open"]')).toHaveCount(0);await expect(stops.locator('[data-id="backstory:moment"]')).toContainText('Historical moment');
  expect((await snapshot(page)).timeline.map(e=>e.id)).toEqual(original.timeline.map(e=>e.id));
+ await page.locator('[data-nav=outline]').first().click();await page.getByRole('tab',{name:'Chronology',exact:true}).click();await expect(page.locator('.timeline-moment')).toHaveCount(3);
+
 });
 
 test('outline and inspector Add change use the same editor and preserve the chosen endpoint',async({page})=>{
@@ -125,4 +134,30 @@ test('outline and inspector Add change use the same editor and preserve the chos
  if(test.info().project.name==='mobile')await page.locator('[data-action=collapse-inspector]').click();
  await card(page,'event').locator(':scope > .closing [data-action=record-piece-state]').click();await page.locator('#dialog [name=source]').selectOption('block:jun:status');await page.getByLabel('New state',{exact:true}).fill('Safe again');await page.getByRole('button',{name:'Keep change',exact:true}).click();
  const p=await snapshot(page);expect(p.characters[0].changes.find(x=>x.block?.text==='Safe again').at).toBe('event:close');await expect(card(page,'event').locator(':scope > .thread-plan-fields label > span')).toHaveText(['Before','Disruption']);
+});
+
+test('selected nested beats keep their position when hovered',async({page})=>{
+ await load(page);
+ const beat=card(page,'beat');
+ await beat.getByRole('button',{name:'Edit details for A target on her back',exact:true}).click();
+ if(await page.locator('#details-sheet').isVisible()){await page.keyboard.press('Escape');await expect(page.locator('#details-sheet')).not.toBeVisible();}
+ await beat.locator(':scope > .node-head').hover();
+ await page.mouse.move(0,0);
+ const before=await beat.boundingBox();
+ await beat.locator(':scope > .node-head').hover();
+ const after=await beat.boundingBox();
+ expect(after.x).toBeCloseTo(before.x,1);expect(after.width).toBeCloseTo(before.width,1);
+});
+test('gained pieces have grouped kinds and keep the selected kind after saving',async({page})=>{
+ await load(page);await card(page,'beat').getByRole('button',{name:'Add change',exact:true}).click();
+ await page.getByRole('button',{name:'Character block options',exact:true}).click();
+ await page.locator('[data-action=gain-block]').click();
+ const kinds=page.getByRole('combobox',{name:'Kind of piece',exact:true});await expect(kinds).toBeVisible();
+ expect(await kinds.locator('optgroup').evaluateAll(xs=>xs.map(x=>x.label))).toEqual(['Inner life','Presence','History','Everyday life','Their world','Your own']);
+ const values=await kinds.locator('option').evaluateAll(xs=>xs.map(x=>x.value));expect(values).toHaveLength(50);expect(new Set(values).size).toBe(50);
+ await expect(kinds.locator('optgroup[label="Presence"] option[value="alias"]')).toHaveText('Names & aliases');
+ await kinds.selectOption('alias');await page.getByLabel('What is true afterward?',{exact:true}).fill('Known as the night courier');
+ await page.getByRole('button',{name:'Keep this change',exact:true}).click();await expect(page.locator('#dialog')).not.toBeVisible();
+ await expect(page.locator('#save-status')).toContainText('Saved on this device');
+ await page.reload();await expect(page.locator('.story-viewbar')).toBeVisible();const p=await snapshot(page);expect(p.characters[0].changes.find(x=>x.block?.text==='Known as the night courier').block.kind).toBe('alias');
 });
