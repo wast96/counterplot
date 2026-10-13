@@ -64,3 +64,12 @@ test('one starting block forks into independent ending blocks without overwritin
  const restored=W.validate(JSON.parse(JSON.stringify(data)));assert.equal(restored.projects[0].nodes[0].characterArc.changes[0].outcomes.length,1);
  const before=JSON.stringify(c.changes);W.removeArcOutcome(p,n,row.id,outcomeId);assert.equal(JSON.stringify(c.changes),before);assert.equal(n.characterArc.changes[0].outcomes.length,0);
 });
+
+test('free character thread titles stay independent of linked states, blank fields, and subject changes',()=>{
+ const {data,p,n,other,b}=fixture();W.setPieceTitle(p,n,'The making of an agent');W.setArcState(p,n,'to',{value:'Double agent',blockId:b.id});W.validate(data);
+ assert.equal(W.pieceTitle(p,n),'The making of an agent');assert.equal(W.editableTitle(p,n),'The making of an agent');assert.equal(W.characterArc(p,n).changes[0].to.text,'Double agent');
+ W.setArcCharacter(p,n,other.id);W.validate(data);assert.equal(n.title,'The making of an agent');
+ n.type='E';W.setPieceTitle(p,n,'A different path');n.type='C';W.validate(data);assert.equal(W.pieceTitle(p,n),'A different path');
+ W.setPieceTitle(p,n,'');W.validate(data);assert.equal(W.editableTitle(p,n),'');assert.equal(W.pieceTitle(p,n),'Untitled character thread');
+ const restored=W.validate(JSON.parse(JSON.stringify(data)));assert.equal(restored.projects[0].nodes[0].characterArc.title,'');
+});

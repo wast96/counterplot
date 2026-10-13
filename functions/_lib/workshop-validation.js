@@ -988,6 +988,7 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
         if(n.characterArc!==undefined){
           const a=n.characterArc;
           if(!a||typeof a!=='object'||Array.isArray(a)||typeof a.subjectId!=='string'||typeof a.legacyTitle!=='string')fail('Character thread titles must be records.');
+          if(a.title!==undefined&&(typeof a.title!=='string'||a.title.length>1000))fail('Thread titles must be text within 1,000 characters.');
           if(a.subjectId&&(!/^[A-Za-z0-9_-]{1,120}$/.test(a.subjectId)||!arcSubjects(p).some(c=>c.id===a.subjectId)))fail('Invalid character thread subject.');
           unique(array(a.changes,'Character thread changes',100).map(r=>r?.id),'character thread change');
           if(!a.changes.length)fail('Character threads need at least one state pair, which can be blank.');
@@ -1141,15 +1142,24 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
   function pieceTitle(p,n){
     if(!n)return '';
     if(n.type!=='C')return n.title||W.TYPES[n.type]?.name||'Untitled';
+    if(n.characterArc?.title!==undefined)return n.characterArc.title||'Untitled character thread';
     const arc=characterArc(p,n),c=arcSubject(p,arc);
+    if(arc.legacyTitle)return arc.legacyTitle;
     return (c?.name||'Choose character or group')+' · '+arc.changes.map(row=>(row.from.text||'Starting state')+' → '+[row.to,...(row.outcomes||[])].map(v=>v.text||'Ending state').join(' + ')).join(' · ');
+  }
+  function editableTitle(p,n){return n.type==='C'?(n.characterArc?.title??n.characterArc?.legacyTitle??n.title??''):n.title||'';}
+  function setPieceTitle(p,n,value){
+    if(typeof value!=='string'||value.length>1000)throw Error('Keep the title within 1,000 characters.');
+    if(n.type==='C')n.characterArc={...characterArc(p,n),title:value};
+    else if(n.characterArc)n.characterArc.title=value;
+    n.title=value;
   }
   function setArcCharacter(p,n,id){
     if(n.type!=='C')throw Error('Choose a Character thread.');
     const c=arcSubjects(p).find(c=>c.id===id);if(id&&!c)throw Error('Choose a character or group in this story.');
     const old=characterArc(p,n);
     if(old.subjectId===id){n.characterArc=old;return;}
-    n.characterArc={subjectId:id,changes:[emptyArcChange()],legacyTitle:old.legacyTitle||''};
+    n.characterArc={subjectId:id,changes:[emptyArcChange()],legacyTitle:old.legacyTitle||'',...(old.title!==undefined?{title:old.title}:{})};
     const cast=c?.type==='group'?n.worldIds:n.cast;if(id&&!cast.includes(id))cast.push(id);
     n.title=pieceTitle(p,n);
   }
@@ -1334,7 +1344,7 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
     W.restore(candidate,id);if(anchor!==undefined)W.move(candidate,rootId,anchor,where);
     Object.assign(p,candidate);return rootId;
   }
-  Object.assign(W,{applyBulk,addArcOutcome,removeArcOutcome,arcSubjects,arcSubject,addArcChange,removeArcChange,characterArc,pieceTitle,setArcCharacter,setArcState,arcStateOptions,pieceChanges,changeTitle,drawerEntries,archivedItems,stashNode,returnFromDrawer,normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,readingMoments,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
+  Object.assign(W,{editableTitle,setPieceTitle,applyBulk,addArcOutcome,removeArcOutcome,arcSubjects,arcSubject,addArcChange,removeArcChange,characterArc,pieceTitle,setArcCharacter,setArcState,arcStateOptions,pieceChanges,changeTitle,drawerEntries,archivedItems,stashNode,returnFromDrawer,normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,readingMoments,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
     factionAt:(p,e,key)=>L.CounterplotEnsemble.factionAt(timelineProject(p),e,momentId(p,key)),
     roleAt:(p,track,key)=>L.CounterplotEnsemble.roleAt(timelineProject(p),track,momentId(p,key)),
     prominenceAt:(p,c,key)=>L.CounterplotEnsemble.prominenceAt(timelineProject(p),c,momentId(p,key))});
