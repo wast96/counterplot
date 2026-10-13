@@ -50,7 +50,7 @@ test('forking a starting state creates two independently editable outcomes',asyn
  await page.screenshot({path:'/tmp/arc-fork-'+test.info().project.name+'.png'});
 });
 test('the compact connection builder labels both sides and preserves optional details',async({page})=>{
- await load(page);await page.locator('[data-nav=connections]').first().click();await page.locator('[data-action=new-connection]').first().click();
+ await page.emulateMedia({reducedMotion:'reduce'});await load(page);await page.locator('[data-nav=connections]').first().click();await page.locator('[data-action=new-connection]').first().click();
  const dialog=page.locator('#dialog');await expect(dialog.locator('.connection-builder')).toBeVisible();await expect(dialog.locator('[name=aWant]')).not.toBeVisible();await expect(dialog.locator('[type=submit]')).toBeVisible();
  await dialog.locator('[name=label]').fill('is hunted by');await dialog.locator('[name=b]').selectOption('ui-other');await expect(dialog.locator('#connection-preview')).toContainText('Liu Jun · is hunted by · Ocelot');
  await dialog.getByText('Wants & tensions',{exact:true}).click();await page.getByRole('textbox',{name:'What Liu Jun wants',exact:true}).fill('Stay hidden');await page.getByRole('textbox',{name:'What Ocelot wants',exact:true}).fill('Capture Liu Jun');await page.getByRole('button',{name:'Keep connection',exact:true}).click();

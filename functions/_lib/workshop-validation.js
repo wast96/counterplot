@@ -1189,6 +1189,24 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
     }else {assign({text:value,blockId:'',linked:false});if(!outcome&&!row.from.linked&&!row.to.linked)row.kind=kind;}
     n.characterArc=arc;n.title=pieceTitle(p,n);
   }
+  function applyBulk(p,ids,{cast=[],worldIds=[],plotIds=[],povId=null,status=null}={}){
+    const chosen=[...new Set(ids)].map(id=>p.nodes.find(n=>n.id===id));
+    if(!chosen.length||chosen.some(n=>!n))throw Error('Choose existing story pieces.');
+    if(cast.some(id=>!p.characters.some(c=>c.id===id))||povId&&!p.characters.some(c=>c.id===povId))throw Error('A selected person is no longer available.');
+    if(worldIds.some(id=>!p.world.some(w=>w.id===id)))throw Error('A selected World entry is no longer available.');
+    if(plotIds.some(id=>!p.plots.some(x=>x.id===id)))throw Error('A selected plot is no longer available.');
+    if(status!==null&&!['open','planned','resolved','open-ended'].includes(status))throw Error('Choose an outline status.');
+    for(const n of chosen){
+      if(n.type==='C'&&!n.characterArc)n.characterArc=characterArc(p,n);
+      if(n.type!=='B'&&(cast.length||worldIds.length||povId!==null))n.closingCraft||={cast:[...n.cast],worldIds:[]};
+      for(const c of [n,...(n.closingCraft?[n.closingCraft]:[])]){
+        c.cast=[...new Set([...(c.cast||[]),...cast,...(povId?[povId]:[])])];c.worldIds=[...new Set([...(c.worldIds||[]),...worldIds])];
+        if(povId!==null){c.povId=povId;c.focus=povId;}
+      }
+      n.plotIds=[...new Set([...(n.plotIds||[]),...plotIds])];if(status!==null)n.status=status;
+    }
+    return chosen.length;
+  }
   function consequences(p,key,changes){const candidate=copy(p),mid=momentId(candidate,key);if(!W.events(candidate).some(e=>e.id===mid))throw Error('Choose a story moment.');for(const item of changes){const record={...copy(item.value),id:item.value.id||W.uid(),momentId:mid,at:key};let target;
       if(item.kind==='block'){target=candidate.characters.find(c=>c.id===item.targetId);if(!target)throw Error('Missing character.');target.changes.push(record);}
       else if(item.kind==='life'){target=candidate.characters.find(c=>c.id===item.targetId);if(!target)throw Error('Missing character.');target.lifeChanges.push(record);}
@@ -1316,7 +1334,7 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
     W.restore(candidate,id);if(anchor!==undefined)W.move(candidate,rootId,anchor,where);
     Object.assign(p,candidate);return rootId;
   }
-  Object.assign(W,{addArcOutcome,removeArcOutcome,arcSubjects,arcSubject,addArcChange,removeArcChange,characterArc,pieceTitle,setArcCharacter,setArcState,arcStateOptions,pieceChanges,changeTitle,drawerEntries,archivedItems,stashNode,returnFromDrawer,normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,readingMoments,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
+  Object.assign(W,{applyBulk,addArcOutcome,removeArcOutcome,arcSubjects,arcSubject,addArcChange,removeArcChange,characterArc,pieceTitle,setArcCharacter,setArcState,arcStateOptions,pieceChanges,changeTitle,drawerEntries,archivedItems,stashNode,returnFromDrawer,normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,readingMoments,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
     factionAt:(p,e,key)=>L.CounterplotEnsemble.factionAt(timelineProject(p),e,momentId(p,key)),
     roleAt:(p,track,key)=>L.CounterplotEnsemble.roleAt(timelineProject(p),track,momentId(p,key)),
     prominenceAt:(p,c,key)=>L.CounterplotEnsemble.prominenceAt(timelineProject(p),c,momentId(p,key))});
