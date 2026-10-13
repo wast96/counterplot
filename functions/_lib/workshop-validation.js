@@ -1176,6 +1176,29 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
     const order=new Map(W.events(p).flatMap((e,i)=>[[e.key,i],[e.id,i]]));
     return unique.sort((a,b)=>(order.get(a.change.at)??Infinity)-(order.get(b.change.at)??Infinity)||(a.checkpoint?0:1)-(b.checkpoint?0:1));
   }
+  function characterBlockOrigin(p,c,bid){
+    const block=c.blocks.find(b=>b.id===bid);if(block)return {block,at:'',entry:null};
+    const entry=characterHistory(p,c).find(e=>e.change.blockId===bid&&e.change.block);
+    return entry?{block:entry.change.block,at:entry.change.at,entry}:null;
+  }
+  function setCharacterBlockStart(p,cid,bid,at){
+    const c=p.characters.find(c=>c.id===cid),origin=c&&characterBlockOrigin(p,c,bid);
+    if(!origin)throw Error('This character block is no longer available.');
+    if(at===origin.at)return;
+    const events=W.events(p),order=new Map(events.flatMap((e,i)=>[[e.key,i],[e.id,i]])),position=at?order.get(at):-1;
+    if(position===undefined)throw Error('Choose a story moment for this block.');
+    const later=characterHistory(p,c).filter(e=>e.change.blockId===bid&&e.change.id!==origin.entry?.change.id);
+    if(later.some(e=>(order.get(e.change.at)??Infinity)<=position))throw Error('This block changes before that point. Move its later changes first, or choose an earlier starting moment.');
+    const block=copy(origin.block),source=origin.entry;
+    c.blocks=c.blocks.filter(b=>b.id!==bid);
+    if(source?.checkpoint){
+      // A saved self contains other cards and life status. Retime only this card.
+      if(position>(order.get(origin.at)??-1))source.checkpoint.blocks=source.checkpoint.blocks.filter(b=>b.id!==bid);
+    }else if(source)removeCharacterChange(p,cid,source.change.id);
+    if(!at)c.blocks.push(block);
+    else c.changes.push({id:source&&!source.checkpoint?source.change.id:W.uid(),at,momentId:momentId(p,at),blockId:bid,op:'add',block,reason:source?.change.reason||''});
+    const n=p.nodes.find(n=>n.id===events.find(e=>e.key===at)?.nodeId);if(n&&!n.cast.includes(cid))n.cast.push(cid);
+  }
   function archiveCharacterBlock(p,cid,bid){
     const c=p.characters.find(c=>c.id===cid);if(!c)return;
     if(p.archive.some(a=>a.kind==='block'&&a.characterId===cid&&a.item.id===bid))return;
@@ -1535,7 +1558,7 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
     W.restore(candidate,id);if(anchor!==undefined)W.move(candidate,rootId,anchor,where);
     Object.assign(p,candidate);return rootId;
   }
-  Object.assign(W,{matchOutlineOrder,characterHistory,archiveCharacterBlock,removeCharacterChange,characterState,stateAt:(p,c,key='',before=false)=>characterState(p,c,key,before).blocks,characterBlockLabel,setBlockLabel,move,retainedBeatThread,THREAD_FIELDS,threadPlan,setThreadPlan,addThreadOutcome,removeThreadOutcome,changeStateAt,recordedThreadStates,setPieceState,openThreadContext,setAdvancedThreads,editableTitle,setPieceTitle,applyBulk,addArcOutcome,removeArcOutcome,arcSubjects,arcSubject,addArcChange,removeArcChange,characterArc,pieceTitle,setArcCharacter,setArcState,arcStateOptions,pieceChanges,drawerEntries,archivedItems,stashNode,returnFromDrawer,normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,readingMoments,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
+  Object.assign(W,{characterBlockOrigin,setCharacterBlockStart,matchOutlineOrder,characterHistory,archiveCharacterBlock,removeCharacterChange,characterState,stateAt:(p,c,key='',before=false)=>characterState(p,c,key,before).blocks,characterBlockLabel,setBlockLabel,move,retainedBeatThread,THREAD_FIELDS,threadPlan,setThreadPlan,addThreadOutcome,removeThreadOutcome,changeStateAt,recordedThreadStates,setPieceState,openThreadContext,setAdvancedThreads,editableTitle,setPieceTitle,applyBulk,addArcOutcome,removeArcOutcome,arcSubjects,arcSubject,addArcChange,removeArcChange,characterArc,pieceTitle,setArcCharacter,setArcState,arcStateOptions,pieceChanges,drawerEntries,archivedItems,stashNode,returnFromDrawer,normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,readingMoments,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
     factionAt:(p,e,key)=>L.CounterplotEnsemble.factionAt(timelineProject(p),e,momentId(p,key)),
     roleAt:(p,track,key)=>L.CounterplotEnsemble.roleAt(timelineProject(p),track,momentId(p,key)),
     prominenceAt:(p,c,key)=>L.CounterplotEnsemble.prominenceAt(timelineProject(p),c,momentId(p,key))});
