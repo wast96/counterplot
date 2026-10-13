@@ -29,4 +29,4 @@ Scripts for the broad matrix are in the adjacent `2026-10-13-beat-board-sweep` f
 
 ## Release validation
 
-Build checks, server tests and all 19 Workshop model-test files passed. Firefox and WebKit passed the focused story-field workflows and all 14 final alignment/timing regression cases. The broad Chromium suite and release checks are required before merge.
+Build checks, server tests and all 19 Workshop model-test files passed. Firefox and WebKit passed the focused story-field workflows and all 18 final alignment/timing regression cases. The final local deployment smoke passed all five workbench views at 320, 390 and 1440px, board and field persistence, independent order resets, and selected-beat card creation and retiming. The broad Chromium suite and release checks are required before merge.
