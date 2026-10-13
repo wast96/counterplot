@@ -254,6 +254,87 @@ body:not(:has(.tray)) #toast{bottom:24px}
 /* Save status is informational; account actions live behind the profile circle. */
 .account-sync-status{display:flex;align-items:center;gap:7px;color:var(--green);font-size:11px;white-space:nowrap}.account-sync-status svg{width:15px;height:15px}.account-menu{position:relative;flex:none;margin-left:5px}.account-menu>summary{display:block;list-style:none;cursor:pointer;border-radius:50%;padding:3px}.account-menu>summary::-webkit-details-marker{display:none}.account-menu>summary:hover,.account-menu[open]>summary{box-shadow:0 0 0 2px var(--line)}.account-avatar{width:34px;height:34px;display:grid;place-items:center;flex:none;border-radius:50%;background:var(--profile-color,var(--green));color:#fff;font:600 12px/1 var(--sans);letter-spacing:.5px}.account-avatar svg{width:18px;height:18px}.account-popover{position:absolute;right:0;top:calc(100% + 10px);z-index:50;width:290px;max-width:calc(100vw - 24px);padding:8px;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 35px #23362426}.account-identity{display:flex;align-items:center;gap:12px;padding:13px 10px 17px;margin-bottom:6px;border-bottom:1px solid var(--line)}.account-identity>div{min-width:0}.account-identity strong{display:block;font-size:13px;font-weight:600}.account-identity span:not(.account-avatar){display:block;font-size:11px;color:var(--muted);overflow-wrap:anywhere;line-height:1.5;margin-top:4px}.account-popover nav{display:grid;gap:2px}.account-popover .btn{width:100%;justify-content:flex-start;text-align:left;box-shadow:none;border:0;background:none;padding:10px;font-size:12px;font-weight:400;border-radius:6px}.account-popover .btn:hover{background:var(--green-soft)}.account-menu-divider{height:1px;background:var(--line);margin:6px 0}@media(max-width:680px){.account-menu{margin-left:2px}.account-avatar{width:30px;height:30px}.account-sync-status{font-size:10px}.account-popover{position:fixed;right:12px;top:auto;margin-top:10px}}
 
+/* Character studio: keep the person in view and their pieces within reach. */
+.character-page-head{padding-top:22px;padding-bottom:16px;align-items:center}
+.character-page-head .eyebrow{margin-bottom:5px;font-size:9px}
+.character-page-head h1{font-size:30px}
+.character-page-head p{display:none}
+.character-studio .character-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;padding:2px 0 10px;margin-bottom:16px}
+.character-studio .character-tab{flex:none;max-width:260px;text-align:left;overflow-wrap:anywhere}
+.character-workspace{display:grid;grid-template-columns:220px minmax(0,1fr);gap:32px;align-items:start}
+.character-profile{min-width:0;border-right:1px solid var(--line);padding-right:24px}
+.character-studio .character-hero{display:block;margin:0}
+.character-studio .character-hero>.row{display:flex;flex-direction:column;align-items:stretch;gap:18px}
+.character-studio .portrait-button{align-self:flex-start;width:100%}
+.character-studio .character-hero .avatar.large{display:flex;width:100%;height:auto;aspect-ratio:1 / 1;font-size:52px;border-radius:12px}
+.character-studio .character-name-row{align-items:flex-start;gap:6px}
+.character-studio .character-hero h1{font-size:32px;line-height:1.08;letter-spacing:-.7px}
+.character-studio .character-summary{width:100%}
+.character-studio .identity{font-size:12px;line-height:1.6}
+.character-studio .character-presence{gap:6px;margin-top:14px}
+.character-studio .presence-badge{font-size:11px}
+.character-studio .character-presence small{font-size:11px;line-height:1.5}
+.character-profile .reference-summary{margin:18px 0 0;padding-top:14px;border-top:1px solid var(--line)}
+.character-profile .reference-peeks{gap:6px}
+.character-profile .reference-peeks img{width:54px;height:54px}
+.character-profile .reference-peeks button{max-width:100%}
+.character-pieces{min-width:0}
+.character-studio .character-tools{margin:0 0 16px;gap:12px;flex-wrap:wrap}
+.character-studio .character-tools .segmented{background:transparent;padding:0;gap:16px;border-radius:0}
+.character-studio .character-tools .segmented button{font-size:14px;padding:9px 0;border-radius:0;border-bottom:2px solid transparent}
+.character-studio .character-tools .segmented button.active{box-shadow:none;background:transparent;border-color:var(--green);color:var(--green);font-weight:650}
+.character-studio .character-tools .segmented small{font:10px var(--mono);padding:3px 6px;background:var(--green-soft);border-radius:4px}
+.character-moments{padding:12px 16px;margin-bottom:20px;border:1px solid var(--line);border-radius:9px;background:#eeeee580}
+.character-moments>.row{gap:12px;flex-wrap:wrap}
+.character-moments .eyebrow{font-size:9px;letter-spacing:1.2px}
+.character-moments .time-strip{margin:10px 0 0;padding-bottom:8px}
+.character-moments .time-stop{padding-top:12px}
+.character-moments .state-caption{margin:0;padding:4px 0 0;border:0;background:none;font-size:11px;line-height:1.5}
+.character-moments .state-caption svg{display:none}
+.character-moments.is-beginning{display:flex;align-items:center;flex-wrap:wrap;gap:8px 18px}
+.character-moments.is-beginning>.row>span:last-child{display:none}
+.character-moments.is-beginning .time-strip{padding:0;margin:0;overflow:visible}
+.character-moments.is-beginning .time-stop{min-width:0;max-width:none;border:0;padding:4px 0 4px 16px;font-size:12px}
+.character-moments.is-beginning .time-stop:before{top:9px;left:0}
+.character-moments.is-beginning .time-stop small{display:none}
+.character-moments.is-beginning .state-caption{display:none}
+.character-pieces .blocks-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:16px;align-items:start}
+.character-pieces .block,.character-pieces .add-block-tile{min-height:190px}
+.character-pieces .block-body{font-size:23px;line-height:1.4}
+.character-pieces .character-note{margin-top:22px}
+@media(min-width:1500px){.character-workspace{grid-template-columns:260px minmax(0,1fr);gap:36px}.character-profile{padding-right:28px}}
+@media(max-width:1100px){
+ .character-workspace{grid-template-columns:minmax(0,1fr);gap:20px}
+ .character-profile{border-right:0;padding-right:0}
+ .character-studio .character-hero>.row{flex-direction:row;align-items:center;gap:18px}
+ .character-studio .portrait-button{width:112px;flex:none}
+ .character-studio .character-summary{width:auto}
+ .character-profile .reference-summary{border:0;padding:0;margin:10px 0 0}
+ .character-profile .reference-peeks{flex-wrap:nowrap;overflow-x:auto}
+ .character-profile .reference-peeks button{flex:none}
+}
+@media(max-width:680px){
+ .character-page-head{padding-top:16px;padding-bottom:10px;gap:12px;flex-wrap:wrap}
+ .character-page-head h1{font-size:25px}
+ .character-page-head .eyebrow{display:none}
+ .character-page-head .page-actions{padding:0;gap:6px;flex-direction:row}
+ .character-studio .character-tabs{margin-bottom:12px;padding-bottom:8px}
+ .character-workspace{gap:16px}
+ .character-studio .portrait-button{width:80px}
+ .character-studio .character-hero>.row{gap:14px;align-items:flex-start}
+ .character-studio .character-hero h1{font-size:27px}
+ .character-studio .character-hero .identity{font-size:11px;margin-top:5px}
+ .character-studio .character-presence{margin-top:8px}
+ .character-studio .character-tools{margin-bottom:12px;gap:10px}
+ .character-studio .character-tools .segmented{gap:14px}
+ .character-studio .character-tools .segmented button{font-size:13px}
+ .character-studio .character-tools>.btn{font-size:11px;padding:8px 10px;min-height:36px}
+ .character-moments{padding:10px 12px;margin-bottom:14px}
+ .character-pieces .blocks-grid{grid-template-columns:minmax(0,1fr);gap:12px}
+ .character-pieces .block-body{font-size:22px}
+ .character-pieces .block,.character-pieces .add-block-tile{min-height:160px}
+}
+
 /* Learner guide: a stable dock, no automatic tooltip replacement, no elevated drop layers. */
 #tutorial-companion{position:fixed;z-index:420;display:flex;flex-direction:column;color:#273a31;font:var(--guide-size,13px)/1.5 system-ui,sans-serif;text-align:left;box-sizing:border-box;overflow:hidden;box-shadow:0 8px 30px #13271c26;border:1px solid #aab9a2;border-radius:12px;background:var(--guide-background,#fffdf5)}
 #tutorial-companion *{box-sizing:border-box}#tutorial-companion[hidden],#tutorial-spotlight[hidden]{display:none!important}
@@ -2850,10 +2931,10 @@ function writing(){
 }
 function words(s){return (s.trim().match(/\S+/g)||[]).length}
 function empty(title,description,actions='',which='spark'){return `<div class="empty"><div class="empty-icon">${icon(which)}</div><h2>${esc(title)}</h2><p>${esc(description)}</p>${actions}</div>`}
-function characters(){const c=person(ui.character);const head=heading('THE CHARACTER STUDIO','Characters','A person is more than a profile. Give them something to want, keep, or become.',btn('new-character','New character','plus'));
-if(!c)return head+`<div class="character-layout">${empty('Start with someone.','A name or one intriguing detail is enough. The rest can come later.',btn('new-character','Create your first character','plus',true),'characters')}</div>`;
+function characters(){const c=person(ui.character);const head=heading('THE CHARACTER STUDIO','Characters','A person is more than a profile. Give them something to want, keep, or become.',btn('new-character','New character','plus')).replace('class="page-head"','class="page-head character-page-head"');
+if(!c)return head+`<div class="character-layout character-studio">${empty('Start with someone.','A name or one intriguing detail is enough. The rest can come later.',btn('new-character','Create your first character','plus',true),'characters')}</div>`;
 const blocks=W.stateAt(p(),c,ui.at),timeEvents=W.events(p()),original=ui.at==='';
-return head+`<div class="character-layout">${W.review(p(),c).length?'<div class="review-note">Some character changes need a timing check. Open Their arc to see which pieces are affected.</div>':''}<div class="character-tabs">${p().characters.map(c2=>`<button class="character-tab${c2.id===c.id?' active':''}" style="${colorStyle(c2.color)}" ${paintAttrs('character',c2.id)} draggable="true" data-drag="character" data-drag-id="${c2.id}" ${act('open-character',c2.id)} aria-pressed="${c2.id===c.id}">${avatar(c2)}${esc(c2.name)}</button>`).join('')}</div><header class="character-hero" ${paintAttrs('character',c.id)}><div class="row"><button class="portrait-button" ${act('portrait',c.id)} aria-label="Change portrait for ${esc(c.name)}">${avatar(c,true)}<span>＋</span></button><div class="character-summary"><div class="character-name-row"><h1>${esc(c.name)}</h1>${ib('edit-character',c.id,'edit','Edit '+c.name)}</div><p class="identity">${esc(c.identity||'A person you’re still getting to know.')}</p>${characterPresence(c)}</div></div></header>${referenceSummary('character',c.id)}<div class="row between"><span class="eyebrow">WHO THEY ARE · MOVE THROUGH THE STORY</span><span class="eyebrow">${c.changes.length} ${c.changes.length===1?'block change':'block changes'}</span></div><div class="time-strip" aria-label="Character state along the story"><button class="time-stop${original?' active':''}" ${act('time','')} aria-pressed="${original}"><small>Before the story</small><span>The beginning</span></button>${timeEvents.map((e,i)=>`<button class="time-stop${ui.at===e.key?' active':''}" ${act('time',e.key)} data-drop="moment" data-at="${e.key}" aria-pressed="${ui.at===e.key}"><small>${e.edge==='close'?'Thread closes':e.node.type==='B'?'After beat':'Thread opens'} ${String(i+1).padStart(2,'0')}</small><span>${esc(name(e.node))}</span></button>`).join('')}</div><div class="state-caption">${icon(original?'book':'change')}<span>${original?'Their starting pieces. Drag a block onto a moment above to make it change.':esc(eventLabel(ui.at))+'. Changes up to this point are reflected below.'}</span></div><div class="character-tools"><div class="segmented"><button class="${ui.characterTab==='blocks'?'active':''}" ${act('character-tab','blocks')} aria-pressed="${ui.characterTab==='blocks'}">Building blocks <small>${blocks.length}</small></button><button class="${ui.characterTab==='arc'?'active':''}" ${act('character-tab','arc')} aria-pressed="${ui.characterTab==='arc'}">Their arc <small>${c.changes.length}</small></button></div>${btn('add-block','Add a building block','plus',true,`data-cid="${c.id}"`)}</div>${ui.characterTab==='blocks'?`<div class="blocks-grid">${blocks.map(b=>blockHTML(c,b,original)).join('')}<button class="add-block-tile" ${act('add-block','',`data-cid="${c.id}"`)}><span class="plus">+</span>Something else about them<small>${Object.keys(KINDS).length} kinds of possibility</small></button></div>`:arcHTML(c)}<details class="character-note"><summary>Loose notes about ${esc(c.name)}</summary><textarea data-inline="character" data-id="${c.id}" data-field="notes" placeholder="Anything that does not need a block yet…" aria-label="Character notes">${esc(c.notes)}</textarea></details></div>`}
+return head+`<div class="character-layout character-studio">${W.review(p(),c).length?'<div class="review-note">Some character changes need a timing check. Open Their arc to see which pieces are affected.</div>':''}<div class="character-tabs">${p().characters.map(c2=>`<button class="character-tab${c2.id===c.id?' active':''}" style="${colorStyle(c2.color)}" ${paintAttrs('character',c2.id)} draggable="true" data-drag="character" data-drag-id="${c2.id}" ${act('open-character',c2.id)} aria-pressed="${c2.id===c.id}">${avatar(c2)}${esc(c2.name)}</button>`).join('')}</div><div class="character-workspace"><aside class="character-profile" aria-label="Character profile"><header class="character-hero" ${paintAttrs('character',c.id)}><div class="row"><button class="portrait-button" ${act('portrait',c.id)} aria-label="Change portrait for ${esc(c.name)}">${avatar(c,true)}<span>＋</span></button><div class="character-summary"><div class="character-name-row"><h1>${esc(c.name)}</h1>${ib('edit-character',c.id,'edit','Edit '+c.name)}</div><p class="identity">${esc(c.identity||'A person you’re still getting to know.')}</p>${characterPresence(c)}</div></div></header>${referenceSummary('character',c.id)}</aside><section class="character-pieces" aria-label="Character building blocks and arc"><div class="character-tools"><div class="segmented"><button class="${ui.characterTab==='blocks'?'active':''}" ${act('character-tab','blocks')} aria-pressed="${ui.characterTab==='blocks'}">Building blocks <small>${blocks.length}</small></button><button class="${ui.characterTab==='arc'?'active':''}" ${act('character-tab','arc')} aria-pressed="${ui.characterTab==='arc'}">Their arc <small>${c.changes.length}</small></button></div>${btn('add-block','Add block','plus',true,`data-cid="${c.id}"`)}</div><div class="character-moments${timeEvents.length?'':' is-beginning'}"><div class="row between"><span class="eyebrow">Story moment</span><span class="eyebrow">${c.changes.length} ${c.changes.length===1?'block change':'block changes'}</span></div><div class="time-strip" aria-label="Character state along the story"><button class="time-stop${original?' active':''}" ${act('time','')} aria-pressed="${original}"><small>Before the story</small><span>The beginning</span></button>${timeEvents.map((e,i)=>`<button class="time-stop${ui.at===e.key?' active':''}" ${act('time',e.key)} data-drop="moment" data-at="${e.key}" aria-pressed="${ui.at===e.key}"><small>${e.edge==='close'?'Thread closes':e.node.type==='B'?'After beat':'Thread opens'} ${String(i+1).padStart(2,'0')}</small><span>${esc(name(e.node))}</span></button>`).join('')}</div><div class="state-caption">${icon(original?'book':'change')}<span>${original?(timeEvents.length?'Drag a block onto a moment to make it change.':'Their starting pieces. Add what matters to this character.'):esc(eventLabel(ui.at))+'. Changes up to this point are reflected below.'}</span></div></div>${ui.characterTab==='blocks'?`<div class="blocks-grid">${blocks.map(b=>blockHTML(c,b,original)).join('')}<button class="add-block-tile" ${act('add-block','',`data-cid="${c.id}"`)}><span class="plus">+</span>Something else about them<small>${Object.keys(KINDS).length} kinds of possibility</small></button></div>`:arcHTML(c)}<details class="character-note"><summary>Loose notes about ${esc(c.name)}</summary><textarea data-inline="character" data-id="${c.id}" data-field="notes" placeholder="Anything that does not need a block yet…" aria-label="Character notes">${esc(c.notes)}</textarea></details></section></div></div>`}
 function blockHTML(c,b,original){return `<article class="block${b.pinned?' pinned':''}" style="${colorStyle(b.color||c.color)}" ${paintAttrs('block',b.id,c.id)} data-block="${b.id}" data-drop="block" data-cid="${c.id}" data-anchor="${b.id}"><div class="block-head">${grip('block',b.id,c.id)}<span class="block-label">${esc(b.label||kind(b.kind).label)}</span>${original?paintButton('block',b.id,c.id):''}${original?ib('pin-block',b.id,'pin',b.pinned?'Unpin block':'Pin block',`data-cid="${c.id}" aria-pressed="${!!b.pinned}"`):''}</div><button class="block-body" style="text-align:left;padding:0" ${act(original?'edit-block':'evolve',b.id,`data-cid="${c.id}" data-at="${esc(ui.at)}"`)}>${esc(b.text||'An unfinished thought…')}</button>${b.detail?`<p class="block-detail">${esc(b.detail)}</p>`:''}<footer class="block-footer"><button class="text-btn" ${act('evolve',b.id,`data-cid="${c.id}" data-at="${esc(ui.at)}"`)}>${icon('change')}Let this change</button>${original?ib('archive-block',b.id,'archive','Archive block',`data-cid="${c.id}"`):ib('edit-block',b.id,'edit','Edit starting block',`data-cid="${c.id}"`)}</footer></article>`}
 function arcHTML(c){const order=new Map(W.events(p()).map((e,i)=>[e.key,i]));const changes=[...c.changes].sort((a,b)=>order.get(a.at)-order.get(b.at));if(!changes.length)return empty('They don’t have to stay this way.','Drag a building block onto a story moment, or choose “Let this change” on a block.',btn('character-tab','Back to their pieces','arrow',false,'data-id="blocks"'),'change');return `<div class="change-list">${changes.map(x=>{const before=W.stateAt(p(),c,x.at,true).find(b=>b.id===x.blockId);return `<article class="change-card"><div><div class="eyebrow">${esc(kind(x.block?.kind||before?.kind||'custom').label)}</div><button class="change-when" ${act('jump-moment',x.at)} style="text-align:left;padding:7px 0">${esc(eventLabel(x.at))} ↗</button></div><div><div class="change-before">${esc(before?.text||'Not yet part of them')}</div><div class="change-after">↳ ${x.op==='retire'?'They let this go':esc(x.block.text)}</div>${W.review(p(),c).find(i=>i.id===x.id)?'<p class="review-note">'+esc(W.review(p(),c).find(i=>i.id===x.id).message)+'</p>':''}${x.reason?`<p>Because ${esc(x.reason)}</p>`:''}<button class="text-btn" ${act('edit-change',x.id,`data-cid="${c.id}"`)}>Edit this change</button></div></article>`}).join('')}</div>`}
 function world(){return heading('THE WORLD AROUND THEM','World','Places, objects, secrets, and rules. Keep what gives your people something to touch.',btn('new-world','Add to the world','plus'))+`<div class="content-page">${p().world.length?`<div class="library-grid">${p().world.map(w=>`<article class="world-card" style="${colorStyle(w.color)}" ${paintAttrs('world',w.id)}><div class="eyebrow">${esc(WORLD_TYPES[w.type]||w.type)}</div><h2>${esc(w.name)}</h2><p>${esc(w.notes||'A detail waiting to happen.')}</p>${referenceSummary('world',w.id)}<footer><button class="text-btn" ${act('edit-world',w.id)}>Open detail ${icon('arrow')}</button>${ib('archive-world',w.id,'archive','Archive '+w.name)}</footer></article>`).join('')}</div>`:empty('Start with a place. Or a strange little object.','World details can be linked to any piece in the outline.',btn('new-world','Add a world detail','plus',true),'world')}</div>`}
