@@ -14,9 +14,11 @@ test('outline headings size to content with empty and populated stories',async({
   await load(page,data);
   for(const width of [320,400,768,1024,1440]){
    await page.setViewportSize({width,height:900});await fits(page);
-   const head=await page.locator('.page-head').boundingBox(),title=await page.locator('.page-head h1').boundingBox(),actions=await page.locator('.page-actions').boundingBox();
-   expect(head.height).toBeLessThan(145);
-   expect(actions.y-(title.y+title.height)).toBeLessThan(25);
+   await expect.poll(()=>page.evaluate(()=>{
+    const rect=selector=>document.querySelector(selector)?.getBoundingClientRect();
+    const head=rect('.page-head'),title=rect('.page-head h1'),actions=rect('.page-actions');
+    return !!head?.height&&!!title?.height&&!!actions?.height&&head.height<145&&actions.y-title.bottom<25;
+   })).toBe(true);
    if(!empty&&width===400){
     const card=page.locator('[data-node=new-character-thread]');expect((await card.boundingBox()).height).toBeLessThan(400);
     const header=card.locator(':scope > .node-head'),text=await header.locator('.node-title').boundingBox(),buttons=await header.locator('.node-actions').boundingBox();
@@ -58,5 +60,6 @@ test('scene beat fields grow with writing instead of reserving tall empty cards'
   await expect.poll(()=>writeup.evaluate(e=>e.scrollHeight<=e.clientHeight+1)).toBe(true);
  }
  await writeup.fill('She enters.');await page.keyboard.press('Tab');expect((await writeup.boundingBox()).height).toBeLessThan(110);
+ await expect(page.locator('#save-status')).toContainText('Saved on this device');
  await page.reload();await page.getByRole('tab',{name:'Scene constructor',exact:true}).click();await expect(writeup).toHaveValue('She enters.');
 });
