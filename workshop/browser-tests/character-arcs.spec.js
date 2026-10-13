@@ -73,7 +73,7 @@ test('the compact connection builder labels both sides and preserves optional de
 });
 
 test('titles and inline states edit independently, with starting states above beats and final states at the closing',async({page})=>{
- await load(page,{beats:true});const root=header(page),title=root.locator(':scope > .node-head .node-title'),start=root.locator(':scope > .arc-edge-from'),end=root.locator(':scope > .closing .arc-edge-to'),beat=page.locator('[data-node=ui-node-1]');
+ await load(page,{beats:true});const root=header(page),title=root.locator(':scope > .node-head .node-title'),start=root.locator(':scope > .node-opening > .node-content > .arc-edge-from'),end=root.locator(':scope > .closing .arc-edge-to'),beat=page.locator('[data-node=ui-node-1]');
  await expect(start.locator('[data-edge=to]')).toHaveCount(0);await expect(end.locator('[data-edge=from]')).toHaveCount(0);await expect(page.locator('.inspector .character-arc-heading')).toHaveCount(0);
  await title.fill('The making of an agent');await title.press('Tab');await state(page,'to').fill('An independent agent');await state(page,'to').press('Enter');await expect(page.locator('#dialog')).not.toBeVisible();
  let p=await snapshot(page);expect(p.nodes[0].title).toBe('The making of an agent');expect(p.characters[0].changes[0].block.text).toBe('An independent agent');expect(p.characters[0].blocks[0].text).toBe('Innocent civilian');

@@ -19,7 +19,7 @@ test('a failed cloud sync has a direct explanation and retry while local editing
  await expect(page.locator('#account-status')).toHaveText('Saved across devices');await expect(page.getByRole('button',{name:'Review sync issue',exact:true})).toHaveCount(0);expect(data.projects.find(p=>p.id===data.active).nodes.find(n=>n.id==='beat').title).toBe('An edit saved on this device');
 });
 test('a newly gained block supports a custom label and retains it after reload',async({page})=>{
- await load(page,fixture());await page.locator('[data-node=beat] > .node-foot [data-action=record-piece-state]').click();await page.getByRole('button',{name:'Character block options',exact:true}).click();await page.getByRole('button',{name:'Gain a new piece here',exact:true}).click();
+ await load(page,fixture());await page.locator('[data-node=beat] > .node-opening > .node-foot [data-action=record-piece-state]').click();await page.getByRole('button',{name:'Character block options',exact:true}).click();await page.getByRole('button',{name:'Gain a new piece here',exact:true}).click();
  await page.getByRole('combobox',{name:'Kind of piece',exact:true}).selectOption('belief');await page.getByLabel('Custom label · optional',{exact:true}).fill('Trust in authority');await page.getByLabel('What is true afterward?',{exact:true}).fill('She questions every uniform');await page.getByRole('button',{name:'Keep this change',exact:true}).click();
  expect((await snapshot(page)).characters[0].changes.find(c=>c.block?.text==='She questions every uniform').block.label).toBe('Trust in authority');
  await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await page.locator('.story-viewbar').waitFor();expect((await snapshot(page)).characters[0].changes.find(c=>c.block?.text==='She questions every uniform').block.label).toBe('Trust in authority');
@@ -30,7 +30,7 @@ test('long state text stays inside the details panel',async({page})=>{
 });
 test('Add change creates a new character state at the beat without altering starting states',async({page})=>{
  await load(page,fixture());const before=await snapshot(page);
- await page.locator('[data-node=beat] > .node-foot [data-action=record-piece-state]').click();
+ await page.locator('[data-node=beat] > .node-opening > .node-foot [data-action=record-piece-state]').click();
  await page.locator('#dialog [name=source]').selectOption('new-character-state');
  await page.getByRole('combobox',{name:'Character',exact:true}).selectOption('jun');
  await page.getByRole('combobox',{name:'Kind of state',exact:true}).selectOption('custom');

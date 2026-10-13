@@ -587,7 +587,7 @@ input[type=checkbox]{flex:none;width:18px;height:18px}
 /* State fields read as compact fill-in-the-blank phrases. */
 .arc-accessible-title{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .character-arc-heading{min-width:0;display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap}
-.node>.character-arc-heading{margin:0 14px 8px 42px}
+.node>.node-opening>.node-content>.character-arc-heading{margin:0 14px 8px 42px}
 .arc-subject{display:flex;align-items:center;gap:4px;max-width:100%;min-width:0}
 .arc-subject>.avatar{width:22px;height:22px;font-size:10px;flex:none}.arc-subject>svg{width:18px;height:18px;flex:none}
 .arc-subject select{width:auto;min-width:0;max-width:220px;min-height:32px;padding:3px 22px 3px 6px;background-color:transparent;border:1px solid transparent;font-size:12px;font-weight:650;color:var(--ink)}
@@ -610,7 +610,7 @@ input[type=checkbox]{flex:none;width:18px;height:18px}
 .closing-content{flex:1;min-width:0}.closing-label{display:block;font:11px/1.5 var(--sans);font-weight:650;color:var(--muted);margin:3px 0 5px}
 .closing .character-arc-heading{margin-bottom:6px}.closing textarea{font:13px/1.65 var(--sans);color:var(--ink)!important;min-height:25px;width:100%}.closing>.icon{margin-top:3px}
 .beat-states{display:flex;flex-direction:column;align-items:flex-start;gap:5px;margin:0 14px 8px 35px;min-width:0}.beat-state-row{display:flex;align-items:center;gap:5px 8px;flex-wrap:wrap;max-width:100%;font-size:12px;line-height:1.45}.beat-state-subject{font-weight:650}.beat-state-kind{font-size:11px;color:#735740}.beat-state-before{color:#59665b;overflow-wrap:anywhere;min-width:0}.beat-state-after{font-size:12px;max-width:min(100%,36ch)}.beat-state-after:not(input){width:auto;min-height:0;border:0;overflow-wrap:anywhere}.state-arrow{color:#735740}
-@media(max-width:680px){.node>.character-arc-heading{margin:0 10px 8px 14px}.arc-subject select{min-height:40px;font-size:16px;max-width:260px}.arc-state-text,.beat-state-after{min-height:38px;font-size:16px}.arc-state-options,.arc-fork{min-height:38px;width:30px;min-width:30px;opacity:1}.arc-add-change,.beat-add-change{min-height:38px}.closing{padding:9px 10px}.closing-mark{margin-left:0}.beat-states{margin-left:32px;margin-right:8px}.arc-state-group{width:auto}}
+@media(max-width:680px){.node>.node-opening>.node-content>.character-arc-heading{margin:0 10px 8px 14px}.arc-subject select{min-height:40px;font-size:16px;max-width:260px}.arc-state-text,.beat-state-after{min-height:38px;font-size:16px}.arc-state-options,.arc-fork{min-height:38px;width:30px;min-width:30px;opacity:1}.arc-add-change,.beat-add-change{min-height:38px}.closing{padding:9px 10px}.closing-mark{margin-left:0}.beat-states{margin-left:32px;margin-right:8px}.arc-state-group{width:auto}}
 
 /* Beats mark a turn within a thread; the thread owns the surrounding frame. */
 .node.scene,.node.scene.selected,.node.scene.selected:hover{border:0;border-top:1px solid color-mix(in srgb,var(--accent),#dedfd5 62%);border-radius:0;background:transparent;box-shadow:none;margin-block:10px;padding:0}
@@ -620,10 +620,10 @@ input[type=checkbox]{flex:none;width:18px;height:18px}
 .node.scene>.node-head>.node-title{font-size:14px;font-weight:600;min-height:30px}
 .node.scene.selected{background:color-mix(in srgb,var(--tint),transparent 48%)}
 .node.scene.selected>.node-head{border-bottom:1px solid color-mix(in srgb,var(--accent),transparent 86%)}
-.node.scene>.node-promise{margin:3px 14px 8px 35px}.node.scene>.node-foot{padding:0 14px 10px 35px}
+.node.scene>.node-opening>.node-content>.node-promise{margin:3px 14px 8px 35px}.node.scene>.node-opening>.node-foot{padding:0 14px 10px 35px}
 .node-children>.node.scene{margin-left:-17px;width:calc(100% + 17px)}
 @media(max-width:1100px){.node-children>.node.scene{margin-left:-13px;width:calc(100% + 13px)}}
-@media(max-width:680px){.node-children>.node.scene{margin-left:-8px;width:calc(100% + 8px)}.node.scene>.node-head{padding:6px 3px}.node.scene>.node-head>.piece-mark{grid-column:1;grid-row:1;justify-self:center}.node.scene>.node-head>.node-title{font-size:14px}.node.scene>.node-promise{margin-left:32px}.node.scene>.node-foot{padding-left:32px}}
+@media(max-width:680px){.node-children>.node.scene{margin-left:-8px;width:calc(100% + 8px)}.node.scene>.node-head{padding:6px 3px}.node.scene>.node-head>.piece-mark{grid-column:1;grid-row:1;justify-self:center}.node.scene>.node-head>.node-title{font-size:14px}.node.scene>.node-opening>.node-content>.node-promise{margin-left:32px}.node.scene>.node-opening>.node-foot{padding-left:32px}}
 
 /* Keep the relationship together; reveal optional detail only when it is useful. */
 .connection-builder{padding:18px;border:1px solid #d8e0d3;border-radius:14px;background:#f1f5ed;margin:0 0 18px}.connection-parties{display:grid;grid-template-columns:minmax(0,1fr) 36px minmax(0,1fr);gap:12px;align-items:center;margin-bottom:18px}
@@ -631,7 +631,7 @@ input[type=checkbox]{flex:none;width:18px;height:18px}
 .connection-parties>.btn{font-size:0;padding:5px;width:36px;height:36px;min-height:36px;margin-top:34px}.connection-parties>.btn svg{width:18px;height:18px;flex:none}.connection-builder>.field{margin-bottom:8px}.connection-builder>.field input{font-size:18px;background:white}.connection-preview{margin:0!important;font-size:12px!important;overflow-wrap:anywhere;color:#4c644f!important}
 .connection-wants{display:grid;grid-template-columns:1fr 1fr;gap:16px}.connection-wants>.field{min-width:0}.connection-wants textarea{min-height:92px}.connection-term-checks{display:flex;gap:16px;flex-wrap:wrap;margin:15px 0}.connection-term-checks label{display:flex;align-items:center;gap:7px}
 @media(max-width:680px){.connection-builder{padding:12px}.connection-parties{grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr);gap:5px}.connection-parties>.btn{width:28px;padding:3px}.connection-party select{font-size:16px;min-height:44px}.connection-wants{grid-template-columns:1fr;gap:0}}
-.node.scene>.node-promise textarea{color:var(--ink)}
+.node.scene>.node-opening>.node-content>.node-promise textarea{color:var(--ink)}
 [data-form=connection] .story-disclosure{padding:0;margin:0}[data-form=connection] .story-disclosure[open]>.stack{padding:4px 0 14px}[data-form=connection] .story-disclosure:last-of-type{margin-bottom:14px}
 .connection-party-avatar>.avatar{color:#344b3d}.dialog-foot>.hint{color:#4c5e50}
 .bulk-launch{display:flex;justify-content:flex-end;margin:12px 36px -10px}.bulk-launch .btn{font-size:12px;min-height:36px;padding:6px 12px}
@@ -647,12 +647,12 @@ input[type=checkbox]{flex:none;width:18px;height:18px}
 .app-main:has(.outline) .page-head{padding-top:14px;padding-bottom:12px}.app-main:has(.outline) .page-head .eyebrow{display:none}.app-main:has(.outline) .page-head h1{font-size:28px}.app-main:has(.outline) .page-head p{margin-top:4px}.app-main:has(.outline) .plot-toolbar{margin-bottom:12px}.app-main:has(.outline) .board-toolbar{margin-bottom:8px}
 
 /* Keep empty planning prompts out of the outline; full editors retain them. */
-.node.scene>.node-promise:has(textarea:placeholder-shown){display:none}
+.node.scene>.node-opening>.node-content>.node-promise:has(textarea:placeholder-shown){display:none}
 .node-promise textarea,.closing textarea{display:block}
-.node.scene>.node-head{padding-block:4px}.node.scene>.node-promise{margin-top:2px;margin-bottom:4px}.node.scene>.node-foot{padding-bottom:4px}.node.scene>.beat-states:empty{display:none}
+.node.scene>.node-head{padding-block:4px}.node.scene>.node-opening>.node-content>.node-promise{margin-top:2px;margin-bottom:4px}.node.scene>.node-opening>.node-foot{padding-bottom:4px}.node.scene>.node-opening>.node-content>.beat-states:empty{display:none}
 .node.scene .node-foot .text-btn{min-height:28px;padding-block:3px}.node.scene{margin-block:6px}
 .node .inside-drop{padding:4px;margin-block:3px 7px}.node .inside-drop .text-btn{min-height:28px}.node-children{padding-top:0}
-.node-head{padding-top:9px;padding-bottom:6px}.node-foot{padding-bottom:7px}.node>.character-arc-heading{margin-bottom:6px}.node-promise{margin-bottom:6px}
+.node-head{padding-top:9px;padding-bottom:6px}.node-foot{padding-bottom:7px}.node>.node-opening>.node-content>.character-arc-heading{margin-bottom:6px}.node-promise{margin-bottom:6px}
 .arc-state-text,.beat-state-after{box-sizing:border-box;max-width:100%;padding-inline:2px}
 @supports(field-sizing:content){.arc-state-text,.beat-state-after:is(input){field-sizing:content;width:auto;min-width:10ch;max-width:min(100%,36ch)}}
 @media(max-width:680px){
@@ -983,11 +983,11 @@ body:has(.story-tools-menu[open]) #toast,body:has(.account-menu[open]) #toast{op
 .outline :is(.story-field-text,.arc-state-text,.beat-state-after):is(:hover,:focus){border-bottom-color:var(--accent)}
 .outline :is(.thread-word>span,.arc-state-label){font-size:11px;color:var(--muted);font-weight:450}
 .outline .thread-plan-fields{gap:4px 10px;margin-bottom:3px}
-.outline .node:not(.selected)>.thread-plan-fields>.optional-empty:not(:focus-within),.outline .node:not(.selected)>.closing .optional-empty:not(:focus-within){display:none}
-.outline .node:not(.selected)>.thread-plan-fields>.optional-empty:has(textarea:not(:placeholder-shown)),.outline .node:not(.selected)>.closing .optional-empty:has(textarea:not(:placeholder-shown)){display:flex}
+.outline .node:not(.selected)>.node-opening>.node-content>.thread-plan-fields>.optional-empty:not(:focus-within),.outline .node:not(.selected)>.closing .optional-empty:not(:focus-within){display:none}
+.outline .node:not(.selected)>.node-opening>.node-content>.thread-plan-fields>.optional-empty:has(textarea:not(:placeholder-shown)),.outline .node:not(.selected)>.closing .optional-empty:has(textarea:not(:placeholder-shown)){display:flex}
 .outline .node .story-fields-launch{font-size:0;padding:4px;min-width:28px;min-height:28px}
 .outline .node .story-fields-launch::after{content:'⋯';font:20px var(--sans)}
-.outline .node:not(.selected)>:is(.node-foot,.thread-plan-fields,.character-arc-heading) :is(.add-cast,.beat-add-change,.story-fields-launch,.thread-note-launch,.arc-add-change,.arc-state-options,.arc-fork),.outline .node:not(.selected)>.closing :is(.closing-add-change,.story-fields-launch,.arc-state-options,.arc-fork){opacity:0}
+.outline .node:not(.selected)>.node-opening :is(.thread-plan-fields,.character-arc-heading) :is(.story-fields-launch,.thread-note-launch,.arc-add-change,.arc-state-options,.arc-fork),.outline .node:not(.selected)>.closing :is(.story-fields-launch,.arc-state-options,.arc-fork){opacity:0}
 .outline .node :is(.node-foot,.thread-plan-fields,.character-arc-heading,.closing):is(:hover,:focus-within) :is(.add-cast,.beat-add-change,.closing-add-change,.story-fields-launch,.thread-note-launch,.arc-add-change,.arc-state-options,.arc-fork){opacity:1}
 .outline .closing{background:color-mix(in srgb,var(--tint),var(--panel) 80%);border-top:1px solid color-mix(in srgb,var(--accent),transparent 82%);border-radius:0 0 8px 8px;padding-block:8px}
 .outline .closing-label{font:10px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
@@ -996,16 +996,16 @@ body:has(.story-tools-menu[open]) #toast,body:has(.account-menu[open]) #toast{op
 .outline .is-folded{box-shadow:0 3px 0 -1px var(--panel),0 4px 0 -1px var(--line)}
 .outline .is-folded>.collapsed-thread-beats{margin-block:8px}
 .outline .is-folded>.collapsed-thread-beats p{display:none}
-.outline .inside-drop{border-color:transparent;background:transparent;min-height:28px;padding:0;transition:background 130ms,border-color 130ms}
-.outline .inside-drop:is(:hover,:focus-within){border-color:var(--line);background:var(--paper)}
-.outline .inside-drop .text-btn{color:#596b5b;opacity:1}
-.outline .inside-drop:is(:hover,:focus-within) .text-btn{opacity:1}
-body.drag-active .outline .inside-drop{border:1px dashed #9aaa90;background:#f0f5eb}
 .outline .insert-slot{transition:min-height 130ms,background 130ms}
+/* The closing itself accepts drops; reserve an insertion gap only during dragging. */
+body:not(.drag-active) .outline .node-children>.insert-slot:last-child{min-height:0;margin:0}
+.outline .node-foot{justify-content:flex-start;flex-wrap:wrap;gap:4px 10px;padding-bottom:6px}
+.outline .node-foot .cast-chips{flex:0 1 auto}
+.outline .node-foot :is(.add-cast,.beat-add-change),.outline .closing-add-change{opacity:1}
+
 .outline .insert-slot.landing{min-height:48px}
 .outline .node.landing{outline:2px dashed var(--green);outline-offset:4px}
-.outline .node.landing::before,.outline .inside-drop.landing::before{content:attr(data-drop-label);display:block;position:absolute;top:-28px;left:0;max-width:100%;padding:4px 8px;background:#edf4e9;border:1px solid #9aaa90;border-radius:5px;color:#2f5545;font:11px/1.5 var(--sans);z-index:26;pointer-events:none;overflow-wrap:anywhere}
-.outline .inside-drop{position:relative}
+.outline .node.landing::before{content:attr(data-drop-label);display:block;position:absolute;top:-28px;left:0;max-width:100%;padding:4px 8px;background:#edf4e9;border:1px solid #9aaa90;border-radius:5px;color:#2f5545;font:11px/1.5 var(--sans);z-index:26;pointer-events:none;overflow-wrap:anywhere}
 .outline .piece-in-hand{opacity:.32;outline:1px dashed var(--accent);outline-offset:2px}
 .drag-ghost.piece-preview{display:flex;align-items:flex-start;gap:10px;transform:translate(16px,18px) scale(1.025);width:280px;max-width:min(320px,75vw);padding:14px;border:1px solid var(--line);border-top:3px solid var(--accent,var(--green));border-radius:9px;background:var(--panel);box-shadow:0 16px 36px #20392d33;white-space:normal}
 .piece-preview>div{min-width:0}.piece-preview strong{display:block;font:600 14px/1.4 var(--sans);overflow-wrap:anywhere}.piece-preview small{display:block;margin-top:6px;color:var(--muted);font:10px/1.5 var(--mono)}
@@ -1028,7 +1028,6 @@ body.drag-active .outline .inside-drop{border:1px dashed #9aaa90;background:#f0f
  .piece-menu>summary,.node-actions .piece-menu-actions .icon{min-height:40px}
  .outline .node .story-fields-launch{min-height:36px;min-width:36px}
  .outline .thread-word>span,.outline .arc-state-label{font-size:12px}
- .outline .inside-drop .text-btn{min-height:40px}
 }
 @media(prefers-reduced-motion:reduce){
  .outline .node-head>.grip:is(:hover,:focus-visible){transform:none}
@@ -1037,9 +1036,42 @@ body.drag-active .outline .inside-drop{border:1px dashed #9aaa90;background:#f0f
 
 .outline :is(.thread-word>span,.arc-state-label,.outline-count,.folded-count){color:#59695e}
 /* Empty optional rows need no space until their piece is selected. */
-.outline .node:not(.selected)>.thread-plan-fields:not(:has(textarea:not(:placeholder-shown))){display:none}
+.outline .node:not(.selected)>.node-opening>.node-content>.thread-plan-fields:not(:has(textarea:not(:placeholder-shown))){display:none}
 .outline .node:not(.selected)>.closing .thread-plan-fields:not(:has(textarea:not(:placeholder-shown))){display:none}
 @media(min-width:1191px){body:has(.details-hidden .outline) .tray{left:calc(206px + (100vw - 206px)/2)}}
 @media(min-width:981px) and (max-width:1190px){body:has(.details-hidden .outline) .tray{left:calc(180px + (100vw - 180px)/2)}}
 
 @media(max-width:680px){#story-panel:has(.outline) .plot-collapse [data-action=manage-plots]{font-size:0;width:36px;min-width:36px;padding:6px}}
+
+/* Keep the outline controls together and let plots read as views, not actions. */
+#story-panel:has(.outline) .page-head{padding:18px 36px 10px;align-items:center;gap:12px}
+#story-panel:has(.outline) .page-head h1{font-size:27px}
+#story-panel:has(.outline) .page-actions{display:flex;gap:2px;flex-wrap:wrap;align-items:center}
+#story-panel:has(.outline) .page-actions .btn{border-color:transparent;border-radius:5px;min-height:34px;padding:6px 10px;font-size:11px}
+#story-panel:has(.outline) .page-actions .btn:hover{background:#e8ede5}
+#story-panel:has(.outline) .plot-toolbar{justify-content:flex-start;gap:12px;margin-bottom:20px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+#story-panel:has(.outline) .plot-scroll{flex:0 1 auto;min-width:0}
+#story-panel:has(.outline) .plot-scroll nav{gap:4px}
+#story-panel:has(.outline) .plot-scroll .btn{border-color:transparent;background:transparent;box-shadow:none;border-radius:5px;min-height:34px;padding:7px 11px;font-size:11px}
+#story-panel:has(.outline) .plot-scroll .btn[aria-pressed=true]{background:#e3ece3;color:var(--green);box-shadow:inset 0 -2px var(--green)}
+#story-panel:has(.outline) .plot-collapse{flex-shrink:0}
+#story-panel:has(.outline) .plot-collapse .btn{min-height:30px;padding:5px 8px}
+#story-panel:has(.outline) .board-toolbar{display:none}
+/* Cast and actions share the opening's height when the individual card is wide enough. */
+.outline,.outline .node-children{container-type:inline-size}
+@container(min-width:700px){
+ .outline .node:not(.is-folded)>.node-opening{display:grid;grid-template-columns:minmax(0,1fr) 250px;align-items:start}
+ .outline .node-opening>.node-content{min-width:0}
+ .outline .node:not(.is-folded)>.node-opening>.node-foot{justify-content:flex-end;align-items:center;padding:2px 12px 8px 4px;gap:2px 8px}
+ .outline .node-opening>.node-foot .cast-chips{justify-content:flex-end}
+}
+@media(max-width:680px){
+ #story-panel:has(.outline) .page-head{padding:14px 12px 8px;align-items:flex-start;flex-direction:column;gap:6px}
+ #story-panel:has(.outline) .page-head h1{font-size:24px}
+ #story-panel:has(.outline) .page-actions{width:100%;justify-content:flex-start;gap:0}
+ #story-panel:has(.outline) .page-actions .btn{padding:6px 8px;min-height:40px}
+ #story-panel:has(.outline) .plot-toolbar{gap:4px;margin-bottom:14px}
+}
+.outline .beat-development{flex:1 1 0;width:auto}
+.outline .beat-development>span{flex:none}
+.outline .beat-development .story-field-text{flex:1 1 0;width:100%}

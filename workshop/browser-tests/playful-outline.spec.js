@@ -18,7 +18,7 @@ test('selecting and editing a card keeps details closed, and the panel preferenc
  await title(page,'beat').fill('She follows the thief');await page.keyboard.press('Tab');
  await expect(page.locator('.workbench-grid')).toHaveClass(/details-hidden/);
  await card(page,'beat').locator('[data-action=select-node]').click();await expect(page.locator('.inspector').filter({visible:true})).toBeVisible();
- await page.locator('[data-action=collapse-inspector]').filter({visible:true}).click();
+ await page.locator('.inspector [data-action=collapse-inspector]').filter({visible:true}).click();
  await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await expect(title(page,'beat')).toHaveValue('She follows the thief');await expect(page.locator('.workbench-grid')).toHaveClass(/details-hidden/);
  await expect(page.locator('.tray-piece b')).toHaveText(['M','I','C','E','+']);
 });
