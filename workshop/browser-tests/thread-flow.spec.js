@@ -101,7 +101,7 @@ test('custom block labels persist through existing changes, edits, forks and rel
  const p=await snapshot(page);expect(p.characters[0].blocks[0].text).toBe('Safe');expect(p.characters[0].changes.find(x=>x.block.text==='Wanted by the law').block.label).toBe('Status');
 });
 
-test('the character timeline omits archived and deleted thread anchors while keeping explicit moments and restorable history',async({page})=>{
+test('character and chronology timelines omit archived and deleted anchors while keeping explicit moments and restorable history',async({page})=>{
  const data=fixture(),p=data.projects[0];p.nodes.push({...W.node('I'),id:'previously-deleted'});W.normalize(p);const removed=W.archiveNode(p,'previously-deleted');W.purgeArchive(p,[removed.id]);
  p.timeline.push({id:'backstory',key:'backstory:moment',nodeId:'',edge:'open',title:'Historical moment'});
  await load(page,data);const original=await snapshot(page),stops=page.locator('.time-strip');
@@ -110,12 +110,21 @@ test('the character timeline omits archived and deleted thread anchors while kee
  await page.locator('[data-nav=outline]').first().click();await card(page,'character').locator(':scope > .node-head [data-action=archive-node]').click();
  await page.locator('[data-nav=characters]').first().click();await expect(stops.locator('[data-id="character:close"]')).toHaveCount(0);await expect(stops.locator('[data-id="beat:open"]')).toHaveCount(0);await expect(stops.getByRole('button',{name:'Before the story The beginning',exact:true})).toHaveAttribute('aria-pressed','true');await expect(page.locator('.character-presence')).toContainText('At the beginning');
  await expect(stops.locator('[data-id="milieu:open"]')).toBeVisible();await expect(stops.locator('[data-id="backstory:moment"]')).toContainText('Historical moment');
+ await page.locator('[data-nav=outline]').first().click();await page.getByRole('tab',{name:'Chronology',exact:true}).click();
+ await expect(page.locator('.timeline-moment')).toHaveCount(3);
+ await expect(page.locator('.chronology-track')).not.toContainText('Archived piece');
+ await expect(page.locator('[data-moment-key="previously-deleted:open"]')).toHaveCount(0);
+ await expect(page.locator('[data-moment-key="backstory:moment"]')).toContainText('Historical moment');
+ await page.getByRole('button',{name:'Group by date',exact:true}).click();await expect(page.locator('.timeline-moment')).toHaveCount(3);
+ await page.getByRole('button',{name:'Story order',exact:true}).click();await page.getByRole('tab',{name:'Outline',exact:true}).click();
  let archived=await snapshot(page);expect(archived.timeline).toEqual(original.timeline);expect(archived.archive[0].changes).toHaveLength(2);
  await page.locator('[data-nav=archive]').first().click();await page.locator('[data-action=restore]').first().click();await page.locator('[data-nav=characters]').first().click();await expect(stops.locator('[data-id="character:close"]')).toBeVisible();expect((await snapshot(page)).characters[0].changes).toEqual(original.characters[0].changes);
  await page.locator('[data-nav=outline]').first().click();await card(page,'character').locator(':scope > .node-head [data-action=archive-node]').click();await page.locator('[data-nav=archive]').first().click();await page.locator('[data-action=purge-item]').first().click();await page.locator('#dialog').getByRole('button',{name:'Delete permanently',exact:true}).click();
  await page.locator('[data-nav=characters]').first().click();await expect(stops.locator('[data-id="character:close"]')).toHaveCount(0);await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await page.locator('[data-nav=characters]').first().click();
  await expect(stops.locator('[data-id="character:open"]')).toHaveCount(0);await expect(stops.locator('[data-id="previously-deleted:open"]')).toHaveCount(0);await expect(stops.locator('[data-id="backstory:moment"]')).toContainText('Historical moment');
  expect((await snapshot(page)).timeline.map(e=>e.id)).toEqual(original.timeline.map(e=>e.id));
+ await page.locator('[data-nav=outline]').first().click();await page.getByRole('tab',{name:'Chronology',exact:true}).click();await expect(page.locator('.timeline-moment')).toHaveCount(3);
+
 });
 
 test('outline and inspector Add change use the same editor and preserve the chosen endpoint',async({page})=>{
