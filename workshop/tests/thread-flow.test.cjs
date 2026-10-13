@@ -74,3 +74,8 @@ test('older saved fork outcomes remain visible in later arcs without a lineage f
  const later={...W.node('C'),id:'later',cast:['jun']};p.nodes.push(later);W.normalize(p);W.setArcCharacter(p,later,'jun');W.setArcState(p,later,'from',{blockId:'status',value:'Hunted'});W.setArcState(p,later,'to',{blockId:'status',value:'Free'});
  for(const edge of ['open','close'])assert.ok(W.recordedThreadStates(p,later,edge).some(x=>x.value==='Wanted'));W.validate(data);
 });
+test('closing titles survive validation and exports and become the title when removing a frame',()=>{
+ const {p,nodes,data}=fixture(),n=nodes[0];n.closingTitle='A fugitive chooses a side';n.closing='He accepts the mission.';
+ const restored=W.validate(JSON.parse(JSON.stringify(data)));assert.equal(restored.projects[0].nodes[0].closingTitle,n.closingTitle);assert.match(W.markdown(p),/Closes: A fugitive chooses a side/);
+ W.removeFrame(p,n.id);assert.ok(p.nodes.some(x=>x.type==='B'&&x.title==='A fugitive chooses a side'&&x.opening==='He accepts the mission.'));W.validate(data);
+});

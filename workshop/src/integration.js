@@ -206,6 +206,7 @@
             for(const v of [row.from,row.to,...(row.outcomes||[])]){if(!v||typeof v!=='object'||Array.isArray(v)||typeof v.text!=='string'||v.text.length>2000000||typeof v.blockId!=='string'||typeof v.linked!=='boolean'||v.blockId&&!/^[A-Za-z0-9_-]{1,120}$/.test(v.blockId))fail('Character thread states must contain text and a supported block link.');}
           }
         }
+        if(n.closingTitle!==undefined&&(typeof n.closingTitle!=='string'||n.closingTitle.length>1000))fail('Closing titles must be text within 1,000 characters.');
         if(n.closingProse!==undefined&&(typeof n.closingProse!=='string'||n.closingProse.length>2000000))fail('Closing prose must be text.');
         if(n.closingWritingStatus!==undefined&&!['draft','done'].includes(n.closingWritingStatus))fail('Invalid closing writing status.');
         const c=n.closingCraft;if(c===undefined)continue;
@@ -241,8 +242,8 @@
   function reading(p,{archived=false}={}){const nodes=new Map((archived?allNodes(p):p.nodes).map(n=>[n.id,n]));return p.readingOrder.map(id=>nodes.get(id)).filter(Boolean);}
   function reorder(p,collection,id,beforeId='') {const xs=collection==='timeline'?p.timeline:collection==='readingOrder'?p.readingOrder:collection==='readingSequence'?p.readingSequence:p.characters;const at=xs.findIndex(x=>(typeof x==='string'?x:x.key||x.id)===id);if(at<0)throw Error('That item no longer exists.');const dest=beforeId?xs.findIndex(x=>(typeof x==='string'?x:x.key||x.id)===beforeId):xs.length;if(dest<0)throw Error('That destination no longer exists.');const [item]=xs.splice(at,1);xs.splice(dest-(at<dest?1:0),0,item);if(collection==='readingSequence')p.readingOrder=xs.filter(key=>key.endsWith(':open')).map(key=>key.slice(0,-5));if(collection==='readingOrder'){const key=id+':open',at=p.readingSequence.indexOf(key);if(at>=0){p.readingSequence.splice(at,1);const dest=beforeId?p.readingSequence.indexOf(beforeId+':open'):p.readingSequence.length;p.readingSequence.splice(dest<0?p.readingSequence.length:dest,0,key);}}}
   function removeFrame(p,id){const n=p.nodes.find(n=>n.id===id);if(!n||n.type==='B')throw Error('Choose a thread frame.');const index=p.nodes.indexOf(n);for(const child of p.nodes)if(child.parentId===id)child.parentId=n.parentId;
-    if(n.closingProse||n.closingCraft){
-      const closing={...W.node('B',n.parentId),...copy(n.closingCraft||{}),title:(n.title||'Thread')+' · Closing',opening:n.closing,prose:n.closingProse||'',writingStatus:n.closingWritingStatus||'draft',plotIds:copy(n.plotIds||[])};
+    if(n.closingTitle||n.closingProse||n.closingCraft){
+      const closing={...W.node('B',n.parentId),...copy(n.closingCraft||{}),title:n.closingTitle||(n.title||'Thread')+' · Closing',opening:n.closing,prose:n.closingProse||'',writingStatus:n.closingWritingStatus||'draft',plotIds:copy(n.plotIds||[])};
       if(!n.closingCraft)closing.cast=copy(n.cast);
       p.nodes.splice(index+1,0,closing);
       const oldKey=n.id+':close',newKey=closing.id+':open';
@@ -252,7 +253,7 @@
       if(event)Object.assign(event,{key:newKey,nodeId:closing.id,edge:'open'});
       // Keep moment IDs and chronological positions; retarget key-based histories.
       const retime=o=>{if(!o||typeof o!=='object')return;if(Array.isArray(o)){o.forEach(retime);return;}for(const key of ['at','momentId'])if(o[key]===oldKey)o[key]=newKey;if(o.knownFrom)for(const id of Object.keys(o.knownFrom))if(o.knownFrom[id]===oldKey)o.knownFrom[id]=newKey;for(const [key,value] of Object.entries(o))if(!['source','migration','drafts','retiredPlanning','continuitySnapshot'].includes(key))retime(value);};retime(p);
-      delete n.closingProse;delete n.closingCraft;delete n.closingWritingStatus;
+      delete n.closingTitle;delete n.closingProse;delete n.closingCraft;delete n.closingWritingStatus;
     }
     // The writing remains a stable fragment, and both historical edges remain addressable.
     n.removedFrame={type:n.type,opening:n.opening,closing:n.closing};n.type='B';n.closing='';n.title ||= 'Writing from removed frame';p.nodes.splice(index,1,n);
@@ -707,8 +708,8 @@
     p=copy(p);for(const n of allNodes(p))if(n.type==='C'){n.characterArc=characterArc(p,n);n.title=pieceTitle(p,n);}
     const label=id=>[...allCharacters(p),...allWorld(p)].find(x=>x.id===id)?.name||id;
     const when=id=>{const e=W.events(p).find(e=>e.id===id||e.key===id);return e?((e.storyDate?e.storyDate+' · ':'')+(e.title||e.node.title)):id||'Opening';};
-    const lines=[baseMarkdown(p),'','## Version',p.version||'Main draft','','## Manuscript',...readingMoments(p).filter(e=>e.edge==='close'?e.node.closingProse:e.node.prose).flatMap(e=>['','### '+e.node.title+(e.edge==='close'?' · Closing':''),'',e.edge==='close'?e.node.closingProse:e.node.prose]),'','## Story chronology',...W.events(p).map(e=>'- '+when(e.id||e.key)+' · '+e.edge),'','## Scene craft'];
-    for(const e of readingMoments(p)){const n=e.edge==='close'?e.node.closingCraft:e.node;if(!n)continue;lines.push('','### '+(e.node.title||'Untitled')+(e.edge==='close'?' · Closing':''));for(const key of ['goal','purpose','context','entry','tension','stakes','development','turn','action','gain','cost','response','reaction','after','readerExpectation','next','exit','ideaNotes'])if(n[key])lines.push('**'+key.replace(/([A-Z])/g,' $1')+':** '+n[key]);if(n.beats?.length)lines.push('**Internal beats:**',...n.beats.map(b=>'- '+b));for(const [key,value] of Object.entries(n.refinement||{}))if(value)lines.push('**'+key.replace(/([A-Z])/g,' $1')+':** '+value);}
+    const lines=[baseMarkdown(p),'','## Version',p.version||'Main draft','','## Manuscript',...readingMoments(p).filter(e=>e.edge==='close'?e.node.closingProse:e.node.prose).flatMap(e=>['','### '+(e.edge==='close'&&e.node.closingTitle||e.node.title)+(e.edge==='close'?' · Closing':''),'',e.edge==='close'?e.node.closingProse:e.node.prose]),'','## Story chronology',...W.events(p).map(e=>'- '+when(e.id||e.key)+' · '+e.edge),'','## Scene craft'];
+    for(const e of readingMoments(p)){const n=e.edge==='close'?e.node.closingCraft:e.node;if(!n)continue;lines.push('','### '+(e.edge==='close'&&e.node.closingTitle||e.node.title||'Untitled')+(e.edge==='close'?' · Closing':''));for(const key of ['goal','purpose','context','entry','tension','stakes','development','turn','action','gain','cost','response','reaction','after','readerExpectation','next','exit','ideaNotes'])if(n[key])lines.push('**'+key.replace(/([A-Z])/g,' $1')+':** '+n[key]);if(n.beats?.length)lines.push('**Internal beats:**',...n.beats.map(b=>'- '+b));for(const [key,value] of Object.entries(n.refinement||{}))if(value)lines.push('**'+key.replace(/([A-Z])/g,' $1')+':** '+value);}
     for(const n of allNodes(p))for(const [edge,settings]of Object.entries(n.storyFields||{}))if(settings.custom.length)lines.push('','### '+(n.title||'Untitled')+' · '+edge.split(':')[1]+' fields',...settings.custom.map(f=>'**'+f.label+':** '+f.text));
     for(const n of allNodes(p))if(THREAD_FIELDS[n.type]&&n.threadPlans?.[n.type]){const a=threadPlan(n),labels=THREAD_FIELDS[n.type];lines.push('','### '+(n.title||W.TYPES[n.type].name)+' · Thread plan',labels.focus+': '+a.focus,labels.from+': '+a.from,labels.to+': '+[a.to,...a.outcomes.map(x=>x.text)].join(' / '));}
     lines.push('','## World rules and priorities',p.storyWorld.setting||'',p.storyWorld.reality||'',(p.storyWorld.tones||[]).join(', '),p.storyWorld.priorities||'',p.storyWorld.notes||'','## Author knowledge and reader disclosure','These notes may include secrets the reader or cast does not yet know.');

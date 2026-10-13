@@ -53,3 +53,14 @@ test('linking an ending state inline removes its redundant recorded field immedi
  await expect(closing.locator('[data-piece-state]')).toHaveCount(0);
  await expect(closing.locator('[data-arc-inline]').first()).toHaveValue('Wanted criminal');
 });
+test('thread closings have independent titles and immediately writable notes',async({page})=>{
+ await load(page,fixture());const before=await snapshot(page);
+ for(const n of before.nodes.filter(n=>n.type!=='B')){
+ const closing=page.locator(`[data-node="${n.id}"] > .closing`),title=closing.locator('[data-field=closingTitle]'),note=closing.locator('[data-field=closing]');
+ await expect(title).toBeVisible();await expect(note).toBeVisible();await expect(closing.getByRole('button',{name:'Add closing note',exact:true})).toHaveCount(0);
+ await title.fill('Resolution of '+n.id);await note.fill('The ending of '+n.id);await page.keyboard.press('Tab');
+ }
+ await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await page.locator('.story-viewbar').waitFor();
+ const after=await snapshot(page);for(const n of before.nodes.filter(n=>n.type!=='B'))expect(after.nodes.find(x=>x.id===n.id)).toMatchObject({title:n.title,closingTitle:'Resolution of '+n.id,closing:'The ending of '+n.id});
+ await page.getByRole('tab',{name:'Refine',exact:true}).click();await page.locator('.moment-navigation [data-id=event][data-edge=close]').click();await expect(page.getByRole('textbox',{name:'Closing title',exact:true})).toHaveValue('Resolution of event');
+});
