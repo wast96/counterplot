@@ -51,7 +51,7 @@ test('long outline titles wrap, save on Enter, and retain undo and reload behavi
  const title=page.locator('.node-title').first(),original=await title.inputValue();
  const value='Liu Jun follows the evidence through the old city and discovers why her father disappeared';
  await title.fill(value);await title.press('Enter');await expect(title).toHaveValue(value);
- const box=await title.boundingBox();expect(box.height).toBeGreaterThan(40);expect(await title.evaluate(el=>el.scrollWidth<=el.clientWidth+1)).toBe(true);
+ await expect.poll(async()=>(await title.boundingBox())?.height||0).toBeGreaterThan(40);expect(await title.evaluate(el=>el.scrollWidth<=el.clientWidth+1)).toBe(true);
  await page.locator('.topbar [data-action=undo]').click();await expect(title).toHaveValue(original);await page.locator('.topbar [data-action=redo]').click();await expect(title).toHaveValue(value);
  await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await expect(page.locator('.node-title').first()).toHaveValue(value);
 });
