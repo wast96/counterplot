@@ -50,7 +50,7 @@ test('drag previews describe the whole branch, identify the destination and canc
 test('piece menus fit above the MICE bar at phone and desktop sizes',async({page})=>{
  await load(page);
  for(const width of [320,390,900,1440]){
-  await page.setViewportSize({width,height:844});await menu(page,'train').click();const panel=card(page,'train').locator(':scope > .node-head .piece-menu-actions');await expect(panel).toBeVisible();
+  await page.setViewportSize({width,height:844});await menu(page,'train').click();const panel=card(page,'train').locator(':scope > .node-head .piece-menu-actions');await expect(panel).toBeVisible();await page.evaluate(()=>window.scrollBy(0,20));await expect(panel).toBeVisible();
   await expect.poll(async()=>{const r=await panel.boundingBox(),tray=await page.locator('.tray').boundingBox();return !!r&&r.x>=0&&r.x+r.width<=width+1&&r.y>=0&&r.y+r.height<=tray.y;}).toBe(true);
   await page.keyboard.press('Escape');
  }
