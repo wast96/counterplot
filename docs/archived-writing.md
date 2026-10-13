@@ -5,6 +5,13 @@ Their UI, stored prose, closing prose, statuses, reading settings, import/export
 
 To restore them, change the feature switch to `true`, run `npm run build:workshop`, and run the normal checks. This restores the two tabs, drafting buttons, original shortcut destinations, and writing tutorial steps together. Existing stories do not need migration.
 
-While archived, drafting shortcuts open Refine; old requests for Write or Read also resolve to Refine. Outline, Sequence, Choices, continuation creation, recovered drafts, and tutorial navigation remain usable. The practice guide omits goals that require prose editing without changing the stored lesson definitions.
+While archived, drafting shortcuts open Refine; old requests for Write or Read also resolve to Refine. Outline, Sequence, continuation creation, recovered drafts, and tutorial navigation remain usable. The practice guide omits goals that require prose editing without changing the stored lesson definitions.
 
 The retained implementations are `writing()` in `workshop/src/app.js` and `readingView()` in `workshop/src/integration-ui.js`. Regression tests call `workshop/browser-tests/archived-writing.cjs` to enable the switch only in their local browser response, updating its CSP hash. Production does not expose a hidden setting or browser-storage override.
+
+## Choices
+
+Choices is also retired from the navigation, behind `WORKSPACE_FEATURES.choices`.
+Its retained `choiceCard` renderer and regression can be restored with that switch.
+Former navigation requests resolve to Refine; goals, decisions, gains, costs, and
+other craft notes remain editable there. No story data is removed.

@@ -101,3 +101,21 @@ test('new forked outcomes inherit a custom label and independently named forks r
  W.setBlockLabel(p,c.id,fork.id,'Legal standing');W.setBlockLabel(p,c.id,b.id,'Social standing');
  assert.equal(W.stateAt(p,c,n.id+':close').find(x=>x.id===fork.id).label,'Legal standing');assert.equal(W.characterArc(p,n).changes[0].label,'Social standing');W.validate(data);
 });
+
+test('arc custom labels apply across linked states, later edits, inherited forks and restored backups',()=>{
+ const {data,p,n,c,b}=fixture();const row=W.characterArc(p,n).changes[0];
+ W.setArcState(p,n,'from',{rowId:row.id,value:'Innocent civilian',blockId:b.id,kind:'status',label:'Legal standing'});
+ W.setArcState(p,n,'to',{rowId:row.id,value:'Wanted criminal',blockId:b.id});
+ const outcomeId=W.addArcOutcome(p,n,row.id);W.setArcState(p,n,'to',{rowId:row.id,outcomeId,value:'Hunted',blockId:'new',kind:'status'});
+ const restored=W.validate(JSON.parse(JSON.stringify(data))),rp=restored.projects[0],arc=W.characterArc(rp,rp.nodes[0]);
+ assert.equal(arc.changes[0].label,'Legal standing');assert.equal(arc.changes[0].outcomes[0].text,'Hunted');
+ assert.ok(W.stateAt(rp,rp.characters[0],n.id+':close').filter(x=>x.kind==='status').every(x=>x.label==='Legal standing'));
+ assert.equal(c.blocks[0].text,'Innocent civilian');assert.equal(c.blocks[1].label,'');
+});
+test('custom type wording stays with blank states, new recorded blocks and groups',()=>{
+ const {data,p,n}=fixture();const id=W.addArcChange(p,n);W.setArcState(p,n,'from',{rowId:id,value:'',kind:'custom',label:'Trust in authority'});
+ W.setArcState(p,n,'from',{rowId:id,value:'Unquestioning',blockId:'new',kind:'custom'});assert.equal(W.characterArc(p,n).changes.at(-1).label,'Trust in authority');
+ const g={id:'group',name:'Collective',type:'group',notes:'',faction:{blocks:[],changes:[],checkpoints:[]}};p.world.push(g);W.normalize(p);W.setArcCharacter(p,n,g.id);
+ W.setArcState(p,n,'from',{value:'Local',blockId:'new',kind:'custom',label:'Reach'});const blockId=n.characterArc.changes[0].from.blockId;
+ W.setArcState(p,n,'to',{value:'National',blockId});W.validate(data);assert.equal(W.characterArc(p,n).changes[0].label,'Reach');assert.ok(W.factionAt(p,g,n.id+':close').every(b=>b.title==='Reach'));
+});
