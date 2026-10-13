@@ -27,7 +27,7 @@ test('an immediately focused state field keeps keyboard input when the next fram
 test('multiple modular changes edit independently, preserve history, accept blanks, and survive undo and reload',async({page})=>{
  await load(page);const h=header(page),before=await snapshot(page);
  await expect(h.locator('.arc-state')).toHaveCount(4);await expect(state(page,'from','state-allegiance')).toHaveValue('Neutral');await expect(state(page,'to')).toHaveValue('Communist agent');await expect(h.locator('[data-arc-subject]')).toHaveValue('ui-person');
- await expect(page.locator('[data-node=ui-node-0] > .node-head input.node-title')).toBeVisible();
+ await expect(page.locator('[data-node=ui-node-0] > .node-head .node-title')).toBeVisible();
  await edit(page,'to');await page.getByRole('textbox',{name:'State · optional',exact:true}).fill('Independent agent');await page.getByRole('button',{name:'Keep state',exact:true}).click();
  await expect(state(page,'to')).toHaveValue('Independent agent');let p=await snapshot(page);expect(p.characters[0].blocks).toEqual(before.characters[0].blocks);expect(p.characters[0].changes[1]).toEqual(before.characters[0].changes[1]);expect(p.nodes[0].cast).toEqual(['ui-person','ui-other']);
  await page.locator('.topbar [data-action=undo]').click();await expect(state(page,'to')).toHaveValue('Communist agent');await page.locator('.topbar [data-action=redo]').click();

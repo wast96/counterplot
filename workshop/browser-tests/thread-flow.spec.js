@@ -10,6 +10,16 @@ async function load(page,data=fixture()){await page.goto('/');await expect(page.
 const snapshot=page=>page.evaluate(()=>{const d=CounterplotTutorial.snapshot();return d.projects.find(p=>p.id===d.active);});
 const card=(page,id)=>page.locator(`[data-node=${id}]`);
 function dragFixture(){const data=fixture(),p=data.projects[0];p.nodes.find(n=>n.id==='beat').parentId='character';p.nodes.push({...W.node('B','event'),id:'inner',title:'Inside the event'});W.normalize(p);return data;}
+test('sibling beats advancing the same outer thread stay aligned after a drag animation, resize and reload',async({page})=>{
+ const data=dragFixture(),p=data.projects[0];W.setAdvancedThreads(p,p.nodes.find(n=>n.id==='inner'),['character']);await load(page,data);
+ await page.evaluate(()=>{const source=document.querySelector('[data-drag=node][data-drag-id=beat]'),target=document.querySelector('[data-node=event] > .closing'),transfer=new DataTransfer();source.dispatchEvent(new DragEvent('dragstart',{bubbles:true,dataTransfer:transfer}));target.dispatchEvent(new DragEvent('dragover',{bubbles:true,cancelable:true,dataTransfer:transfer}));target.dispatchEvent(new DragEvent('drop',{bubbles:true,cancelable:true,dataTransfer:transfer}));});
+ for(const id of ['beat','inner'])await expect(card(page,id)).toHaveAttribute('data-flow-owner','character');
+ await card(page,'beat').evaluate(async el=>{await Promise.all(el.getAnimations().map(animation=>animation.finished));});
+ const alignment=()=>page.evaluate(()=>{const left=id=>document.querySelector(`[data-node="${id}"]`).getBoundingClientRect().left,target=document.querySelector('[data-node=character] > .node-children').getBoundingClientRect().left;return Math.max(Math.abs(left('beat')-left('inner')),Math.abs(left('beat')-target));});
+ await expect.poll(alignment).toBeLessThan(2);
+ for(const width of [320,390,900,1440]){await page.setViewportSize({width,height:1000});await expect.poll(alignment).toBeLessThan(2);expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width+1);}
+ await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await expect(card(page,'beat')).toBeVisible();await expect.poll(alignment).toBeLessThan(2);
+});
 test('dragging a character beat onto a nested closing keeps its larger arc with undo and reload',async({page})=>{
  await load(page,dragFixture());const before=await snapshot(page);
  await page.evaluate(()=>{const source=document.querySelector('[data-drag=node][data-drag-id=beat]'),target=document.querySelector('[data-node=event] > .closing');window.testDragData=new DataTransfer();source.dispatchEvent(new DragEvent('dragstart',{bubbles:true,dataTransfer:testDragData}));target.dispatchEvent(new DragEvent('dragover',{bubbles:true,cancelable:true,dataTransfer:testDragData}));});
