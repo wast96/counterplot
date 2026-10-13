@@ -35,10 +35,14 @@ test('the details editor distinguishes Development from the beat plan and mirror
  expect((await snapshot(page)).nodes.find(n=>n.id==='beat').development).toBe(n.development);
 });
 
-test('story fields grow while typing even without native content sizing',async({page})=>{
- await load(page,fixture());await page.addStyleTag({content:'.thread-word input{field-sizing:fixed!important;width:var(--state-chars)!important}'});
- const field=page.locator('[data-node=beat] [data-field=development]');await field.fill('Help');const short=(await field.boundingBox()).width;
- await field.fill('The police refuse to hear her accusation');expect((await field.boundingBox()).width).toBeGreaterThan(short+20);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+test('Development wraps long text without clipping while typing or resizing',async({page})=>{
+ await load(page,fixture());const field=page.locator('[data-node=beat] [data-field=development]');
+ await field.fill('Help');const short=(await field.boundingBox()).height;
+ const text='She questions the officers and realizes that the system may not be perfect. '.repeat(8);await field.fill(text);
+ expect((await field.boundingBox()).height).toBeGreaterThan(short+20);
+ for(const width of [320,390,900,1440]){await page.setViewportSize({width,height:1000});await expect.poll(()=>field.evaluate(el=>el.scrollWidth<=el.clientWidth+1&&el.scrollHeight<=el.clientHeight+1)).toBe(true);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);}
+ await page.keyboard.press('Tab');await expect(field).toHaveValue(text);await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await expect(field).toHaveValue(text);
+ await page.screenshot({path:'/tmp/development-'+test.info().project.name+'.png',fullPage:true});
 });
 
 test('leaving mobile details clears its old editor controls',async({page})=>{

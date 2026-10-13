@@ -234,7 +234,7 @@ const Workshop = (() => {
   }
   function removePlot(p,id){p.plots=(p.plots||[]).filter(x=>x.id!==id);for(const n of [...p.nodes,...p.archive.flatMap(a=>a.nodes||[])])n.plotIds=(n.plotIds||[]).filter(x=>x!==id);}
 
-  function shelfEmpty(p){return !!p.shelfPlaceholder&&p.title==='Untitled story'&&!p.subtitle&&!p.notes&&!p.nodes.length&&!p.characters.length&&!p.world.length&&!p.connections.length&&!p.archive.length&&!(p.references||[]).length&&!(p.plots||[]).length;}
+  function shelfEmpty(p){return !!p.shelfPlaceholder&&p.title==='Untitled story'&&!p.subtitle&&!p.notes&&!p.nodes.length&&!p.characters.length&&!p.world.length&&!p.connections.length&&!p.archive.length&&!(p.references||[]).length&&!(p.plots||[]).length&&!(p.scenes||[]).length;}
   function shelfProjects(data){return data.projects.filter(p=>!shelfEmpty(p));}
   function trashProject(data,id){
     const pr=data.projects.find(p=>p.id===id);if(!pr||shelfEmpty(pr))throw Error('That story is no longer on the shelf.');

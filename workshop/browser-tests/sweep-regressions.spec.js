@@ -3,7 +3,7 @@ const {fixture,load}=require('../../docs/audits/2026-10-13-beat-board-sweep/audi
 const snapshot=page=>page.evaluate(()=>{const d=CounterplotTutorial.snapshot();return d.projects.find(p=>p.id===d.active);});
 test('Refine details record changes at the selected closing, including after visiting a board',async({page})=>{
  await load(page,fixture());await page.getByRole('tab',{name:'Refine',exact:true}).click();await page.locator('.moment-navigation [data-id=event][data-edge=close]').click();
- await page.locator('.refine-moment-tools [data-action=board-node]').click();await page.getByRole('button',{name:'Refine this scene',exact:true}).click();
+ await page.locator('.refine-moment-tools [data-action=board-node]').click();if(await page.getByRole('button',{name:'Include in scene',exact:true}).isVisible())await page.getByRole('button',{name:'Include in scene',exact:true}).click();await page.getByRole('button',{name:'Refine this piece',exact:true}).click();
  await page.getByRole('button',{name:'Show details',exact:true}).click();const action=page.locator('.inspector [data-action=record-piece-state]');await expect(action).toHaveAttribute('data-at','event:close');await action.click();
  await page.locator('#dialog [name=source]').selectOption('block:jun:belief');await page.getByRole('textbox',{name:'New state',exact:true}).fill('She has lost trust in the police');await page.getByRole('button',{name:'Keep change',exact:true}).click();
  const change=(await snapshot(page)).characters[0].changes.find(x=>x.block?.text==='She has lost trust in the police');expect(change.at).toBe('event:close');
@@ -62,5 +62,12 @@ test('thread closings have independent titles and immediately writable notes',as
  }
  await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await page.locator('.story-viewbar').waitFor();
  const after=await snapshot(page);for(const n of before.nodes.filter(n=>n.type!=='B'))expect(after.nodes.find(x=>x.id===n.id)).toMatchObject({title:n.title,closingTitle:'Resolution of '+n.id,closing:'The ending of '+n.id});
- await page.getByRole('tab',{name:'Refine',exact:true}).click();await page.locator('.moment-navigation [data-id=event][data-edge=close]').click();await expect(page.getByRole('textbox',{name:'Closing title',exact:true})).toHaveValue('Resolution of event');
+ await page.getByRole('tab',{name:'Refine',exact:true}).click();await page.locator('.moment-navigation [data-id=event][data-edge=close]').click();await expect(page.getByRole('textbox',{name:'Closing title',exact:true})).toHaveValue('Resolution of event');for(const view of ['Sequence','Chronology']){await page.getByRole('tab',{name:view,exact:true}).click();await expect(page.locator('[data-moment-key="event:close"] h2')).toHaveText('Resolution of event');}
+});
+test('collapsed threads show only the beats developing them, including explicit nested links',async({page})=>{
+ const W=require('../src/integration.js'),data=fixture(),p=data.projects[0],arc=p.nodes.find(n=>n.id==='arc'),beat=p.nodes.find(n=>n.id==='beat');
+ W.setAdvancedThreads(p,beat,[arc.id]);const unrelated={...W.node('B',beat.parentId),id:'unrelated',title:'Only develops the inner thread'},direct={...W.node('B',arc.id),id:'direct',title:'Develops the outer thread'};p.nodes.push(unrelated,direct);W.normalize(p);
+ await load(page,data);await page.locator('[data-node=arc] > .node-head [data-action=fold]').click();
+ const summary=page.locator('[data-node=arc] > .collapsed-thread-beats');await expect(summary).toBeVisible();await expect(summary.locator('[data-action=reveal-thread-beat]')).toHaveCount(2);await expect(summary).toContainText(beat.title);await expect(summary).toContainText(direct.title);await expect(summary).not.toContainText(unrelated.title);
+ await summary.locator('[data-id=beat]').click();await expect(page.locator('[data-node=beat]')).toBeVisible();await expect(summary).toHaveCount(0);
 });

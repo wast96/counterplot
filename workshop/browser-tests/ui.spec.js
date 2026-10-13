@@ -16,10 +16,10 @@ test('life status and prominence stay with the character and follow the selected
 });
 test('story tabs expose selection and keyboard navigation independently of actions',async({page})=>{
  await page.goto('/');const tabs=page.getByRole('tablist',{name:'Story views'}).getByRole('tab');
- const stages=['Outline','Chronology','Sequence','Refine','Beat board'];await expect(tabs).toHaveText(stages);
+ const stages=['Outline','Chronology','Sequence','Refine','Scene constructor'];await expect(tabs).toHaveText(stages);
  const outline=page.getByRole('tab',{name:'Outline',exact:true});await outline.focus();
  for(const name of stages.slice(1)){await page.keyboard.press('ArrowRight');const tab=page.getByRole('tab',{name,exact:true});await expect(tab).toBeFocused();await expect(tab).toHaveAttribute('aria-selected','true');await expect(page.getByRole('tabpanel')).toHaveAttribute('aria-labelledby',await tab.getAttribute('id'));}
- await page.keyboard.press('Home');await expect(outline).toBeFocused();await page.keyboard.press('End');await expect(page.getByRole('tab',{name:'Beat board',exact:true})).toBeFocused();await expect(page.locator('.page-head h1')).toHaveText('Beat board');
+ await page.keyboard.press('Home');await expect(outline).toBeFocused();await page.keyboard.press('End');await expect(page.getByRole('tab',{name:'Scene constructor',exact:true})).toBeFocused();await expect(page.locator('.page-head h1')).toHaveText('Scene constructor');
 
  await page.locator('.story-tools-menu>summary').click();await action(page,'outline-text').click();await expect(page.locator('#dialog textarea[name=outline]')).toBeVisible();
 });
