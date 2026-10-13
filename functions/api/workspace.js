@@ -70,15 +70,20 @@ export async function onRequestPut(context) {
 
     const revision = expected + 1;
     const now = new Date().toISOString();
+    // Cleanup can race between reading a manifest and publishing it. Recheck
+    // every part inside the same transaction that installs the new revision.
+    const parts = JSON.stringify(body.manifest?.chunks || []);
+    const partsPresent = `NOT EXISTS (SELECT 1 FROM json_each(?) part
+      WHERE NOT EXISTS (SELECT 1 FROM workspace_chunks c WHERE c.user_id = ? AND c.hash = part.value))`;
     const write = current
       ? context.env.DB.prepare(`
           UPDATE workspaces SET workspace_json = ?, revision = ?, last_write_id = ?, updated_at = ?
-          WHERE user_id = ? AND revision = ?
-        `).bind(workspaceJson, revision, body.writeId, now, user.id, expected)
+          WHERE user_id = ? AND revision = ? AND ${partsPresent}
+        `).bind(workspaceJson, revision, body.writeId, now, user.id, expected, parts, user.id)
       : context.env.DB.prepare(`
           INSERT INTO workspaces (user_id, workspace_json, revision, last_write_id, updated_at)
-          VALUES (?, ?, ?, ?, ?) ON CONFLICT(user_id) DO NOTHING
-        `).bind(user.id, workspaceJson, revision, body.writeId, now);
+          SELECT ?, ?, ?, ?, ? WHERE ${partsPresent} ON CONFLICT(user_id) DO NOTHING
+        `).bind(user.id, workspaceJson, revision, body.writeId, now, parts, user.id);
     // D1 batches are transactional: the current save and recovery copy commit together.
     const results = await context.env.DB.batch([
       write,
@@ -100,6 +105,7 @@ export async function onRequestPut(context) {
         SELECT workspace_json, revision, last_write_id, updated_at FROM workspaces WHERE user_id = ?
       `).bind(user.id).first();
       if (latest?.last_write_id === body.writeId) return json({ ok: true, owner: user.id, revision: latest.revision });
+      if ((latest?.revision || 0) === expected) return json({ error: 'Temporary uploads were cleared before this save finished. Retry saving the latest library.', code: 'missing-chunk' }, 409);
       return json(await responseFor(context.env, user.id, latest), 409);
     }
 
