@@ -131,8 +131,8 @@ test('selected nested beats keep their position when hovered',async({page})=>{
  await load(page);
  const beat=card(page,'beat');
  await beat.getByRole('button',{name:'Edit details for A target on her back',exact:true}).click();
- if(await page.locator('#details-sheet').isVisible())await page.keyboard.press('Escape');
- await beat.locator(':scope > .node-head').scrollIntoViewIfNeeded();
+ if(await page.locator('#details-sheet').isVisible()){await page.keyboard.press('Escape');await expect(page.locator('#details-sheet')).not.toBeVisible();}
+ await beat.locator(':scope > .node-head').hover();
  await page.mouse.move(0,0);
  const before=await beat.boundingBox();
  await beat.locator(':scope > .node-head').hover();
