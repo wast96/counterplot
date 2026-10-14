@@ -983,15 +983,12 @@ body:has(.story-tools-menu[open]) #toast,body:has(.account-menu[open]) #toast{op
 .outline :is(.story-field-text,.arc-state-text,.beat-state-after):is(:hover,:focus){border-bottom-color:var(--accent)}
 .outline :is(.thread-word>span,.arc-state-label){font-size:11px;color:var(--muted);font-weight:450}
 .outline .thread-plan-fields{gap:4px 10px;margin-bottom:3px}
-.outline .node:not(.selected)>.node-opening>.node-content>.thread-plan-fields>.optional-empty:not(:focus-within),.outline .node:not(.selected)>.closing .optional-empty:not(:focus-within){display:none}
-.outline .node:not(.selected)>.node-opening>.node-content>.thread-plan-fields>.optional-empty:has(textarea:not(:placeholder-shown)),.outline .node:not(.selected)>.closing .optional-empty:has(textarea:not(:placeholder-shown)){display:flex}
 .outline .node .story-fields-launch{font-size:0;padding:4px;min-width:28px;min-height:28px}
 .outline .node .story-fields-launch::after{content:'⋯';font:20px var(--sans)}
 .outline .node:not(.selected)>.node-opening :is(.thread-plan-fields,.character-arc-heading) :is(.story-fields-launch,.thread-note-launch,.arc-add-change,.arc-state-options,.arc-fork),.outline .node:not(.selected)>.closing :is(.story-fields-launch,.arc-state-options,.arc-fork){opacity:0}
 .outline .node :is(.node-foot,.thread-plan-fields,.character-arc-heading,.closing):is(:hover,:focus-within) :is(.add-cast,.beat-add-change,.closing-add-change,.story-fields-launch,.thread-note-launch,.arc-add-change,.arc-state-options,.arc-fork){opacity:1}
 .outline .closing{background:color-mix(in srgb,var(--tint),var(--panel) 80%);border-top:1px solid color-mix(in srgb,var(--accent),transparent 82%);border-radius:0 0 8px 8px;padding-block:8px}
 .outline .closing-label{font:10px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-.outline .node:not(.selected)>.closing .closing-title:placeholder-shown{display:none}
 .folded-count{font:11px var(--mono);color:var(--muted);margin:0 14px 8px 42px}
 .outline .is-folded{box-shadow:0 3px 0 -1px var(--panel),0 4px 0 -1px var(--line)}
 .outline .is-folded>.collapsed-thread-beats{margin-block:8px}
@@ -1035,9 +1032,6 @@ body:not(.drag-active) .outline .node-children>.insert-slot:last-child{min-heigh
 }
 
 .outline :is(.thread-word>span,.arc-state-label,.outline-count,.folded-count){color:#59695e}
-/* Empty optional rows need no space until their piece is selected. */
-.outline .node:not(.selected)>.node-opening>.node-content>.thread-plan-fields:not(:has(textarea:not(:placeholder-shown))){display:none}
-.outline .node:not(.selected)>.closing .thread-plan-fields:not(:has(textarea:not(:placeholder-shown))){display:none}
 @media(min-width:1191px){body:has(.details-hidden .outline) .tray{left:calc(206px + (100vw - 206px)/2)}}
 @media(min-width:981px) and (max-width:1190px){body:has(.details-hidden .outline) .tray{left:calc(180px + (100vw - 180px)/2)}}
 

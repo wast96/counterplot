@@ -9,6 +9,24 @@ function fixture(){
 async function load(page,data=fixture()){await page.goto('/');await expect(page.locator('.story-viewbar')).toBeVisible();await page.locator('#import-file').setInputFiles({name:'flow.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(data))});await page.locator('[data-action=accept-import]').click();await expect(page.locator('#dialog')).not.toBeVisible();}
 const snapshot=page=>page.evaluate(()=>{const d=CounterplotTutorial.snapshot();return d.projects.find(p=>p.id===d.active);});
 const card=(page,id)=>page.locator(`[data-node=${id}]`);
+test('empty thread fields and closing titles remain visible when focus moves elsewhere',async({page})=>{
+ await load(page);
+ for(const width of [320,768,1440]){
+  await page.setViewportSize({width,height:1000});
+  const milieu=card(page,'milieu');
+  await card(page,'character').locator(':scope > .node-head .node-title').click();
+  for(const [id,labels] of [['milieu',['Milieu World','Milieu Entering','Milieu Leaving']],['mystery',['Inquiry Question','Inquiry Known','Inquiry Answer']],['event',['Event Before','Event Disruption','Event Resolution']]]){
+   for(const label of labels)await expect(card(page,id).getByRole('textbox',{name:label,exact:true})).toBeVisible();
+   await expect(card(page,id).locator(':scope > .closing .closing-title')).toBeVisible();
+  }
+  const height=await milieu.evaluate(el=>el.getBoundingClientRect().height);
+  await milieu.getByRole('textbox',{name:'Milieu World',exact:true}).click();
+  await expect.poll(()=>milieu.evaluate(el=>el.getBoundingClientRect().height)).toBeCloseTo(height,0);
+  await card(page,'character').locator(':scope > .node-head .node-title').click();
+  await expect.poll(()=>milieu.evaluate(el=>el.getBoundingClientRect().height)).toBeCloseTo(height,0);
+ }
+ await page.reload();await expect(card(page,'milieu').getByRole('textbox',{name:'Milieu World',exact:true})).toBeVisible();
+});
 test('Milieu context shares one compact group without repeating linked settings',async({page})=>{
  await load(page);const milieu=card(page,'milieu'),row=milieu.locator(':scope > .node-opening > .node-foot > .cast-chips');
  await expect(milieu.locator('[data-action=edit-world][data-id=harbor]')).toHaveCount(1);await expect(row.getByRole('button',{name:'Open setting: The harbor',exact:true})).toBeVisible();await expect(milieu.locator(':scope > .milieu-world')).toHaveCount(0);

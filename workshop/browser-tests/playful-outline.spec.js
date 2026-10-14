@@ -22,8 +22,8 @@ test('selecting and editing a card keeps details closed, and the panel preferenc
  await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await expect(title(page,'beat')).toHaveValue('She follows the thief');await expect(page.locator('.workbench-grid')).toHaveClass(/details-hidden/);
  await expect(page.locator('.tray-piece b')).toHaveText(['M','I','C','E','+']);
 });
-test('empty fields reveal on selection, authored fields remain readable, and optional closing notes save',async({page})=>{
- await load(page);await title(page,'train').click();await expect(card(page,'beat').getByRole('textbox',{name:'Beat Development',exact:true})).not.toBeVisible();
+test('empty and authored fields remain readable regardless of selection, and optional closing notes save',async({page})=>{
+ await load(page);await title(page,'train').click();await expect(card(page,'beat').getByRole('textbox',{name:'Beat Development',exact:true})).toBeVisible();
  await title(page,'beat').click();await card(page,'beat').getByRole('textbox',{name:'Beat Development',exact:true}).fill('The thief leaves a blood pearl behind.');await title(page,'city').click();
  await expect(card(page,'beat').getByRole('textbox',{name:'Beat Development',exact:true})).toHaveValue('The thief leaves a blood pearl behind.');await expect(card(page,'train').getByRole('textbox',{name:'Event Before',exact:true})).toBeVisible();
  await menu(page,'train').click();await card(page,'train').locator(':scope > .node-head [data-action=reveal-thread-note][data-edge=close]').click();
