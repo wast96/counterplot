@@ -49,3 +49,6 @@
  #dialog form[data-form=block-folder] .dialog-foot>.btn{padding:8px 10px;font-size:12px;gap:6px}
  #dialog form[data-form=block-folder] .dialog-foot>.primary{grid-column:2;margin-left:0}
 }
+@media(max-width:420px){
+ .character-studio .character-tools .segmented small{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+}

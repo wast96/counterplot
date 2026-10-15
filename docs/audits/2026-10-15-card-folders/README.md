@@ -21,6 +21,7 @@ The header is 42px tall on desktop/tablet and 44px at phone widths. It contains 
 - Eight browser scenarios cover the primary workflows, keyboard behavior, persistence, unchanged history, bulk search, drag movement, and narrow-width geometry. Chromium runs desktop, phone, and tablet projects; Firefox and WebKit run desktop workflows. Desktop-only drag scenarios are deliberately skipped in touch projects, which exercise the Move card control.
 - `npm test`, `npm run test:workshop`, and `npm run check` pass locally.
 - The separate visual audit tests normal and dense cards at 320, 390, 768, 1024, 1440, and 1920px, across the card view and both folder dialogs: **36 layout checks** with no horizontal overflow, clipped controls, or page errors. Nine axe scans report no WCAG A/AA violations. Automated checks supplement visual inspection; they are not a claim of exhaustive accessibility certification.
+- The wider browser run also caught plot-tab scrolling resetting during a quick outline edit. The renderer now captures the live scroll position before replacing the toolbar and ignores events from detached toolbars. A deterministic browser regression covers the race.
 - Full repository browser checks run on the pull request before merge.
 
 [Layout measurements](layout-results.json) · [Reproducible audit](audit.cjs) · [Browser regressions](../../../workshop/browser-tests/block-folders.spec.js) · [Model regressions](../../../workshop/tests/block-folders.test.cjs)

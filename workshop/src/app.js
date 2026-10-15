@@ -73,6 +73,8 @@ function render(){
  if(!['outline','sequence','chronology','choices'].includes(ui.mode)){ui.bulkMode=false;ui.bulkIds.clear();}
   if((!WORKSPACE_FEATURES.drafting&&['write','read'].includes(ui.mode))||(!WORKSPACE_FEATURES.choices&&ui.mode==='choices'))ui.mode='refine';
   if(ui.plot&&!(p().plots||[]).some(x=>x.id===ui.plot))ui.plot='';
+  // Read the live position before replacing the DOM; scroll events can arrive later.
+  ui.plotScrollLeft=$('.plot-scroll nav')?.scrollLeft??ui.plotScrollLeft;
   const scrollPositions=['.time-strip','.cast-dock','.sidebar','.character-tabs','.story-viewbar nav','.moment-navigation'].map(selector=>{const el=$(selector);return [selector,el?.scrollLeft||0,el?.scrollTop||0]});
   if(!node(ui.selected))ui.selected=p().nodes[0]?.id||'';
   if(!person(ui.character))ui.character=p().characters[0]?.id||'';

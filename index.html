@@ -1272,6 +1272,9 @@ textarea.draft-title{display:block;width:100%;resize:none;overflow:hidden;white-
  #dialog form[data-form=block-folder] .dialog-foot>.btn{padding:8px 10px;font-size:12px;gap:6px}
  #dialog form[data-form=block-folder] .dialog-foot>.primary{grid-column:2;margin-left:0}
 }
+@media(max-width:420px){
+ .character-studio .character-tools .segmented small{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+}
 
 /* Learner guide: a stable dock, no automatic tooltip replacement, no elevated drop layers. */
 #tutorial-companion{position:fixed;z-index:420;display:flex;flex-direction:column;color:#273a31;font:var(--guide-size,13px)/1.5 system-ui,sans-serif;text-align:left;box-sizing:border-box;overflow:hidden;box-shadow:0 8px 30px #13271c26;border:1px solid #aab9a2;border-radius:12px;background:var(--guide-background,#fffdf5)}
@@ -4437,6 +4440,8 @@ function render(){
  if(!['outline','sequence','chronology','choices'].includes(ui.mode)){ui.bulkMode=false;ui.bulkIds.clear();}
   if((!WORKSPACE_FEATURES.drafting&&['write','read'].includes(ui.mode))||(!WORKSPACE_FEATURES.choices&&ui.mode==='choices'))ui.mode='refine';
   if(ui.plot&&!(p().plots||[]).some(x=>x.id===ui.plot))ui.plot='';
+  // Read the live position before replacing the DOM; scroll events can arrive later.
+  ui.plotScrollLeft=$('.plot-scroll nav')?.scrollLeft??ui.plotScrollLeft;
   const scrollPositions=['.time-strip','.cast-dock','.sidebar','.character-tabs','.story-viewbar nav','.moment-navigation'].map(selector=>{const el=$(selector);return [selector,el?.scrollLeft||0,el?.scrollTop||0]});
   if(!node(ui.selected))ui.selected=p().nodes[0]?.id||'';
   if(!person(ui.character))ui.character=p().characters[0]?.id||'';
@@ -5531,7 +5536,7 @@ document.addEventListener('input',e=>{if(e.target.id==='refine-picker-search')re
 document.addEventListener('change',e=>{const el=e.target;if(el.name==='refine-link-kind'){renderRefinePicker();return;}if(!el.dataset.refineRole&&!el.dataset.refinePov)return;mutate('Updated people',()=>{const c=refineTarget(el.dataset.id,el.dataset.edge,true);if(el.dataset.refinePov){c.povId=el.value;c.focus=el.value;}else{c.ensemble||=[];const role=c.ensemble.find(x=>x.id===el.dataset.refineRole);if(role)role.role=el.value;else c.ensemble.push({id:el.dataset.refineRole,role:el.value});}},{rerender:false,notify:false});});
 
 let plotScrollObserver;
-function updatePlotOverflow(nav){const wrapper=nav.parentElement;wrapper.classList.toggle('can-scroll-left',nav.scrollLeft>2);wrapper.classList.toggle('can-scroll-right',nav.scrollLeft+nav.clientWidth<nav.scrollWidth-2);ui.plotScrollLeft=nav.scrollLeft;}
+function updatePlotOverflow(nav){if(!nav.isConnected)return;const wrapper=nav.parentElement;wrapper.classList.toggle('can-scroll-left',nav.scrollLeft>2);wrapper.classList.toggle('can-scroll-right',nav.scrollLeft+nav.clientWidth<nav.scrollWidth-2);ui.plotScrollLeft=nav.scrollLeft;}
 function syncPlotToolbar(){
  plotScrollObserver?.disconnect();const nav=$('.plot-scroll nav');if(!nav)return;
  nav.scrollLeft=ui.plotScrollLeft||0;updatePlotOverflow(nav);
