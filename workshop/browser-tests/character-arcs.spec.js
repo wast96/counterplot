@@ -80,7 +80,18 @@ test('titles and inline states edit independently, with starting states above be
  const changes=beat.locator('.beat-states');await expect(changes).toContainText('Innocent civilian');await expect(changes.getByRole('textbox',{name:/Liu Jun/})).toHaveValue('Wanted by the law');await expect(changes).toContainText('Hidden');await expect(changes.getByRole('textbox',{name:/blood pearl/})).toHaveValue('Discovered');
  await changes.getByRole('textbox',{name:/Liu Jun/}).fill('Hunted across the city');await changes.getByRole('textbox',{name:/Liu Jun/}).press('Enter');p=await snapshot(page);expect(p.characters[0].changes.find(x=>x.id==='beat-status').block.text).toBe('Hunted across the city');expect(p.characters[0].changes[0].block.text).toBe('An independent agent');
  await page.locator('.topbar [data-action=undo]').click();await expect(beat.locator('.beat-states textarea').first()).toHaveValue('Wanted by the law');await expect(title).toHaveValue('The making of an agent');
- for(const width of [320,390,900,1440]){await page.setViewportSize({width,height:1000});expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width+1);if(width===1440){expect((await start.boundingBox()).height).toBeLessThan(95);const last=await root.locator(':scope > .closing').boundingBox();expect(last.y+last.height).toBeLessThan(1150);for(const fields of await root.locator('.beat-plan-fields').filter({visible:true}).all())expect((await fields.boundingBox()).height).toBeLessThan(65);}}
+ for(const width of [320,390,900,1440]){
+  await page.setViewportSize({width,height:1000});await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width+1);
+  if(width===1440){
+   // Crossing the phone breakpoint rebuilds the outline. Retry measurements
+   // if that render detaches a node while WebKit resolves its bounding box.
+   await expect(async()=>{
+    const first=await start.boundingBox();expect(first).not.toBeNull();expect(first.height).toBeLessThan(95);
+    const last=await root.locator(':scope > .closing').boundingBox();expect(last).not.toBeNull();expect(last.y+last.height).toBeLessThan(1150);
+    for(const fields of await root.locator('.beat-plan-fields').filter({visible:true}).all()){const box=await fields.boundingBox();expect(box).not.toBeNull();expect(box.height).toBeLessThan(65);}
+   }).toPass({timeout:5000});
+  }
+ }
  const scan=await new AxeBuilder({page}).include('#main').withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(scan.violations.map(x=>({id:x.id,targets:x.nodes.map(n=>n.target)}))).toEqual([]);
  await expect(page.locator('#save-status')).toContainText('Saved on this device');await state(page,'to','state-allegiance').fill('Communist organizer');await expect.poll(async()=>(await snapshot(page)).characters[0].changes[1].block.text).toBe('Communist organizer');await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await expect(state(page,'to','state-allegiance')).toHaveValue('Communist organizer');await expect(header(page).locator(':scope > .node-head .node-title')).toHaveValue('The making of an agent');await expect(state(page,'to')).toHaveValue('An independent agent');await page.setViewportSize({width:test.info().project.name==='mobile'?390:1440,height:1000});await page.screenshot({path:'/tmp/compact-flow-'+test.info().project.name+'.png',fullPage:true});
 });
