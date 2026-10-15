@@ -171,6 +171,13 @@ const Workshop = (() => {
       const previous = p.nodes.find(n => n.id === a.previousId && n.parentId === root.parentId);
       if (previous) move(p, root.id, previous.id, 'after'); else if (children(p, root.parentId).find(n => n.id !== root.id)) move(p, root.id, children(p, root.parentId).find(n => n.id !== root.id).id, 'before');
       for (const { characterId, archiveBlockId, change } of a.changes) { const c = (archiveBlockId && p.archive.find(x => x.id === archiveBlockId)) || p.characters.find(c => c.id === characterId) || p.archive.find(x => x.kind === 'character' && x.item.id === characterId)?.item; if (c) { c.changes ||= []; if (!c.changes.some(x => x.id === change.id)) c.changes.push(copy(change)); } }
+     } else if (a.kind === 'scene') {
+      p.scenes ||= [];if(p.scenes.some(s=>s.id===a.item.id))throw Error('This scene already exists.');p.scenes.splice(Math.min(a.index||0,p.scenes.length),0,copy(a.item));
+    } else if (a.kind === 'scene-beat') {
+      p.scenes ||= [];let scene=p.scenes.find(s=>s.id===a.sceneId);
+      if(!scene&&p.archive.some(x=>x.kind==='scene'&&x.item.id===a.sceneId))throw Error('Restore this beat’s scene first.');
+      if(!scene){scene={id:a.sceneId,title:a.sceneTitle||'Recovered scene',plan:'',entry:'',exit:'',moments:[],beats:[]};p.scenes.push(scene);}
+      if(scene.beats.some(b=>b.id===a.item.id))throw Error('This beat already exists.');scene.beats.splice(Math.min(a.index||0,scene.beats.length),0,copy(a.item));
     } else if (a.kind === 'character') { p.characters.push(copy(a.item)); }
     else if (a.kind === 'world') { p.world.push(copy(a.item)); }
     else if (a.kind === 'connection') { p.connections.push(copy(a.item)); }
@@ -288,7 +295,7 @@ const Workshop = (() => {
       const archiveEvents=new Set([...ev,...p.archive.filter(a=>a.kind==='branch').flatMap(a=>(a.nodes||[]).flatMap(n=>[n.id+':open',n.id+':close']))]);
       const checkChange=x=>{ident(x.id);ident(x.blockId);if(!archiveEvents.has(x.at))fail('An archived change points to a missing story moment.');if(!['add','develop','retire'].includes(x.op))fail('Invalid archived change operation.');txt(x.reason,'Change reason');if(x.op!=='retire'){checkBlock(x.block);if(x.block.id!==x.blockId)fail('The change and block identifiers differ.');}};
       for (const a of p.archive) {
-        ident(a.id);if (!['branch','character','world','connection','block'].includes(a.kind)) fail('Unknown archive item.');txt(a.title,'Archive title');
+        ident(a.id);if (!['branch','character','world','connection','block','scene','scene-beat'].includes(a.kind)) fail('Unknown archive item.');txt(a.title,'Archive title');
         if(a.kind==='branch'){
           unique(arr(a.nodes,'Archived outline'));arr(a.changes,'Archived changes');
           for(const n of a.nodes){if(!Object.hasOwn(TYPES,n.type))fail('Unknown archived outline piece.');if(n.parentId)ident(n.parentId);['title','opening','closing','notes','prose','status'].forEach(k=>txt(n[k],k));arr(n.cast,'Archived cast').forEach(ident);arr(n.worldIds,'Archived world links').forEach(ident);}
@@ -327,10 +334,11 @@ const Workshop = (() => {
   function markdown(p) {
     const refs=o=>(o.references||[]).flatMap(r=>['', '**Reference: '+r.title+'**',r.url,r.note,r.image?'Image included in HTML and JSON copies.':'']);
     const lines = ['# ' + p.title, '', p.subtitle, '', '## Outline'];
-    for (const e of events(p)) { const n = e.node; if (e.edge === 'close') { lines.push('', '**Closes: ' + (n.closingTitle || n.title || TYPES[n.type].name) + '**', n.closing || '(Open ending)'); continue; } lines.push('', '### ' + (n.type === 'B' ? 'Scene' : TYPES[n.type].name) + ' · ' + (n.title || 'Untitled'), n.opening); if (n.prose) lines.push('', n.prose); if (n.notes) lines.push('', 'Notes: ' + n.notes); lines.push(...refs(n)); }
+    for (const e of outlineEvents(p)) { const n = e.node; if (e.edge === 'close') { lines.push('', '**Closes: ' + (n.closingTitle || n.title || TYPES[n.type].name) + '**', n.closing || '(Open ending)'); continue; } lines.push('', '### ' + (n.type === 'B' ? 'Scene' : TYPES[n.type].name) + ' · ' + (n.title || 'Untitled'), n.opening); if (n.prose) lines.push('', n.prose); if (n.notes) lines.push('', 'Notes: ' + n.notes); lines.push(...refs(n)); }
     lines.push('', '## Characters'); for (const c of p.characters) { lines.push('', '### ' + c.name, c.identity); for (const b of c.blocks) lines.push('- **' + (b.label || b.kind) + ':** ' + b.text + (b.detail ? ' — ' + b.detail : '')); for (const x of c.changes) { const ev = events(p).find(e => e.key === x.at); lines.push('- At ' + (ev?.node.title || 'a story moment') + ' (' + ev?.edge + '): ' + (x.op === 'retire' ? 'Retire ' + x.blockId : x.block.text) + (x.reason ? ' · ' + x.reason : '')); } if (c.notes) lines.push(c.notes); lines.push(...refs(c)); }
     lines.push('', '## World'); for (const w of p.world) lines.push('', '### ' + w.name + ' · ' + w.type, w.notes,...refs(w));
-    lines.push('', '## Connections'); for (const r of p.connections) lines.push('', '### ' + (p.characters.find(c => c.id === r.a)?.name || 'Archived character') + ' ↔ ' + (p.characters.find(c => c.id === r.b)?.name || 'Archived character'), r.label, r.notes);
+    const participant=id=>[...p.characters,...p.world,...p.archive.filter(a=>['character','world'].includes(a.kind)).map(a=>a.item)].find(x=>x.id===id)?.name||'Removed participant';
+    lines.push('', '## Connections'); for (const r of p.connections) lines.push('', '### ' + participant(r.a) + ' ↔ ' + participant(r.b), r.label, r.notes);
     lines.push('', '## Story references',...refs(p)); return lines.join('\n');
   }
   return { shelfEmpty, shelfProjects, trashProject, restoreProject, purgeProject, rekeyEntity, plotView, assignPlot, removePlot, copy, uid, TYPES, PALETTE, palette, deleteSwatch, safeURL, colorTokens, mergeSwatches, walkStyleObjects, purgeArchive, duplicateNode, project, node, character, block, children, ordered, descendants, outlineEvents, events, characterState, stateAt, review, move, archiveNode, restore, validate, legacy, markdown };

@@ -22,7 +22,7 @@ test('all opening, closing, additional outcome, custom and Development fields sh
  const fields=page.locator('.thread-word textarea,.thread-word input');
  for(const field of await fields.all()){const id=await field.evaluate(el=>el.closest('[data-node]')?.dataset.node);if(id)await page.locator(`[data-node="${id}"] > .node-head .node-title`).click();await field.fill(longText);await readable(field);}
  await page.keyboard.press('Tab');
- await page.setViewportSize({width:1800,height:1000});const development=page.getByRole('textbox',{name:'Beat Development',exact:true});await expect.poll(()=>development.evaluate(el=>el.clientHeight<parseFloat(getComputedStyle(el).lineHeight)*2)).toBe(true);
+ await page.setViewportSize({width:1800,height:1000});const development=page.getByRole('textbox',{name:'Beat Development',exact:true});await readable(development);await expect.poll(()=>development.evaluate(el=>el.clientHeight<=parseFloat(getComputedStyle(el).lineHeight)*2+parseFloat(getComputedStyle(el).paddingTop)+parseFloat(getComputedStyle(el).paddingBottom)+1)).toBe(true);
  await page.setViewportSize({width:390,height:1000});for(const field of await fields.all())await readable(field);
  await page.getByRole('button',{name:'Remove additional resolution',exact:true}).click();await expect(page.getByRole('textbox',{name:'Event Resolution · additional outcome',exact:true})).toHaveCount(0);
 });

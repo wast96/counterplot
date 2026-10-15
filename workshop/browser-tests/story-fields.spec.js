@@ -25,9 +25,9 @@ test('story fields can be created, edited, removed and restored independently at
 });
 test('removing character fields preserves state records and is reversible',async({page})=>{
  await load(page,fixture());const before=await snapshot(page);await fields(page,'arc').click();await page.getByLabel('Show Belief',{exact:true}).uncheck();await add(page,'Doubt','Whom can she trust?');await keep(page);
- await expect(page.getByRole('combobox',{name:'Starting Belief',exact:true})).toHaveCount(0);await expect(page.getByRole('combobox',{name:'Ending Belief',exact:true})).toBeVisible();
+ await expect(page.getByRole('textbox',{name:'Starting Belief',exact:true})).toHaveCount(0);await expect(page.getByRole('textbox',{name:'Ending Belief',exact:true})).toBeVisible();
  const after=await snapshot(page);expect(after.characters).toEqual(before.characters);expect(after.nodes[0].characterArc).toEqual(before.nodes[0].characterArc);
- await fields(page,'arc').click();await page.getByLabel('Show Belief',{exact:true}).check();await keep(page);await expect(page.getByRole('combobox',{name:'Starting Belief',exact:true})).toBeVisible();
+ await fields(page,'arc').click();await page.getByLabel('Show Belief',{exact:true}).check();await keep(page);await expect(page.getByRole('textbox',{name:'Starting Belief',exact:true})).toBeVisible();
 });
 test('story field editor and long labels stay usable on narrow screens with keyboard and accessible labels',async({page})=>{
  await load(page,fixture());await fields(page,'beat').click();await add(page,'Obstacle'.repeat(12),'A'.repeat(150));

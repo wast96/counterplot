@@ -5,7 +5,11 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -13,14 +17,17 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
       - run: npm run build:workshop
       - run: npm run check
       - run: npm test
       - run: npm run test:workshop
-      - run: npm run test:browser -- --workers=2
+      - if: matrix.browser == 'chromium'
+        run: npm run test:browser -- --workers=2
+      - if: matrix.browser != 'chromium'
+        run: ALL_BROWSERS=1 npm run test:browser -- --project=${{ matrix.browser }} --workers=2
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: browser-failure-evidence
+          name: browser-failure-evidence-${{ matrix.browser }}
           path: test-results

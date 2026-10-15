@@ -149,6 +149,19 @@ const TutorialDefinition = (() => {
   function presentation(d,l,g){return mergePresentation(d.presentation,l?.presentation,g?.presentation);}
   function upgradeMGS3(source){
     const d=copy(source),l=d.lessons?.[0];
+    // Migrate only the shipped obsolete targets; custom targets and wording stay intact.
+    if(d.id==='mgs3')for(const stage of d.lessons||[])for(const g of stage.goals||[]){
+      if(stage.id==='archive'&&g.focus==='[data-action="archive-node"][data-id="escort"]'){g.focus='[data-node="escort"] > .node-head .piece-menu > summary';if(g.text.startsWith('Click Archive on the escort beat'))g.text='Open the escort beat’s More actions menu and choose Archive piece. Or drag its handle to Archive in the tray.';}
+      if(g.drop?.endsWith(' > .node-children > .inside-drop'))g.drop=g.drop.replace(' > .node-children > .inside-drop',' > .closing');
+      if(stage.id==='bridge-change'&&g.focus==='[data-action="show-changes"][data-id="bridge"]'){
+        g.focus='[data-action="record-piece-state"][data-id="bridge"][data-edge="close"]';
+        if(g.text.startsWith('Click the closing change button'))g.text='At the bridge’s closing, click Add change, then Character block options and Snake’s Belief. Review the sample and keep the change.';
+      }
+      if(stage.id==='finish-story'&&g.focus==='.mini-change[data-id="inquiry"]'&&g.check?.action==='show-changes'){
+        g.focus='#dialog';g.setup={...g.setup,action:'show-changes',id:'inquiry'};g.check={kind:'read'};
+        if(g.text.startsWith('Open the Inquiry’s changes'))g.text='Read the Inquiry’s changes and compare Snake’s belief before and after EVA’s recording.';
+      }
+    }
     if(d.id!=='mgs3'||l?.id!=='build-c'||d.readingIntroVersion||l.goals.some(g=>g.id==='mgs3-welcome'))return d;
     // Leave intentionally redesigned first stages alone. The legacy construction
     // task keeps its stable ID, saved wording, dependencies and all authored fields.

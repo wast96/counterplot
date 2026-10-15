@@ -46,3 +46,9 @@ test('restarting recognizes an already committed upload without forking the newe
  const state=await setup(page,{lostAcknowledgement:true});await page.getByRole('button',{name:'Clear temporary uploads & save latest',exact:true}).click();
  await expect(page.locator('#account-status')).toHaveText('Saved across devices');expect(state.remote().projects).toHaveLength(2);expect(state.remote().projects[0].nodes[0].title).toBe('The latest writing');
 });
+
+test('background retry recognizes its already committed copy before merging newer typing',async({page})=>{
+ const state=await setup(page,{lostAcknowledgement:true});await page.getByRole('button',{name:'Close dialog',exact:true}).click();
+ const title=page.locator('[data-node=ui-node-0] > .node-head [data-field=title]');await title.fill('Still writing after the lost acknowledgement');await page.keyboard.press('Tab');
+ await expect(page.locator('#account-status')).toHaveText('Saved across devices');expect(state.remote().projects).toHaveLength(2);expect(state.remote().projects[0].nodes[0].title).toBe('Still writing after the lost acknowledgement');
+});

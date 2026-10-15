@@ -1,6 +1,7 @@
-import {readFileSync,writeFileSync,mkdirSync,copyFileSync} from 'node:fs';
+import {readFileSync,writeFileSync,mkdirSync,copyFileSync,readdirSync,rmSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
+import {hostedBundle} from './workshop-hosting.mjs';
 const check=process.argv.includes('--check');
 const sources=['core.js','legacy.js','integration.js'];
 let shared=sources.map(file=>readFileSync('workshop/src/'+file,'utf8')
@@ -12,12 +13,17 @@ let shared=sources.map(file=>readFileSync('workshop/src/'+file,'utf8')
 shared='// Generated from the shared Workshop model. Run npm run build:workshop.\n'+shared+'\nexport const validateWorkshop = value => Workshop.validate(value);\n';
 shared=shared.split('\n').map(line=>line.trim()?line:'').join('\n');
 const path='functions/_lib/workshop-validation.js';
-if(check){if(readFileSync(path,'utf8')!==shared)throw Error('Workshop server validator is stale.');const expected=readFileSync('workshop/Counterplot Workshop.html','utf8').replace('<html lang="en">','<html lang="en" data-hosted="true">');if(readFileSync('index.html','utf8')!==expected||readFileSync('dist/index.html','utf8')!==expected)throw Error('Hosted Workshop output is stale. Run npm run build:workshop.');console.log('Shared validator and hosted output match the Workshop build.');process.exit(0);}
+if(check){if(readFileSync(path,'utf8')!==shared)throw Error('Workshop server validator is stale.');const {html:expected,asset,media}=hostedBundle(readFileSync('workshop/Counterplot Workshop.html','utf8'));if(readFileSync('index.html','utf8')!==expected||readFileSync('dist/index.html','utf8')!==expected||readFileSync('dist/'+asset,'utf8')!==media||readFileSync(asset,'utf8')!==media)throw Error('Hosted Workshop output is stale. Run npm run build:workshop.');console.log('Shared validator and hosted output match the Workshop build.');process.exit(0);}
 else writeFileSync(path,shared);
 for(const file of ['workshop/build.cjs','workshop/tutorial/build-tutorial.cjs']){const run=spawnSync(process.execPath,[file],{stdio:'inherit'});if(run.status)process.exit(run.status);}
 // Only the explicit publication directory is served. Sources, fixtures, and backups stay out.
 mkdirSync('dist',{recursive:true});
-const html=readFileSync('workshop/Counterplot Workshop.html','utf8').replace('<html lang="en">','<html lang="en" data-hosted="true">');
+const {html,asset,media}=hostedBundle(readFileSync('workshop/Counterplot Workshop.html','utf8'));
+for(const file of readdirSync('dist'))if(/^tutorial-media\.[a-f0-9]{16}\.json$/.test(file)&&file!==asset)rmSync('dist/'+file);
+writeFileSync('dist/'+asset,media);
+// Keep the existing root publication compatible while dist remains the recommended target.
+for(const file of readdirSync('.'))if(/^tutorial-media\.[a-f0-9]{16}\.json$/.test(file)&&file!==asset)rmSync(file);
+writeFileSync(asset,media);
 writeFileSync('dist/index.html',html);
 writeFileSync('index.html',html);
 const hashes=[...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)].filter(m=>!/application\/json/.test(m[1])).map(m=>"'sha256-"+createHash('sha256').update(m[2]).digest('base64')+"'");

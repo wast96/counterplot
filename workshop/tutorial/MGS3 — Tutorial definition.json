@@ -284,7 +284,7 @@
             "type": "E",
             "parent": "loyalty"
           },
-          "drop": "[data-node=\"loyalty\"] > .node-children > .inside-drop",
+          "drop": "[data-node=\"loyalty\"] > .closing",
           "sampleNode": "defection",
           "nodeFields": [
             "title"
@@ -348,7 +348,7 @@
             "type": "M",
             "parent": "defection"
           },
-          "drop": "[data-node=\"defection\"] > .node-children > .inside-drop",
+          "drop": "[data-node=\"defection\"] > .closing",
           "sampleNode": "drop",
           "nodeFields": [
             "title"
@@ -412,7 +412,7 @@
             "type": "I",
             "parent": "drop"
           },
-          "drop": "[data-node=\"drop\"] > .node-children > .inside-drop",
+          "drop": "[data-node=\"drop\"] > .closing",
           "sampleNode": "mission-question",
           "nodeFields": [
             "title"
@@ -613,7 +613,7 @@
         "First close the Inquiry. Snake reads The Boss’s actions as a defection. This answers his immediate question, although the full truth remains hidden.",
         "Next close the Milieu. Snake leaves Soviet territory injured. His departure ends this visit, even though the rescue has failed.",
         "Now close the Event: Sokolov is unable to defect. A promise needs an outcome, not necessarily success. The failed rescue creates the need for another mission.",
-        "Click the closing change button on the bridge thread, then choose Snake’s Belief. Watch the sample write in, review the new belief and reason, and keep the change."
+        "At the bridge’s closing, click Add change, then Character block options and Snake’s Belief. Watch the sample write in, review the new belief and reason, and keep the change."
       ],
       "look": "Record a change to Snake’s Belief at the bridge’s closing. His starting trust stays intact. The Boss’s real allegiance is separate from what Snake believes about her.",
       "goals": [
@@ -683,11 +683,11 @@
           "exitAssemblies": []
         },
         {
-          "text": "Click the closing change button on the bridge thread, then choose Snake’s Belief. Watch the sample write in, review the new belief and reason, and keep the change.",
+          "text": "At the bridge’s closing, click Add change, then Character block options and Snake’s Belief. Watch the sample write in, review the new belief and reason, and keep the change.",
           "setup": {
             "piece": "bridge"
           },
-          "focus": "[data-action=\"show-changes\"][data-id=\"bridge\"]",
+          "focus": "[data-action=\"record-piece-state\"][data-id=\"bridge\"][data-edge=\"close\"]",
           "check": {
             "kind": "timed-change",
             "character": "snake",
@@ -794,7 +794,7 @@
             "type": "M",
             "parent": "loyalty"
           },
-          "drop": "[data-node=\"loyalty\"] > .node-children > .inside-drop",
+          "drop": "[data-node=\"loyalty\"] > .closing",
           "sampleNode": "jungle",
           "nodeFields": [
             "title"
@@ -1009,7 +1009,7 @@
             "type": "B",
             "parent": "crisis"
           },
-          "drop": "[data-node=\"crisis\"] > .node-children > .inside-drop",
+          "drop": "[data-node=\"crisis\"] > .closing",
           "sampleNode": "escort",
           "id": "add-beat-action-1",
           "enterAssemblies": [
@@ -1106,18 +1106,18 @@
         "piece": "escort"
       },
       "steps": [
-        "Click Archive on the escort beat, or drag its handle to the tray’s Archive target.",
+        "Open the escort beat’s More actions menu and choose Archive piece. Or drag its handle to Archive in the tray.",
         "Click Undo in the top bar. The beat returns with its prose.",
         "Click Redo to apply the cut again. Next you will restore it through Archive."
       ],
       "look": "Archive keeps the piece and its attached changes available for restoration. It is useful for trying a structural cut without immediately deleting the material.",
       "goals": [
         {
-          "text": "Click Archive on the escort beat, or drag its handle to the tray’s Archive target.",
+          "text": "Open the escort beat’s More actions menu and choose Archive piece. Or drag its handle to Archive in the tray.",
           "setup": {
             "piece": "escort"
           },
-          "focus": "[data-action=\"archive-node\"][data-id=\"escort\"]",
+          "focus": "[data-node=\"escort\"] > .node-head .piece-menu > summary",
           "check": {
             "kind": "archived",
             "id": "escort"
@@ -1305,24 +1305,26 @@
       "group": "Finish and keep",
       "tag": "Stage 21",
       "target": {
-        "piece": "inquiry"
+        "piece": "inquiry",
+        "action": "show-changes",
+        "id": "inquiry"
       },
       "steps": [
-        "Open the Inquiry’s changes and compare Snake’s belief before and after EVA’s recording.",
+        "Read the Inquiry’s changes and compare Snake’s belief before and after EVA’s recording.",
         "Open Ocelot’s coda and read the audience-only notes. It sits outside Snake’s completed Character thread."
       ],
       "look": "The missions end before Snake learns The Boss’s actual orders. That delayed answer changes how he understands what he has already done. Ocelot’s coda adds audience knowledge that Snake does not receive.",
       "goals": [
         {
-          "text": "Open the Inquiry’s changes and compare Snake’s belief before and after EVA’s recording.",
+          "text": "Read the Inquiry’s changes and compare Snake’s belief before and after EVA’s recording.",
           "setup": {
-            "piece": "inquiry"
-          },
-          "focus": ".mini-change[data-id=\"inquiry\"]",
-          "check": {
-            "kind": "action",
+            "piece": "inquiry",
             "action": "show-changes",
             "id": "inquiry"
+          },
+          "focus": "#dialog",
+          "check": {
+            "kind": "read"
           },
           "id": "finish-story-action-1",
           "enterAssemblies": [

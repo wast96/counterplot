@@ -18,7 +18,7 @@ test('empty sections explain prerequisites and incomplete consequences are not s
 });
 test('closings show local changes without repeating states inherited from nested beats',async({page})=>{
  const data=fixture(),p=data.projects[0],n=p.nodes.find(n=>n.id==='event');W.setPieceState(p,n,'block:jun:want','close','Find shelter');await load(page,data);
- await expect(page.locator('[data-recorded-node=event][data-recorded-edge=close] [data-piece-state]')).toHaveCount(1);await expect(page.locator('[data-recorded-node=event][data-recorded-edge=close] input')).toHaveValue('Find shelter');
+ await expect(page.locator('[data-recorded-node=event][data-recorded-edge=close] [data-piece-state]')).toHaveCount(1);await expect(page.locator('[data-recorded-node=event][data-recorded-edge=close] textarea')).toHaveValue('Find shelter');
  for(const id of ['milieu','inquiry','arc'])await expect(page.locator(`[data-recorded-node=${id}][data-recorded-edge=close] [data-piece-state]`)).toHaveCount(0);
- await expect(page.locator('[data-node=beat] [data-beat-inline]').first()).toHaveValue('The city is dangerous');await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await expect(page.locator('[data-recorded-node=event][data-recorded-edge=close] input')).toHaveValue('Find shelter');
+ await expect(page.locator('[data-node=beat] [data-beat-inline]').first()).toHaveValue('The city is dangerous');await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await expect(page.locator('[data-recorded-node=event][data-recorded-edge=close] textarea')).toHaveValue('Find shelter');
 });

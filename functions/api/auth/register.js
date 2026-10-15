@@ -1,10 +1,11 @@
 import { assertSameOrigin, errorResponse, json, readJson } from "../../_lib/http.js";
-import { createSession, hashPassword, newUserId, normalizeEmail, validatePassword } from "../../_lib/auth.js";
+import { consumeAuthRequest, createSession, hashPassword, newUserId, normalizeEmail, validatePassword } from "../../_lib/auth.js";
 
 export async function onRequestPost(context) {
   try {
     assertSameOrigin(context.request);
-    const body = await readJson(context.request, 16_384);
+    await consumeAuthRequest(context.env, context.request, 'registration', 20, 3600);
+    const body = await readJson(context.request, 16_384) || {};
     const email = normalizeEmail(body.email);
     const passwordProblem = validatePassword(body.password);
     if (!email || passwordProblem) return json({ error: passwordProblem || "Enter a valid email address." }, 400);

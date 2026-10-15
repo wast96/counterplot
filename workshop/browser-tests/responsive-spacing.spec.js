@@ -27,8 +27,8 @@ test('outline headings size to content with empty and populated stories',async({
      const text=header.querySelector('.node-title').getBoundingClientRect(),buttons=header.querySelector('.node-actions').getBoundingClientRect();
      return box.height>0&&box.height<400&&buttons.x>=text.right&&Math.abs(buttons.y-text.y)<2;
     })).toBe(true);
-    await expect(card.getByRole('combobox',{name:'Starting State',exact:true})).toBeVisible();
-    await expect(card.getByRole('combobox',{name:'Ending State',exact:true})).toBeVisible();
+    await expect(card.getByRole('textbox',{name:'Starting State',exact:true})).toBeVisible();
+    await expect(card.getByRole('textbox',{name:'Ending State',exact:true})).toBeVisible();
    }
   }
  }

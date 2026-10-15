@@ -10,8 +10,8 @@ removal is **#32, rule-based scene alternatives and what-if comparisons**.
 | Projects and versions | Story shelf, rename/duplicate, retained version labels, separate conflict/recovered versions, Deleted stories, restore and permanent removal |
 | MICE outline and ordinary beats | Workshop cards and nesting remain primary; cast/world links, plot membership, frame removal with writing retained, structural review |
 | Tagged text outline | Original tagged nesting and closing words import through a preview; outline text exports from the current model |
-| Free writing without a POV | Prose on threads/beats; optional planning fields, Write view, completion state, no required character to write |
-| Continuous manuscript | Read view in separately saved manuscript order |
+| Free writing without a POV | Saved prose on threads/beats is retained; active scene beat writeups and optional planning fields require no POV. The former Write view is archived. |
+| Continuous manuscript | Saved manuscript order and Markdown output are retained. The former Read view is archived. |
 | Reading-order arrangement | Sequence drag handles and move controls, independent of outline and story chronology |
 | Story chronology and date spans | Saved moment IDs/order, reorder controls, start/end dates, date sorting, detached historical moments |
 | Scene craft | Goals, pressure/tension, turns, actions, gains/costs, responses/reactions, aftermath, next choices, reader expectations, internal beats, lane labels |
@@ -37,7 +37,7 @@ removal is **#32, rule-based scene alternatives and what-if comparisons**.
 | Exports | Story JSON, complete-library JSON, Markdown, portable local HTML, retained original file, independent recovered versions |
 | Accounts and authentication | Existing API, passwords/pepper, session cookies, registration policy, logout, one-use recovery codes |
 | Cross-device saving and history | Writer 5, owner-scoped caches/tutorials, revisions, durable in-flight IDs, chunks, history recovery, old-device unsent copy recovery, conflict forks |
-| Tutorials and authoring | Workshop 22-stage/41-action MGS3 tutorial, custom definitions, sections, full-size authoring, draft journal, isolated Play and practice, owner-scoped sync |
+| Tutorials and authoring | MGS3 construction tutorial with 21 active stages while drafting is archived; custom definitions, sections, full-size authoring, draft journal, isolated Play and practice, owner-scoped sync |
 | Contextual help | Current view guide and control highlighting, original Workshop teaching affordances; advanced fields stay in optional disclosures |
 | #32: alternatives / what-if engine | Removed from active UI and execution. Authored scenes stay; old unaccepted suggestions become recoverable drafts. The old automatic path generator is not reintroduced. |
 
