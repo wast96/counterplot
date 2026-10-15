@@ -4,11 +4,22 @@
 .account-unavailable{margin:12px 24px;padding:14px 18px;background:#fff5dc;border:1px solid #bbaa80;border-radius:8px;line-height:1.5;font-size:13px}
 .account-unavailable .text-btn{text-decoration:underline}.account-sync-status{max-width:100%;overflow-wrap:anywhere}
 .search-result>span{display:block;font-size:12px;color:var(--muted);white-space:normal;overflow-wrap:anywhere;line-height:1.5;margin-top:5px}
-.arc-state textarea,.recorded-state textarea,textarea.beat-state-after{field-sizing:fixed;box-sizing:border-box;min-height:30px;height:auto;resize:none;overflow:hidden;white-space:pre-wrap;overflow-wrap:anywhere;max-width:100%;min-width:0;line-height:1.45;padding:4px 2px;border:0;border-bottom:1px solid transparent;border-radius:0;background:transparent;color:var(--ink);font-family:var(--sans);font-size:13px}
-.arc-state textarea{width:var(--state-chars,14ch);flex:1 1 auto}.recorded-state textarea{width:min(100%,36ch)}textarea.beat-state-after{width:100%}
-.arc-state textarea:focus,.recorded-state textarea:focus,textarea.beat-state-after:focus{outline:2px solid var(--green);outline-offset:2px;background:white}
+.arc-state textarea,.recorded-state textarea,textarea.beat-state-after{field-sizing:fixed;box-sizing:border-box;min-height:30px;height:auto;resize:none;overflow:hidden;white-space:pre-wrap;overflow-wrap:anywhere;max-width:100%;min-width:0;line-height:1.45;padding:4px;border:0;border-bottom:1px solid transparent;border-radius:3px;background:transparent;color:var(--ink);font-family:var(--sans);font-size:13px;font-weight:500}
+.arc-state textarea,.recorded-state textarea,textarea.beat-state-after{width:calc(var(--state-chars,14ch) + 8px);flex:1 1 auto}
+.arc-state textarea:placeholder-shown{white-space:nowrap;text-overflow:ellipsis}
+.arc-state textarea:focus,.recorded-state textarea:focus,textarea.beat-state-after:focus,.thread-word.wrapping-field .story-field-text:focus{outline:2px solid var(--green);outline-offset:-2px;box-shadow:none;background:var(--panel)}
 .beat-state-before{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
-.arc-state-group{min-width:0}.arc-state{align-items:start}.arc-state-options{align-self:start}
+/* Labels and actions share the value's center, including when a field grows. */
+.arc-state-group{min-width:0}.arc-state,.outline .arc-state{display:inline-flex;align-items:center;padding:2px 5px 2px 8px;gap:5px}
+.arc-state-label,.outline .arc-state-label{flex:0 0 auto;min-width:0;max-width:min(20ch,40%);overflow-wrap:anywhere}
+.arc-state-options{align-self:center}.arc-states{align-items:center}
+.arc-outcome{display:inline-flex;align-items:center;gap:5px;min-width:0;max-width:100%}.arc-outcome>.arc-state{flex:0 1 auto}
+.thread-word.wrapping-field,.outline .thread-word.wrapping-field{display:flex;align-items:center}
+.wrapping-field>span,.outline .thread-word.wrapping-field>span{padding-top:0;flex:0 0 auto;max-width:min(20ch,40%)}
+.wrapping-field>.arc-state-options{margin-top:0}.thread-word.wrapping-field .story-field-text{flex:1 1 auto;border-radius:3px;padding-inline:4px}
+.beat-state-result{display:inline-flex;align-items:center;gap:6px;min-width:0;max-width:100%}.beat-state-result>.state-arrow{flex:none}
+.beat-state-subject,.recorded-state-who{min-width:0;max-width:100%;overflow-wrap:anywhere}
+:is(.arc-state,.recorded-state,.thread-word,.beat-state-result) .arc-state-options:focus-visible{outline-offset:-3px}
 .story-viewbar nav{scrollbar-width:thin;scrollbar-color:#a3b2a0 transparent;scroll-padding-inline:8px}
 .story-view-scroll{flex:none;width:36px;min-height:40px;font-size:22px;border-radius:6px;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
 .story-view-scroll[hidden]{display:none}.scene-board-jump{display:none}.sidebar-toggle{flex:none}
@@ -18,6 +29,10 @@
 @media(min-width:681px){
  .sidebar-collapsed .sidebar{display:none}.sidebar-collapsed .app-main{margin-left:0}
  body.sidebar-collapsed:has(.details-hidden .outline) .tray{left:50%}
+}
+@media(min-width:681px) and (max-width:900px){
+ .top-actions .tutorial-launch>span,.top-actions .story-tools-menu>summary>span,.top-actions .story-tools-menu>summary>svg:last-child{display:none}
+ .top-actions .tutorial-launch,.top-actions .story-tools-menu>summary{width:36px;min-width:36px;min-height:40px;padding:7px;justify-content:center}
 }
 @media(max-width:1100px){
  .scene-board-jump{display:inline-flex}.beat-board-tools{scroll-margin-top:20px}
@@ -29,6 +44,8 @@
  .topbar{padding:8px 12px;gap:7px}.topbar .breadcrumb{font-size:11px}.top-actions{gap:5px}
  .sidebar-toggle{display:none}.story-viewbar{padding-block:7px}.story-viewbar nav{scrollbar-width:thin}
  .arc-state textarea,.recorded-state textarea,textarea.beat-state-after{font-size:16px;min-height:38px}
+ .thread-word.wrapping-field .story-field-text{font-size:16px;min-height:38px}
+ .arc-edge-to .arc-state-group{padding-right:0}.arc-edge-to .arc-fork{position:static}
  .outline .arc-edge-to .arc-state-group{flex-wrap:wrap}.outline .arc-edge-to .arc-state{flex:0 1 auto}
  .scene-abstract textarea{min-height:82px}.scene-list{margin-bottom:6px}.scene-includes{margin-bottom:10px}
  .scene-board-jump{min-height:40px}.first-story-tip .row{gap:8px}.first-story-tip .btn{min-height:40px}
@@ -58,7 +75,7 @@
 @media(pointer:coarse){.outline .node>.node-head>.grip{margin-top:-4.125px}}
 
 @media(pointer:coarse) and (max-width:680px){.outline .node>.node-head>.grip{margin-top:-2.8px}}
-@media(max-width:680px){.outline .thread-word.beat-development{flex-direction:column;align-items:stretch;gap:3px}.outline .thread-word.beat-development .story-field-text{flex:none;width:100%}}
+@media(max-width:680px){.outline .thread-word.beat-development{flex-direction:column;align-items:stretch;gap:3px}.outline .thread-word.beat-development>span{max-width:100%}.outline .thread-word.beat-development .story-field-text{flex:none;width:100%}}
 
 textarea.draft-title{display:block;width:100%;resize:none;overflow:hidden;white-space:pre-wrap;overflow-wrap:anywhere;min-height:38px;line-height:1.25}
 @media(pointer:coarse){.breadcrumb button{min-height:40px}.block .grip{min-height:40px}}
