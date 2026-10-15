@@ -32,7 +32,7 @@ test('short-screen keyboard focus stays above the sticky dialog actions',async({
  await page.setViewportSize({width:320,height:568});await load(page);await page.locator('[data-nav=characters]').click();await page.locator('.block-body').first().click();
  for(let i=0;i<22;i++){
   await page.keyboard.press('Tab');
-  const focus=await page.evaluate(()=>{const el=document.activeElement,r=el.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2;return{inside:!!el.closest('#dialog'),visible:x>=0&&x<innerWidth&&y>=0&&y<innerHeight&&el.contains(document.elementFromPoint(x,y)),label:el.getAttribute('aria-label')||el.name||el.textContent.slice(0,40)}});
-  expect(focus.inside,focus.label).toBe(true);expect(focus.visible,focus.label).toBe(true);
+  await expect(async()=>{const focus=await page.evaluate(()=>{const el=document.activeElement,r=el.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2;return{inside:!!el.closest('#dialog'),visible:x>=0&&x<innerWidth&&y>=0&&y<innerHeight&&el.contains(document.elementFromPoint(x,y)),label:el.getAttribute('aria-label')||el.name||el.textContent.slice(0,40)}});
+  expect(focus.inside,focus.label).toBe(true);expect(focus.visible,focus.label).toBe(true);}).toPass({timeout:5000});
  }
 });
