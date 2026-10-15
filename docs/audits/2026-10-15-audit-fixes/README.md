@@ -53,7 +53,9 @@ The responsive sweep covers nine views, four story shapes (ordinary, empty, long
 
 Real local Pages/D1 checks passed registration, a second-device login, offline conflict preservation across reload, tutorial-record synchronization/deletion, changed-account locking, owner isolation, one-use recovery, session revocation, and retention of both conflicting versions of the writing.
 
-Build consistency, server tests, and Workshop model tests pass. Browser-suite totals and release verification are recorded below after their final runs.
+Build consistency, all 7 server-test files, and all 21 Workshop model-test files pass. The final CI matrix contains 316 Chromium cases (desktop, phone, and targeted tablet coverage), 150 Firefox cases, and 150 WebKit cases. The merge is gated on successful completion of all three browser jobs; job results are attached to the pull request. One existing browser-specific drag case is intentionally skipped in the Chromium matrix.
+
+Local full runs were followed by focused reruns for the issues they revealed. Test assertions that required a single text line or exact floating-point pixel equality were corrected to check readable wrapping and subpixel tolerance. Timing failures under concurrent local browser load are distinguished from functional failures and checked again in isolation and CI.
 
 ## Performance and practical limits
 
