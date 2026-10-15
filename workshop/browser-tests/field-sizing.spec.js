@@ -12,8 +12,8 @@ async function readable(field){
 async function expectHeight(field,check){
  await expect(async()=>{const box=await field.boundingBox();expect(box).not.toBeNull();expect(box.height).toBeGreaterThan(0);check(box.height);}).toPass({timeout:5000});
 }
-test('Resolution wraps as it grows without an expanding empty container and shrinks on deletion',async({page})=>{
- await load(page,fixture());await page.locator('[data-node=event] > .node-head .node-title').click();const field=page.getByRole('textbox',{name:'Event Resolution',exact:true});
+test('Resolution wraps when its row fills, stays readable and shrinks on deletion',async({page})=>{
+ await load(page,fixture());await page.locator('[data-node=event] > .node-head .node-title').click();await page.setViewportSize({width:390,height:1000});const field=page.getByRole('textbox',{name:'Event Resolution',exact:true});
  await field.fill('The police');let short;await expectHeight(field,height=>{short=height;});
  await field.press('End');await field.pressSequentially(' beat the thief up mercilessly ahtoaihtioaehtaoihtoiahte');
  await field.screenshot({path:'/tmp/resolution-field-'+test.info().project.name+'.png'});
