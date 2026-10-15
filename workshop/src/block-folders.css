@@ -29,7 +29,9 @@
 .folder-card-choice>span>span{font-size:13px;line-height:1.4;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .folder-card-preview{font:20px/1.4 var(--serif);overflow-wrap:anywhere;margin-bottom:20px}
 @media(max-width:680px){
- .character-folder-actions{gap:6px}.character-folder-actions .btn{font-size:12px;padding:8px 10px;min-height:40px}
+ .character-studio .character-tools{gap:8px}.character-studio .character-tools .segmented{gap:10px}.character-studio .character-tools .segmented button{font-size:12px}
+ .character-folder-actions{gap:6px}.character-folder-actions .btn{font-size:11px;padding:8px 10px;min-height:40px}
+ .character-folder-actions [data-action=new-block-folder]{font-size:0;gap:0;width:40px;padding:8px}
  .block-folder-head{min-height:44px}.folder-toggle{min-height:42px;font-size:14px;padding-inline:10px}
  .folder-body{padding-top:9px}.character-card-collection{gap:10px}
  .folder-card-search,#new-card-folder input,[name=folderLabel]{font-size:16px}
@@ -39,3 +41,11 @@
 @media print{.block-folder-head>.icon,.block-folder-actions,.character-folder-actions{display:none}.folder-body[hidden]{display:block}.folder-toggle>svg{display:none}}
 
 .folder-card-picker+.help{margin-top:10px}
+/* These forms already explain that cards are kept; reserve the footer for actions. */
+#dialog form:is([data-form=block-folder],[data-form=file-block]) .dialog-foot>.hint{display:none}
+#dialog form:is([data-form=block-folder],[data-form=file-block]) .dialog-foot>.primary{margin-left:auto}
+@media(max-width:420px){
+ #dialog form[data-form=block-folder] .dialog-foot{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ #dialog form[data-form=block-folder] .dialog-foot>.btn{padding:8px 10px;font-size:12px;gap:6px}
+ #dialog form[data-form=block-folder] .dialog-foot>.primary{grid-column:2;margin-left:0}
+}

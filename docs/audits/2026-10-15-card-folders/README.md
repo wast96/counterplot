@@ -2,7 +2,7 @@
 
 Characters → Building blocks now supports compact, custom-labelled, collapsible folders. Use **New folder** beside Add block, name the folder, and select its cards. Each card also has a folder control for moving it to an existing folder, a new folder, or Ungrouped. Desktop dragging works on folder headers (including collapsed folders), other cards, and the Ungrouped drop area.
 
-The header is 42px tall on desktop/tablet and 44px at phone widths. It contains a chevron, ellipsised label, card count, and edit button. Expanded folders retain the existing card grid. An empty Ungrouped section appears only while dragging. Folders have one level and belong to the individual character.
+The header is 42px tall on desktop/tablet and 44px at phone widths. It contains a chevron, ellipsised label, card count, and edit button. Expanded folders retain the existing card grid. On phones, New folder becomes an accessible folder icon so the toolbar stays on one row at 390px. The folder editor keeps Remove and Save together in a compact footer. An empty Ungrouped section appears only while dragging. Folders have one level and belong to the individual character.
 
 ## Behavior and data integrity
 
