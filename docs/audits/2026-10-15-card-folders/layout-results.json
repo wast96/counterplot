@@ -1,0 +1,839 @@
+[
+  {
+    "dense": false,
+    "width": 320,
+    "view": "cards",
+    "scrollWidth": 320,
+    "headers": [
+      {
+        "height": 44,
+        "label": "Family & belonging3 cards"
+      },
+      {
+        "height": 44,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 44,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": false,
+    "width": 320,
+    "view": "edit-folder",
+    "scrollWidth": 320,
+    "headers": [
+      {
+        "height": 44,
+        "label": "Family & belonging3 cards"
+      },
+      {
+        "height": 44,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 44,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": false,
+    "width": 320,
+    "view": "move-card",
+    "scrollWidth": 320,
+    "headers": [
+      {
+        "height": 44,
+        "label": "Family & belonging3 cards"
+      },
+      {
+        "height": 44,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 44,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": false,
+    "width": 390,
+    "view": "cards",
+    "scrollWidth": 390,
+    "headers": [
+      {
+        "height": 44,
+        "label": "Family & belonging3 cards"
+      },
+      {
+        "height": 44,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 44,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": [],
+    "axe": []
+  },
+  {
+    "dense": false,
+    "width": 390,
+    "view": "edit-folder",
+    "scrollWidth": 390,
+    "headers": [
+      {
+        "height": 44,
+        "label": "Family & belonging3 cards"
+      },
+      {
+        "height": 44,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 44,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": [],
+    "axe": []
+  },
+  {
+    "dense": false,
+    "width": 390,
+    "view": "move-card",
+    "scrollWidth": 390,
+    "headers": [
+      {
+        "height": 44,
+        "label": "Family & belonging3 cards"
+      },
+      {
+        "height": 44,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 44,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": [],
+    "axe": []
+  },
+  {
+    "dense": false,
+    "width": 768,
+    "view": "cards",
+    "scrollWidth": 768,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family & belonging3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": [],
+    "axe": []
+  },
+  {
+    "dense": false,
+    "width": 768,
+    "view": "edit-folder",
+    "scrollWidth": 768,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family & belonging3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": [],
+    "axe": []
+  },
+  {
+    "dense": false,
+    "width": 768,
+    "view": "move-card",
+    "scrollWidth": 768,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family & belonging3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": [],
+    "axe": []
+  },
+  {
+    "dense": false,
+    "width": 1024,
+    "view": "cards",
+    "scrollWidth": 1024,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family & belonging3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": false,
+    "width": 1024,
+    "view": "edit-folder",
+    "scrollWidth": 1024,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family & belonging3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": false,
+    "width": 1024,
+    "view": "move-card",
+    "scrollWidth": 1024,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family & belonging3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": false,
+    "width": 1440,
+    "view": "cards",
+    "scrollWidth": 1440,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family & belonging3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": [],
+    "axe": []
+  },
+  {
+    "dense": false,
+    "width": 1440,
+    "view": "edit-folder",
+    "scrollWidth": 1440,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family & belonging3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": [],
+    "axe": []
+  },
+  {
+    "dense": false,
+    "width": 1440,
+    "view": "move-card",
+    "scrollWidth": 1440,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family & belonging3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": [],
+    "axe": []
+  },
+  {
+    "dense": false,
+    "width": 1920,
+    "view": "cards",
+    "scrollWidth": 1920,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family & belonging3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": false,
+    "width": 1920,
+    "view": "edit-folder",
+    "scrollWidth": 1920,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family & belonging3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": false,
+    "width": 1920,
+    "view": "move-card",
+    "scrollWidth": 1920,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family & belonging3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": true,
+    "width": 320,
+    "view": "cards",
+    "scrollWidth": 320,
+    "headers": [
+      {
+        "height": 44,
+        "label": "Family, belonging, and the difficult things left unsaid — aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa3 cards"
+      },
+      {
+        "height": 44,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 44,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": true,
+    "width": 320,
+    "view": "edit-folder",
+    "scrollWidth": 320,
+    "headers": [
+      {
+        "height": 44,
+        "label": "Family, belonging, and the difficult things left unsaid — aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa3 cards"
+      },
+      {
+        "height": 44,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 44,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": true,
+    "width": 320,
+    "view": "move-card",
+    "scrollWidth": 320,
+    "headers": [
+      {
+        "height": 44,
+        "label": "Family, belonging, and the difficult things left unsaid — aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa3 cards"
+      },
+      {
+        "height": 44,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 44,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": true,
+    "width": 390,
+    "view": "cards",
+    "scrollWidth": 390,
+    "headers": [
+      {
+        "height": 44,
+        "label": "Family, belonging, and the difficult things left unsaid — aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa3 cards"
+      },
+      {
+        "height": 44,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 44,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": true,
+    "width": 390,
+    "view": "edit-folder",
+    "scrollWidth": 390,
+    "headers": [
+      {
+        "height": 44,
+        "label": "Family, belonging, and the difficult things left unsaid — aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa3 cards"
+      },
+      {
+        "height": 44,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 44,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": true,
+    "width": 390,
+    "view": "move-card",
+    "scrollWidth": 390,
+    "headers": [
+      {
+        "height": 44,
+        "label": "Family, belonging, and the difficult things left unsaid — aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa3 cards"
+      },
+      {
+        "height": 44,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 44,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": true,
+    "width": 768,
+    "view": "cards",
+    "scrollWidth": 768,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family, belonging, and the difficult things left unsaid — aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": true,
+    "width": 768,
+    "view": "edit-folder",
+    "scrollWidth": 768,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family, belonging, and the difficult things left unsaid — aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": true,
+    "width": 768,
+    "view": "move-card",
+    "scrollWidth": 768,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family, belonging, and the difficult things left unsaid — aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": true,
+    "width": 1024,
+    "view": "cards",
+    "scrollWidth": 1024,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family, belonging, and the difficult things left unsaid — aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": true,
+    "width": 1024,
+    "view": "edit-folder",
+    "scrollWidth": 1024,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family, belonging, and the difficult things left unsaid — aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": true,
+    "width": 1024,
+    "view": "move-card",
+    "scrollWidth": 1024,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family, belonging, and the difficult things left unsaid — aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": true,
+    "width": 1440,
+    "view": "cards",
+    "scrollWidth": 1440,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family, belonging, and the difficult things left unsaid — aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": true,
+    "width": 1440,
+    "view": "edit-folder",
+    "scrollWidth": 1440,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family, belonging, and the difficult things left unsaid — aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": true,
+    "width": 1440,
+    "view": "move-card",
+    "scrollWidth": 1440,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family, belonging, and the difficult things left unsaid — aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": true,
+    "width": 1920,
+    "view": "cards",
+    "scrollWidth": 1920,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family, belonging, and the difficult things left unsaid — aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": true,
+    "width": 1920,
+    "view": "edit-folder",
+    "scrollWidth": 1920,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family, belonging, and the difficult things left unsaid — aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  },
+  {
+    "dense": true,
+    "width": 1920,
+    "view": "move-card",
+    "scrollWidth": 1920,
+    "headers": [
+      {
+        "height": 42,
+        "label": "Family, belonging, and the difficult things left unsaid — aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa3 cards"
+      },
+      {
+        "height": 42,
+        "label": "Skills & instincts2 cards"
+      },
+      {
+        "height": 42,
+        "label": "Loose ends0 cards"
+      }
+    ],
+    "outside": [],
+    "clipped": [],
+    "errors": []
+  }
+]
