@@ -3,7 +3,7 @@
 Counterplot is a writing workspace built around movable story pieces. Workshop is
 now the application source. The existing Cloudflare Pages Functions and D1 account
 service remain in place. See [integration status](docs/integration/STATUS.md) for
-what has been verified and what still blocks the production switch.
+the migration history, and [the audit fixes](docs/audits/2026-10-15-audit-fixes/README.md) for the latest verification.
 
 ## Build and run
 
@@ -14,12 +14,12 @@ npm run build:workshop
 
 The build writes the hosted application to `dist/index.html` and the root
 `index.html`, generates CSP hashes and the shared server validator, and builds
-portable Workshop/tutorial entry points. Publish **only `dist/`**; Pages Functions
+portable Workshop/tutorial entry points. The root also receives the hashed tutorial asset for compatibility with the current Pages publication. Configure new publications to serve **only `dist/`**; Pages Functions
 remain in the root `functions/` directory. Source, fixtures, and backups must not
 be published as static assets.
 
 For accounts, configure a disposable local D1 binding named `DB`, apply
-`migrations/0001_auth_and_workspaces.sql`, and use development-only secrets from
+all SQL migrations in `migrations/`, and use development-only secrets from
 `.dev.vars.example`. Run:
 
 ```sh
@@ -34,13 +34,14 @@ keep a JSON backup when working from a downloaded file.
 ## Writing, time, and migration
 
 Outline, manuscript order, and story chronology have independent saved sequences.
-Moving an outline branch does not silently retime character history. Refine, Write, and
-Read use manuscript order, including separate thread openings and closings; Sequence arranges that order; Chronology arranges
+Moving an outline branch does not silently retime character history. Refine uses
+manuscript order, including separate thread openings and closings; Sequence arranges that order; Chronology arranges
 historical events and dates. Refine asks MICE-specific questions about each thread’s promise and payoff,
 and what each beat contributes. People and connections use searchable pickers;
 additional scene-craft notes remain optional. Closing prose and
 craft are saved separately from the opening; existing drafts remain opening drafts.
-“Scene craft & links” opens the selected moment in Refine. Causal links, Inquiry evidence,
+Write, Read, and Choices remain archived; their saved writing and fields are retained.
+See [archived views](docs/archived-writing.md). “Scene craft & links” opens the selected moment in Refine. Causal links, Inquiry evidence,
 knowledge, world state, relationships, factions, and plot roles are contextual
 controls. Changes at one moment can be applied and undone together.
 
@@ -64,7 +65,8 @@ authored scenes remain; unaccepted old suggestions are recoverable drafts.
 - Concurrent conflicting projects are retained as separate story versions.
   Conflicting library records are available through Save a copy → Recovered
   library edits. They are not silently substituted for an open authoring draft.
-- Story JSON includes the current story workspace and its Deleted stories.
+- **This story only** JSON contains the selected story, including its Archive and
+  unfinished edits. **All stories** JSON also includes other stories and Deleted stories.
   Complete library JSON also includes My work, tutorial definitions, practice,
   progress, and authoring drafts. Neither contains passwords or recovery codes.
 - Imported tutorial records restore into an empty/matching library. A differing
@@ -74,6 +76,14 @@ authored scenes remain; unaccepted old suggestions are recoverable drafts.
   conflicting copies all consume that capacity. Undo history is bounded in memory.
 
 Portable HTML is an independent local workspace, not a second account client.
+The hosted workshop loads built-in tutorial pictures when tutorials or a portable
+export are opened. The lessons remain available if those pictures cannot load;
+an export made in that condition omits only the unavailable built-in pictures.
+Generated standalone Workshop files always include the complete built-in tutorial.
+An already open workshop supports offline editing. To reopen reliably offline,
+keep a portable HTML copy. A failed account identity check keeps private account
+records closed and offers an explicit choice to retry or open device-only stories.
+Storage & backups explains save status, library capacity, and download scope.
 The Account menu also recovers unsent writing retained by the old app on the same
 browser and origin, and can add historical server revisions as independent copies.
 
@@ -86,6 +96,9 @@ Sessions use Secure, HttpOnly, SameSite=Lax cookies. Passwords use salted
 PBKDF2-HMAC-SHA-256 with 100,000 iterations. Recovery codes are one-use hashes;
 reset revokes existing sessions without changing workspaces. Email ownership is
 not verified and there is no email reset service.
+Login requests also have an aggregate per-address limit of 120 per 15 minutes;
+registration is limited to 20 requests per address per hour. Existing failed-login
+limits still apply independently to each address/email pair.
 
 Workshop sends writer version 5 and the current owner header. Original writer 4
 continues to work for unmigrated accounts. Once an account contains Workshop

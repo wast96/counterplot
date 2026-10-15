@@ -30,7 +30,7 @@ function closeSessionDialogs(){
  const sheet=$('#details-sheet');if(sheet?.open){sheet.dataset.sessionSuspended='yes';sheet.close();}
  document.body.classList.remove('details-sheet-open');
 }
-function sessionState(){return {workspace,embedded,KEY,raw,lastSaved,blocked,workspaceSaveFailure,past,future,ui:{...ui,folded:new Set(ui.folded)},brush,paintOpen,firstStoryTip,draft:captureDialog(),draftDirty:editorIsDirty(),scroll:[scrollX,scrollY]};}
+function sessionState(){return {workspace,embedded,KEY,raw,lastSaved,blocked,workspaceSaveFailure,workspaceValidationFailure,past,future,ui:{...ui,folded:new Set(ui.folded)},brush,paintOpen,firstStoryTip,draft:captureDialog(),draftDirty:editorIsDirty(),scroll:[scrollX,scrollY]};}
 async function loadSession(mode){
  if(sessionCache.has(mode)){
   const cached=sessionCache.get(mode),current=await CounterplotTutorialStore.refresh(cached.KEY)||'';
@@ -42,7 +42,7 @@ async function loadSession(mode){
  const key=seed?.saveKey||MAIN_KEY,encoded=await CounterplotTutorialStore.refresh(key)||'';
  const data=encoded?W.validate(JSON.parse(encoded)):seed?W.validate(seed):exampleWorkspace();
  const active=data.projects.find(x=>x.id===data.active)||data.projects[0];
- return {workspace:data,embedded:seed,KEY:key,raw:encoded||null,lastSaved:encoded,blocked:'',workspaceSaveFailure:false,past:[],future:[],ui:{plot:'',detailsOpen:false,inspectorMode:mode?'hidden':'side',page:'outline',mode:'outline',selected:active.nodes[0]?.id||'',character:active.characters[0]?.id||'',at:'',characterTab:'blocks',folded:new Set(),focus:false,filter:'',snap:'',search:''},brush:'',paintOpen:false,firstStoryTip:false,draft:null,scroll:[0,0]};
+ return {workspace:data,embedded:seed,KEY:key,raw:encoded||null,lastSaved:encoded,blocked:'',workspaceSaveFailure:false,workspaceValidationFailure:false,past:[],future:[],ui:{plot:'',detailsOpen:false,inspectorMode:mode?'hidden':'side',page:'outline',mode:'outline',selected:active.nodes[0]?.id||'',character:active.characters[0]?.id||'',at:'',characterTab:'blocks',folded:new Set(),focus:false,filter:'',snap:'',search:''},brush:'',paintOpen:false,firstStoryTip:false,draft:null,scroll:[0,0]};
 }
 window.CounterplotSession={
  mode:()=>sessionMode,
@@ -65,7 +65,7 @@ window.CounterplotSession={
   let next;try{next=await loadSession(mode);}catch(e){toast('Could not open the saved '+(mode?'tutorial':'workshop')+'. Its data was left unchanged. '+e.message);document.dispatchEvent(new CustomEvent('counterplot:mode-change'));return false;}
   sessionSwitching=true;
   sessionCache.set(sessionMode,sessionState());endDrag();closeSessionDialogs();clearTimeout(saveTimer);clearTimeout(toastTimer);$('#toast').classList.remove('visible');
-  ({workspace,embedded,KEY,raw,lastSaved,blocked,workspaceSaveFailure,past,future,brush,paintOpen,firstStoryTip}=next);
+  ({workspace,embedded,KEY,raw,lastSaved,blocked,workspaceSaveFailure,workspaceValidationFailure,past,future,brush,paintOpen,firstStoryTip}=next);
   Object.assign(ui,next.ui,{folded:new Set(next.ui.folded)});editBefore=null;sessionMode=mode;
   try{await CounterplotTutorialStore.setItem(MODE_KEY,mode);}catch{}
   render();restoreDialog(next.draft);window.scrollTo({left:next.scroll[0],top:next.scroll[1],behavior:'instant'});
@@ -99,7 +99,7 @@ window.CounterplotSession={
   if(!authoringSession)return null;
   if(keep&&editorIsDirty()){toast('Save or close this form before keeping the sample story.');return null;}
   finishEdit();const sample=W.copy(p()),swatches=W.copy(workspace.swatches||[]),hiddenSwatches=W.copy(workspace.hiddenSwatches||[]),previous=authoringSession;document.dispatchEvent(new CustomEvent('counterplot:before-mode-change'));endDrag();closeSessionDialogs();
-  ({workspace,embedded,KEY,raw,lastSaved,blocked,workspaceSaveFailure,past,future,brush,paintOpen,firstStoryTip}=previous.state);
+  ({workspace,embedded,KEY,raw,lastSaved,blocked,workspaceSaveFailure,workspaceValidationFailure,past,future,brush,paintOpen,firstStoryTip}=previous.state);
   Object.assign(ui,previous.state.ui,{folded:new Set(previous.state.ui.folded)});sessionMode=previous.mode;authoringSession=null;editBefore=null;
   render();restoreDialog(previous.state.draft);scrollTo({left:previous.state.scroll[0],top:previous.state.scroll[1],behavior:'instant'});
   document.dispatchEvent(new CustomEvent('counterplot:mode-change'));return {sample,swatches,hiddenSwatches};

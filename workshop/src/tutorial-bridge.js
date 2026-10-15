@@ -89,8 +89,8 @@ window.CounterplotTutorial={
    if(ui.page!=='characters'||ui.character!==t.character){ui.at='';changed=true;}
    ui.page='characters';ui.character=t.character;ui.characterTab='blocks';
   } else if(id||t.page){
-   const page=t.page||'outline';changed=ui.page!==page;ui.page=page;
-   if(id){const simple=/data-inline|quick-piece|select-node/.test(goal.focus);const inspector=simple?'hidden':ui.inspectorMode;changed ||= ui.mode!=='outline'||ui.plot!==''||ui.selected!==id||ui.inspectorMode!==inspector||ui.detailsOpen;ui.mode='outline';ui.plot='';ui.selected=id;ui.inspectorMode=inspector;ui.detailsOpen=false;let n=node(id);while(n){changed=ui.folded.delete(n.id)||changed;n=node(n.parentId);}}
+   const page=t.page||'outline';changed=ui.page!==page;ui.page=page;if(!id&&page==='outline'&&!t.inspector){changed ||= ui.inspectorMode!=='hidden'||ui.detailsOpen;ui.inspectorMode='hidden';ui.detailsOpen=false;}
+   if(id){const inspector=t.inspector||'hidden';changed ||= ui.mode!=='outline'||ui.plot!==''||ui.selected!==id||ui.inspectorMode!==inspector||ui.detailsOpen;ui.mode='outline';ui.plot='';ui.selected=id;ui.inspectorMode=inspector;ui.detailsOpen=false;let n=node(id);while(n){changed=ui.folded.delete(n.id)||changed;n=node(n.parentId);}}
   }
   if(t.write){ui.mode=WORKSPACE_FEATURES.drafting?'write':'refine';changed=true;}
   if(t.mode){ui.mode=t.mode;changed=true;}if(t.at){ui.at=t.at;changed=true;}if(t.inspector){ui.inspectorMode=t.inspector;changed=true;}
@@ -103,11 +103,20 @@ window.CounterplotTutorial={
    if(!inSheet){sheet.dataset.sessionSuspended='yes';sheet.close();ui.detailsOpen=false;document.body.classList.remove('details-sheet-open');changed=true;}
   }
   if(changed||added.length||storyEdited)render();
-  // Open the mobile inspector only when the actual target lives inside it.
-  if(id && !document.querySelector('dialog[open]')){
-   let targets=[];try{targets=$$(goal.focus);}catch{}
-   if(targets.length && targets.every(e=>!e.getBoundingClientRect().width) && targets.some(e=>e.closest('.inspector'))){ui.inspectorMode='side';ui.detailsOpen=matchMedia('(max-width:680px)').matches;render();}
+  // Goals may point into a piece's native overflow menu. Reveal its containing
+  // outline and disclosure without firing the action the learner is meant to try.
+  let menuTarget;try{menuTarget=$$(goal.focus).find(e=>e.tagName!=='SUMMARY'&&e.closest('.piece-menu'));}catch{}
+  if(menuTarget){
+   if(ui.inspectorMode==='full'){ui.inspectorMode='hidden';render();try{menuTarget=$$(goal.focus).find(e=>e.tagName!=='SUMMARY'&&e.closest('.piece-menu'));}catch{}}
+   const menu=menuTarget?.closest('.piece-menu');if(menu)requestAnimationFrame(()=>{if(!menu.isConnected)return;menu.querySelector('summary').scrollIntoView({block:'center'});menu.open=true;placePieceMenu(menu);});
   }
+  // Open the mobile inspector only when the actual target lives inside it.
+  if(id && !menuTarget && !document.querySelector('dialog[open]')){
+   let targets=[];try{targets=$$(goal.focus);}catch{}
+   if(targets.length && targets.every(e=>!e.getBoundingClientRect().width)){ui.inspectorMode=matchMedia('(max-width:680px)').matches?'side':'full';ui.detailsOpen=matchMedia('(max-width:680px)').matches;render();}
+  }
+  // A goal inside an inspector disclosure must expose that control as well.
+  try{for(const target of $$(goal.focus)){for(let parent=target.parentElement;parent;parent=parent.parentElement)if(parent.tagName==='DETAILS'&&!parent.classList.contains('piece-menu'))parent.open=true;}}catch{}
   if(goal.check.kind==='restored'&&goal.focus.includes('"undo"'))this.practiceHistory(goal.check.id,false);
   if(goal.check.kind==='archived'&&goal.focus.includes('"redo"'))this.practiceHistory(goal.check.id,true);
   if(t.action==='new-swatch'){if(!paintOpen){paintOpen=true;render();}paletteManager();}
@@ -119,8 +128,9 @@ window.CounterplotTutorial={
  settle(){if(!CounterplotSession.isPractice())return false;finishEdit();return save();},
  reveal(id,{details=false}={}){
   if(!CounterplotSession.isPractice()||!node(id))return false;
-  finishEdit();let changed=ui.page!=='outline'||ui.mode!=='outline'||ui.plot!==''||ui.selected!==id||ui.inspectorMode!=='side'||ui.detailsOpen!==details;
-  ui.page='outline';ui.mode='outline';ui.plot='';ui.selected=id;ui.inspectorMode='side';ui.detailsOpen=details;
+  const mobile=matchMedia('(max-width:680px)').matches,mode=details&&!mobile?'full':'side',open=details&&mobile;
+  finishEdit();let changed=ui.page!=='outline'||ui.mode!=='outline'||ui.plot!==''||ui.selected!==id||ui.inspectorMode!==mode||ui.detailsOpen!==open;
+  ui.page='outline';ui.mode='outline';ui.plot='';ui.selected=id;ui.inspectorMode=mode;ui.detailsOpen=open;
   let n=node(id);while(n){if(ui.folded.has(n.id)){ui.folded.delete(n.id);changed=true;}n=node(n.parentId);}if(changed)render();return true;
  },
  fillNode(id,values){

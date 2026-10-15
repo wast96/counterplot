@@ -6,6 +6,16 @@
  const builtins=JSON.parse($('#tutorial-data').textContent).tutorials.map(d=>D.validate(d,Workshop,s=>document.querySelector(s)));
  const definitions=new Map(),warnings=new Map();let ui='',editor=null,picker=null,importInto='editor',authorDrag=null;
  const storageKey=id=>'counterplot.tutorial.definition.'+id+'.v1';
+ let mediaLoading=null;
+ async function loadBuiltins(){
+  const element=$('#tutorial-data'),url=element.dataset.mediaSrc;if(!url)return true;
+  if(!/^\/tutorial-media\.[a-f0-9]{16}\.json$/.test(url))return false;
+  if(!mediaLoading)mediaLoading=(async()=>{
+   try{const response=await fetch(url,{signal:AbortSignal.timeout(10000)});if(!response.ok)throw Error('Tutorial pictures are unavailable');const data=await response.json(),full=data.tutorials.map(d=>D.validate(d,Workshop,s=>document.querySelector(s)));builtins.splice(0,builtins.length,...full);element.textContent=JSON.stringify(data).replace(/</g,'\\u003c');delete element.dataset.mediaSrc;reloadDefinitions();document.dispatchEvent(new CustomEvent('counterplot:definition-change'));return true;}
+   catch{return false;}finally{mediaLoading=null;}
+  })();
+  return mediaLoading;
+ }
  function reloadDefinitions(){if(editor)return;definitions.clear();warnings.clear();
  for(const base of builtins){let d=base;try{const raw=TS.getItem(storageKey(base.id));if(raw){const saved=JSON.parse(raw);if(saved.format==='counterplot-tutorial-edits'){if(saved.baseRevision!==base.revision)throw Error('These edits belong to another built-in revision.');d=D.validate(D.apply(base,saved.changes),Workshop,s=>document.querySelector(s));}else d=D.validate(saved,Workshop,s=>document.querySelector(s));}}catch(e){warnings.set(base.id,'Saved tutorial edits were not loaded: '+e.message+' The saved data has not been changed.');}definitions.set(base.id,D.upgradeMGS3(d));}
  try{const ids=JSON.parse(TS.getItem('counterplot.tutorial.custom.index.v1')||'[]');if(Array.isArray(ids))for(const id of ids){if(definitions.has(id))continue;try{const raw=TS.getItem(storageKey(id));if(raw)definitions.set(id,D.validate(JSON.parse(raw),Workshop,s=>document.querySelector(s)));}catch(e){warnings.set(id,e.message);}}}catch{};
@@ -36,7 +46,13 @@
  function download(data,name,type='application/json'){const url=URL.createObjectURL(new Blob([data],{type})),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
  function error(text){const e=$('#tutorial-author-error');if(e){e.textContent=text;e.hidden=!text;}else alert(text);}
  function closeBrowser(){if(browser.open)browser.close();if(ui==='browse')ui='';}
- function openBrowser(){
+ async function openBrowser(){
+  if(!$('#tutorial-data').dataset.mediaSrc){renderBrowser();return;}
+  if(CounterplotSession.isAuthoring()){alert('Keep or discard the sample story edits before opening another tutorial.');return;}
+  CounterplotGuide?.suspend();ui='browse';browser.innerHTML='<header class="dialog-head"><h2 id="tutorial-browser-title">Opening tutorials…</h2><button type="button" class="icon" data-tutorial="close-browser" aria-label="Close tutorial selection">×</button></header><div class="dialog-body"><p>The practice stories are separate from your writing.</p></div>';if(!browser.open)browser.showModal();
+  const loaded=await loadBuiltins();if(ui!=='browse'||!browser.open)return;renderBrowser();if(!loaded)browser.querySelector('.dialog-body').insertAdjacentHTML('afterbegin','<p class="help" role="status">Tutorial pictures are unavailable offline. The lessons and all your writing remain available.</p>');
+ }
+ function renderBrowser(){
   reloadDefinitions();
   if(CounterplotSession.isAuthoring()){alert('Keep or discard the sample story edits to return to the tutorial editor.');return;}
   CounterplotGuide?.suspend();ui='browse';
@@ -71,7 +87,8 @@
    return true;
   }catch(e){error('Cannot apply these edits: '+e.message);return false;}
  }
- function openEditor(id='mgs3',index=null,step=0){
+ async function openEditor(id='mgs3',index=null,step=0){
+  await loadBuiltins();
   if(index===null){index=0;try{const cursor=JSON.parse(TS.getItem('counterplot.tutorial.cursor.'+id+'.v1')||'null'),d=definitions.get(id);if(cursor&&d){const at=d.lessons.findIndex(l=>l.id===cursor.stage);if(at>=0){index=at;step=Math.max(0,d.lessons[at].goals.findIndex(g=>g.id===cursor.goal));}}}catch{}}
   if(editor&&editor.id!==id){if((editor.dirty||editor.rawDirty)&&!confirm('Discard these unsaved tutorial edits before opening another definition?'))return;editor=null;}
   if(!definitions.has(id))return;
@@ -264,6 +281,7 @@ if(a==='close-browser'){closeBrowser();CounterplotGuide?.resume();return;}
  });
  /*__STUDIO__*/
  window.CounterplotTutorialLibrary={
+  loadBuiltins,
   definition:id=>definitions.has(id)?copy(definitions.get(id)):null,exportData:()=>[...definitions.values()].map(copy),list:()=>[...definitions.values()].map(d=>({id:d.id,title:d.title,description:d.description})),
   flushDraft:()=>{studioFlushCanvas(false);return studioStoreDraft();},storageStatus:()=>TS.status(),
   isOpen:()=>['edit','browse','pick','sample'].includes(ui),openEditor,openBrowser,

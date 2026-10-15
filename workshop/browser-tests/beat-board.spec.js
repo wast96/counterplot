@@ -24,7 +24,7 @@ test('a scene can be planned before adding outline moments and beat writeups per
  const after=await snapshot(page);expect(after.nodes).toEqual(before.nodes);expect(after.timeline).toEqual(before.timeline);expect(after.readingSequence).toEqual(before.readingSequence);expect(after.characters).toEqual(before.characters);
  await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await page.getByRole('tab',{name:'Scene constructor',exact:true}).click();await expect(page.getByRole('textbox',{name:'Scene plan',exact:true})).toHaveValue('A witness must choose between safety and loyalty.');await expect(page.getByRole('textbox',{name:'Beat 2 writeup',exact:true})).toHaveValue('She stays to protect the witness.');
  await page.getByRole('button',{name:'Start a scene',exact:true}).click();await expect(page.getByRole('textbox',{name:'Scene plan',exact:true})).toHaveValue('');await expect(page.locator('[data-field=beats]')).toHaveCount(0);
- await page.getByRole('button',{name:'Remove scene',exact:true}).click();await page.locator('.topbar [data-action=undo]').click();expect((await snapshot(page)).scenes).toHaveLength(2);
+ await page.getByRole('button',{name:'Archive scene',exact:true}).click();await page.locator('.topbar [data-action=undo]').click();expect((await snapshot(page)).scenes).toHaveLength(2);
 });
 test('legacy boards migrate once and remain after archiving their linked outline pieces and exporting',async({page})=>{
  const data=legacyBoard();data.projects[0].nodes[0].closingCraft={cast:[],worldIds:[],entry:'Closing start',exit:'Closing end',beats:['Closing card']};await load(page,data);
@@ -40,7 +40,7 @@ test('scene beat drag and keyboard reorder move the complete beat with its write
  await expect.poll(()=>titles(page)).toEqual(['Last','First','Same','Same']);await expect(page.getByRole('textbox',{name:'Beat 1 writeup',exact:true})).toHaveValue('Final beat writeup');
  await page.locator('[data-board-drag="0"]').focus();await page.keyboard.press('Alt+ArrowRight');await expect.poll(()=>titles(page)).toEqual(['First','Last','Same','Same']);await expect(page.locator('[data-board-drag="1"]')).toBeFocused();await expect(page.getByRole('textbox',{name:'Beat 2 writeup',exact:true})).toHaveValue('Final beat writeup');
  await expect(page.locator('#board-entry')).toHaveValue('Before');await expect(page.locator('#board-exit')).toHaveValue('After');
- await page.locator('[data-board-index="1"] [data-action=board-add]').click();await expect(page.locator('#board-card-2')).toBeFocused();await page.locator('#board-card-2').fill('Inserted');await page.getByRole('button',{name:'Remove beat 3',exact:true}).click();await expect(page.locator('#board-card-2')).toBeFocused();
+ await page.locator('[data-board-index="1"] [data-action=board-add]').click();await expect(page.locator('#board-card-2')).toBeFocused();await page.locator('#board-card-2').fill('Inserted');await page.getByRole('button',{name:'Archive beat 3',exact:true}).click();await expect(page.locator('#board-card-2')).toBeFocused();
 });
 test('scene planning and beat writeups fit narrow and wide screens and are accessible',async({page})=>{
  const data=legacyBoard();data.projects[0].nodes[0].beats=['A'.repeat(400),'A quiet moment'];await load(page,data);

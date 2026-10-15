@@ -12,6 +12,7 @@ export default defineConfig({
   projects: [
     { name: 'desktop', use: { viewport: { width: 1440, height: 1000 } } },
     { name: 'mobile', use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true } },
+    { name: 'tablet', testMatch: /(?:audit-repairs|current-tutorial|workshop-care)\.spec\.js/, use: { viewport: {width:768,height:1024}, hasTouch:true } },
     ...(process.env.ALL_BROWSERS ? ['firefox','webkit'].map(browserName=>({name:browserName,use:{browserName,launchOptions:browserName==='webkit'&&process.env.WEBKIT_PATH?{executablePath:process.env.WEBKIT_PATH}:{},viewport:{width:1280,height:900}}})) : []),
   ],
 });

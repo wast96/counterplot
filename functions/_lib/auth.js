@@ -158,6 +158,26 @@ export async function clearLoginFailures(env, key) {
   await env.DB.prepare("DELETE FROM auth_attempts WHERE key_hash = ?").bind(key).run();
 }
 
+// Count all requests per address as well as failed attempts per address/email.
+// The atomic increment prevents concurrent requests from sharing the same slot.
+export async function consumeAuthRequest(env, request, scope, limit, windowSeconds) {
+  const key = await loginRateKey(request, `request-limit:${scope}`);
+  const now = new Date().toISOString();
+  const cutoff = new Date(Date.now() - windowSeconds * 1000).toISOString();
+  const row = await env.DB.prepare(`
+    INSERT INTO auth_attempts (key_hash, failures, window_started_at, blocked_until)
+    VALUES (?, 1, ?, NULL)
+    ON CONFLICT(key_hash) DO UPDATE SET
+      failures = CASE WHEN window_started_at <= ? THEN 1 ELSE failures + 1 END,
+      window_started_at = CASE WHEN window_started_at <= ? THEN excluded.window_started_at ELSE window_started_at END
+    RETURNING failures, window_started_at
+  `).bind(key, now, cutoff, cutoff).first();
+  if (row.failures > limit) {
+    const retry = Math.max(1, Math.ceil((Date.parse(row.window_started_at) + windowSeconds * 1000 - Date.now()) / 1000));
+    throw json({ error: "Too many account requests. Try again later." }, 429, { "Retry-After": String(retry) });
+  }
+}
+
 export function newUserId() {
   return crypto.randomUUID();
 }

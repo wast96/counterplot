@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {testDatabase} from './helpers/d1.js';
+import {onRequestPost as login} from '../functions/api/auth/login.js';
+import {onRequestPost as register} from '../functions/api/auth/register.js';
+import {consumeAuthRequest,loginRateKey} from '../functions/_lib/auth.js';
+const request=(body,address='192.0.2.1')=>new Request('https://counterplot.test/api/auth/login',{method:'POST',headers:{Origin:'https://counterplot.test','Content-Type':'application/json','CF-Connecting-IP':address},body:JSON.stringify(body)});
+test('changing email addresses does not bypass the aggregate login limit',async()=>{const {DB}=testDatabase();for(let i=0;i<120;i++)assert.equal((await login({env:{DB},request:request({email:`writer${i}@example.test`,password:'wrong'})})).status,401);const blocked=await login({env:{DB},request:request({email:'fresh@example.test',password:'wrong'})});assert.equal(blocked.status,429);assert.ok(Number(blocked.headers.get('Retry-After'))>0);assert.equal((await login({env:{DB},request:request({},'192.0.2.2')})).status,401);});
+test('registration validates malformed input and limits repeated requests',async()=>{const {DB}=testDatabase();for(let i=0;i<20;i++)assert.equal((await register({env:{DB},request:request(null)})).status,400);assert.equal((await register({env:{DB},request:request({})})).status,429);});
+test('atomic rate counters recover after the fixed window expires',async()=>{const {DB}=testDatabase(),req=request({});await consumeAuthRequest({DB},req,'test',1,60);await assert.rejects(()=>consumeAuthRequest({DB},req,'test',1,60),e=>e.status===429);await DB.prepare('UPDATE auth_attempts SET window_started_at = ? WHERE key_hash = ?').bind(new Date(Date.now()-61000).toISOString(),await loginRateKey(req,'request-limit:test')).run();await consumeAuthRequest({DB},req,'test',1,60);});
