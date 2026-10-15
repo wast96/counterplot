@@ -15,7 +15,7 @@ async function setup(page,{failCleanup=false,missingPart=false,lostAcknowledgeme
  await page.route('**/api/workspace',async r=>{
   if(r.request().method()==='PUT'){
    const body=r.request().postDataJSON();
-   if(missing){missing=false;return r.fulfill({status:409,json:{error:'A save part is missing. Retry to finish saving.',code:'missing-chunk'}});}
+   if(missing)return r.fulfill({status:409,json:{error:'A save part is missing. Retry to finish saving.',code:'missing-chunk'}});
    if(body.revision!==revision)return r.fulfill({status:409,json:{owner:'upload-test',workspace,revision}});
    workspace=body.manifest?JSON.parse(body.manifest.chunks.map(h=>parts.get(h)).join('')):body.workspace;revision++;writes.push(workspace);
    if(lostAcknowledgement){lostAcknowledgement=false;return r.fulfill({status:500,json:{error:'The save acknowledgement was lost'}});}
@@ -27,7 +27,7 @@ async function setup(page,{failCleanup=false,missingPart=false,lostAcknowledgeme
  const title=page.locator('[data-node=ui-node-0] > .node-head [data-field=title]');await title.fill('An earlier pending edit');await page.keyboard.press('Tab');await expect(page.locator('#account-status')).toHaveText('Sync needs attention');
  await title.fill('The latest writing');await page.keyboard.press('Tab');await expect(page.locator('#save-status')).toContainText('Saved on this device');
  await page.getByRole('button',{name:'Review sync issue'}).click();
- return {writes,clears:()=>clears,remote:()=>workspace};
+ return {writes,clears:()=>clears,remote:()=>workspace,restoreMissingPart:()=>{missing=false;}};
 }
 test('one button clears upload capacity and sends the latest complete library rather than the stale retry',async({page})=>{
  const state=await setup(page);await page.getByRole('button',{name:'Clear temporary uploads & save latest',exact:true}).click();
@@ -39,6 +39,9 @@ test('failed cleanup and missing upload parts retain writing and allow retry wit
  const state=await setup(page,{failCleanup:true,missingPart:true});const button=page.getByRole('button',{name:'Clear temporary uploads & save latest',exact:true});
  await button.click();await expect(page.locator('#account-detail')).toContainText('Cleanup unavailable');expect(state.writes).toHaveLength(0);expect((await latest(page)).projects[0].nodes[0].title).toBe('The latest writing');
  await button.click();await expect(page.locator('#account-detail')).toContainText('A save part is missing');expect((await latest(page)).projects).toHaveLength(2);expect(state.writes).toHaveLength(0);
+ // Keep the simulated fault active until it has been inspected; background
+ // retries must not race the assertions by consuming a one-shot error.
+ state.restoreMissingPart();
  await page.getByRole('button',{name:'Sync now',exact:true}).click();await expect(page.locator('#account-status')).toHaveText('Saved across devices');expect(state.remote().projects).toHaveLength(2);expect(state.remote().projects[0].nodes[0].title).toBe('The latest writing');
 });
 
