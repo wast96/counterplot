@@ -17,6 +17,39 @@ test('editing linked endpoints records independent opening and closing states an
  W.validate(data);assert.match(n.title,/Independent agent/);assert.match(W.markdown(p),/Liu Jun · Disillusioned civilian → Independent agent/);
  const restored=W.validate(JSON.parse(JSON.stringify(data)));assert.equal(W.characterArc(restored.projects[0],restored.projects[0].nodes[0]).changes[0].to.text,'Independent agent');
 });
+test('reusing a current state links it without adding history, while restoring an older state is a real change',()=>{
+ const {data,p,n,c,b}=fixture(),original=W.copy(c.changes);
+ W.setArcState(p,n,'from',{blockId:b.id,value:b.text});assert.deepEqual(c.changes,original);assert.equal(W.characterArc(p,n).changes[0].from.linked,true);
+ W.setArcState(p,n,'from',{blockId:b.id,value:'A fugitive'});assert.equal(c.changes.length,3);
+ W.setArcState(p,n,'from',{blockId:b.id,value:b.text});assert.deepEqual(c.changes,original);
+ const later=W.node('C');p.nodes.push(later);W.normalize(p);W.setArcCharacter(p,later,c.id);
+ W.setArcState(p,later,'from',{blockId:b.id,value:'Communist agent'});assert.equal(c.changes.length,2);
+ W.setArcState(p,later,'to',{blockId:b.id,value:'Innocent civilian'});assert.equal(c.changes.length,3);assert.equal(W.stateAt(p,c,later.id+':close').find(x=>x.id===b.id).text,'Innocent civilian');W.validate(data);
+});
+test('history hides old unchanged records without deleting them or hiding detail changes and same-moment reversals',()=>{
+ const {data,p,n,c,b}=fixture();
+ const repeated={id:'repeat',at:n.id+':open',blockId:b.id,op:'develop',block:W.copy(b),reason:'Set in character thread'};c.changes.push(repeated);
+ const raw=JSON.stringify(c.changes);assert.equal(W.characterHistory(p,c).length,3);assert.equal(W.characterHistory(p,c,{changesOnly:true}).length,2);assert.equal(JSON.stringify(c.changes),raw);
+ repeated.block.detail='A new obligation';assert.equal(W.characterHistory(p,c,{changesOnly:true}).length,3);
+ repeated.block=W.copy(b);c.changes.splice(2,0,{...repeated,id:'first',block:{...b,text:'A fugitive'}});
+ const visible=W.characterHistory(p,c,{changesOnly:true});assert.equal(visible.length,4);assert.equal(visible.find(x=>x.change.id==='repeat').before.text,'A fugitive');
+ W.setArcState(p,n,'from',{blockId:b.id,value:b.text});assert.equal(c.changes.length,4);assert.equal(W.stateAt(p,c,n.id+':open').find(x=>x.id===b.id).text,b.text);W.validate(data);
+});
+test('unchanged faction states are references, and newly appearing or forked blocks remain real additions',()=>{
+ const {data,p,n}=fixture(),g={id:'collective',type:'group',name:'Collective',notes:'',faction:{blocks:[],changes:[],checkpoints:[]}};p.world.push(g);W.normalize(p);W.setArcCharacter(p,n,g.id);
+ W.setArcState(p,n,'from',{blockId:'new',kind:'want',value:'Survive'});const row=W.characterArc(p,n).changes[0],bid=row.from.blockId;
+ W.setArcState(p,n,'to',{blockId:bid,value:'Survive'});assert.equal(g.faction.changes.length,1);assert.equal(W.characterArc(p,n).changes[0].to.linked,true);
+ W.setArcState(p,n,'to',{blockId:bid,value:'Take power'});assert.equal(g.faction.changes.length,2);
+ W.setArcState(p,n,'to',{blockId:bid,value:'Survive'});assert.equal(g.faction.changes.length,1);
+ const outcome=W.addArcOutcome(p,n,row.id);W.setArcState(p,n,'to',{rowId:row.id,outcomeId:outcome,blockId:'new',kind:'want',value:'Survive'});assert.equal(g.faction.changes.length,2);W.validate(data);
+});
+test('history uses saved selves, including empty checkpoints, before classifying changes',()=>{
+ const {data,p,n,c,b}=fixture();c.stateCheckpoints=[{id:'empty-self',at:n.id+':open',blocks:[],lifeStatus:'alive'}];
+ c.changes.push({id:'reappears',at:n.id+':open',blockId:b.id,op:'add',block:W.copy(b),reason:''});
+ const entry=W.characterHistory(p,c,{changesOnly:true}).find(x=>x.change.id==='reappears');assert.ok(entry);assert.equal(entry.before,undefined);
+ c.stateCheckpoints[0].blocks=[W.copy(b)];assert.ok(!W.characterHistory(p,c,{changesOnly:true}).some(x=>x.change.id==='reappears'));
+ assert.ok(W.characterHistory(p,c,{changesOnly:true}).some(x=>x.checkpoint));W.validate(data);
+});
 test('all three title fields may be blank without deleting history or requiring completion',()=>{
  const {data,p,n,c}=fixture(),before=JSON.stringify(c.changes);
  W.setArcState(p,n,'from',{value:''});W.setArcState(p,n,'to',{value:''});assert.equal(JSON.stringify(c.changes),before);

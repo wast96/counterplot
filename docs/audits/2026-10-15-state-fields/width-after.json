@@ -1,0 +1,164 @@
+[
+  {
+    "viewport": 390,
+    "value": "She's on a train from",
+    "width": 158,
+    "textWidth": 147.125,
+    "extra": 2.875,
+    "height": 37,
+    "font": "500 16px / 24px ui-sans-serif, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
+  },
+  {
+    "viewport": 390,
+    "value": "She's on a train from Jiax",
+    "width": 191,
+    "textWidth": 180.0234375,
+    "extra": 2.9765625,
+    "height": 37,
+    "font": "500 16px / 24px ui-sans-serif, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
+  },
+  {
+    "viewport": 390,
+    "value": "iiiiiiiiiiii",
+    "width": 53,
+    "textWidth": 42.65625,
+    "extra": 2.34375,
+    "height": 37,
+    "font": "500 16px / 24px ui-sans-serif, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
+  },
+  {
+    "viewport": 390,
+    "value": "WWWWWWWWWWWW",
+    "width": 192,
+    "textWidth": 181.21875,
+    "extra": 2.78125,
+    "height": 37,
+    "font": "500 16px / 24px ui-sans-serif, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
+  },
+  {
+    "viewport": 390,
+    "value": "A short phrase",
+    "width": 115,
+    "textWidth": 104.0546875,
+    "extra": 2.9453125,
+    "height": 37,
+    "font": "500 16px / 24px ui-sans-serif, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
+  },
+  {
+    "viewport": 390,
+    "value": "短语与宽字符",
+    "width": 107,
+    "textWidth": 96.00018310546875,
+    "extra": 2.99981689453125,
+    "height": 37,
+    "font": "500 16px / 24px ui-sans-serif, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
+  },
+  {
+    "viewport": 768,
+    "value": "She's on a train from",
+    "width": 130,
+    "textWidth": 119.5390625,
+    "extra": 2.4609375,
+    "height": 30,
+    "font": "500 13px / 19.5px ui-sans-serif, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
+  },
+  {
+    "viewport": 768,
+    "value": "She's on a train from Jiax",
+    "width": 157,
+    "textWidth": 146.26904296875,
+    "extra": 2.73095703125,
+    "height": 30,
+    "font": "500 13px / 19.5px ui-sans-serif, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
+  },
+  {
+    "viewport": 768,
+    "value": "iiiiiiiiiiii",
+    "width": 45,
+    "textWidth": 34.658203125,
+    "extra": 2.341796875,
+    "height": 30,
+    "font": "500 13px / 19.5px ui-sans-serif, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
+  },
+  {
+    "viewport": 768,
+    "value": "WWWWWWWWWWWW",
+    "width": 158,
+    "textWidth": 147.240234375,
+    "extra": 2.759765625,
+    "height": 30,
+    "font": "500 13px / 19.5px ui-sans-serif, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
+  },
+  {
+    "viewport": 768,
+    "value": "A short phrase",
+    "width": 95,
+    "textWidth": 84.54443359375,
+    "extra": 2.45556640625,
+    "height": 30,
+    "font": "500 13px / 19.5px ui-sans-serif, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
+  },
+  {
+    "viewport": 768,
+    "value": "短语与宽字符",
+    "width": 89,
+    "textWidth": 78.00009155273438,
+    "extra": 2.999908447265625,
+    "height": 30,
+    "font": "500 13px / 19.5px ui-sans-serif, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
+  },
+  {
+    "viewport": 1600,
+    "value": "She's on a train from",
+    "width": 130,
+    "textWidth": 119.5390625,
+    "extra": 2.4609375,
+    "height": 30,
+    "font": "500 13px / 19.5px ui-sans-serif, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
+  },
+  {
+    "viewport": 1600,
+    "value": "She's on a train from Jiax",
+    "width": 157,
+    "textWidth": 146.26904296875,
+    "extra": 2.73095703125,
+    "height": 30,
+    "font": "500 13px / 19.5px ui-sans-serif, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
+  },
+  {
+    "viewport": 1600,
+    "value": "iiiiiiiiiiii",
+    "width": 45,
+    "textWidth": 34.658203125,
+    "extra": 2.341796875,
+    "height": 30,
+    "font": "500 13px / 19.5px ui-sans-serif, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
+  },
+  {
+    "viewport": 1600,
+    "value": "WWWWWWWWWWWW",
+    "width": 158,
+    "textWidth": 147.240234375,
+    "extra": 2.759765625,
+    "height": 30,
+    "font": "500 13px / 19.5px ui-sans-serif, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
+  },
+  {
+    "viewport": 1600,
+    "value": "A short phrase",
+    "width": 95,
+    "textWidth": 84.54443359375,
+    "extra": 2.45556640625,
+    "height": 30,
+    "font": "500 13px / 19.5px ui-sans-serif, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
+  },
+  {
+    "viewport": 1600,
+    "value": "短语与宽字符",
+    "width": 89,
+    "textWidth": 78.00009155273438,
+    "extra": 2.999908447265625,
+    "height": 30,
+    "font": "500 13px / 19.5px ui-sans-serif, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
+  }
+]

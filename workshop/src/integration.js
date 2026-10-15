@@ -378,14 +378,40 @@
   }
   // The character view must expose every record that contributes to its state,
   // including retained changes in archived threads and saved earlier selves.
-  function characterHistory(p,c){
+  function sameBlockState(a,b){
+    if(!a||!b)return false;
+    // Labels describe a block across its history; property order is irrelevant.
+    const canonical=value=>Array.isArray(value)?value.map(canonical):value&&typeof value==='object'?Object.fromEntries(Object.keys(value).sort().map(k=>[k,canonical(value[k])])):value;
+    return JSON.stringify(canonical({...a,label:''}))===JSON.stringify(canonical({...b,label:''}));
+  }
+  function characterHistory(p,c,{changesOnly=false}={}){
     const hidden=new Set(p.archive.filter(a=>a.kind==='block'&&a.characterId===c.id).map(a=>a.item.id)),seen=new Set();
     const entries=c.changes.map(change=>({change}));
     for(const archive of p.archive.filter(a=>a.kind==='branch'))for(const x of archive.changes)if(x.characterId===c.id&&!p.archive.some(a=>a.kind==='block'&&a.id===x.archiveBlockId))entries.push({change:x.change,archive});
     const unique=entries.filter(({change:x})=>{if(hidden.has(x.blockId)||seen.has(x.id))return false;seen.add(x.id);return true;});
     for(const checkpoint of c.stateCheckpoints||[])for(const b of checkpoint.blocks)if(!hidden.has(b.id))unique.push({checkpoint,change:{id:checkpoint.id+':'+b.id,at:W.events(p).find(e=>e.key===(checkpoint.at||checkpoint.momentId)||e.id===(checkpoint.at||checkpoint.momentId))?.key||checkpoint.at||checkpoint.momentId,blockId:b.id,op:'saved',block:b}});
-    const order=new Map(W.events(p).flatMap((e,i)=>[[e.key,i],[e.id,i]]));
-    return unique.sort((a,b)=>(order.get(a.change.at)??Infinity)-(order.get(b.change.at)??Infinity)||(a.checkpoint?0:1)-(b.checkpoint?0:1));
+    const events=W.events(p),order=new Map(events.flatMap((e,i)=>[[e.key,i],[e.id,i]]));
+    const sorted=unique.sort((a,b)=>(order.get(a.change.at)??Infinity)-(order.get(b.change.at)??Infinity)||(a.checkpoint?0:1)-(b.checkpoint?0:1));
+    if(!changesOnly)return sorted;
+    let moment,blocks,starting,checkpoints,changesStarted;
+    return sorted.flatMap(entry=>{
+      const x=entry.change,key=events.find(e=>e.key===x.at||e.id===x.at)?.key||x.at;
+      if(key!==moment){
+        moment=key;starting=new Map(W.stateAt(p,c,key,true).map(b=>[b.id,b]));blocks=starting;changesStarted=false;
+        checkpoints=(c.stateCheckpoints||[]).filter(x=>order.get(x.at||x.momentId)===order.get(key));
+      }
+      if(entry.checkpoint){
+        const previous=checkpoints[checkpoints.indexOf(entry.checkpoint)-1];
+        return [{...entry,before:previous?previous.blocks.find(b=>b.id===x.blockId):starting.get(x.blockId)}];
+      }
+      if(!changesStarted){changesStarted=true;if(checkpoints.length)blocks=new Map(checkpoints.at(-1).blocks.map(b=>[b.id,b]));}
+      const before=blocks.get(x.blockId);
+      const after=x.op==='retire'?undefined:x.op==='add'?(before||x.block):before?x.block:undefined;
+      if(after)blocks.set(x.blockId,after);else blocks.delete(x.blockId);
+      // Keep unresolved or mistimed records available for review. Only hide
+      // snapshots that repeat a block already present at this exact point.
+      return before&&x.op!=='retire'&&sameBlockState(before,x.block)?[]:[{...entry,before}];
+    });
   }
   function characterBlockOrigin(p,c,bid){
     const block=c.blocks.find(b=>b.id===bid);if(block)return {block,at:'',entry:null};
@@ -513,15 +539,17 @@
     if(value&&blockId){
       if(!c)throw Error('Choose a character or group before recording a building block.');
       const group=c.type==='group';if(group)c.faction||={blocks:[],changes:[],checkpoints:[]};
-      const records=group?c.faction.changes:c.changes,at=n.id+':'+(edge==='from'?'open':'close'),before=arcBlocksAt(p,c,at,true);
+      const records=group?c.faction.changes:c.changes,at=n.id+':'+(edge==='from'?'open':'close');
       const existing=blockId==='new'?null:records.findLast(x=>x.blockId===blockId&&(x.at===at||x.momentId===momentId(p,at)));
       const original=blockId==='new'?(group?{id:W.uid(),kind,key:'custom',title:'',text:'',detail:'',context:'any',knownBy:[],links:[]}:W.block(kind)):arcBlocksAt(p,c,at).find(b=>b.id===blockId)||existing?.block||arcStateOptions(p,c).find(b=>b.id===blockId);
       if(!original)throw Error('That building block is no longer available.');
-      const block={...copy(original),text:value},present=before.some(b=>b.id===block.id);
+      const withoutExisting=records.filter(x=>x!==existing),prior=arcBlocksAt(p,group?{...c,faction:{...c.faction,changes:withoutExisting}}:{...c,changes:withoutExisting},at).find(b=>b.id===original.id);
+      const block={...copy(original),text:value},present=!!prior;
       if(blockId==='new')block[group?'title':'label']=row.label;
       if(outcome&&blockId==='new'){block.forkedFrom=row.from.blockId||row.to.blockId||'';block[group?'title':'label']=row.label;}
       const record={id:existing?.id||W.uid(),at,momentId:momentId(p,at),blockId:block.id,...(group?{operation:present?'replace':'add'}:{op:present?'develop':'add'}),block,reason:existing?.reason||'Set in character thread'};
-      if(existing)Object.assign(existing,record);else records.push(record);
+      if(sameBlockState(prior,block)){if(existing)records.splice(records.indexOf(existing),1);}
+      else if(existing)Object.assign(existing,record);else records.push(record);
       assign({text:value,blockId:block.id,linked:true});if(!outcome){row.kind=block.kind;row.label=block.label||block.title||'';}
     }else {assign({text:value,blockId:'',linked:false});if(!outcome&&!row.from.linked&&!row.to.linked)row.kind=kind;}
     if(label!==undefined){

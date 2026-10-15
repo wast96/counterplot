@@ -80,6 +80,13 @@
 textarea.draft-title{display:block;width:100%;resize:none;overflow:hidden;white-space:pre-wrap;overflow-wrap:anywhere;min-height:38px;line-height:1.25}
 @media(pointer:coarse){.breadcrumb button{min-height:40px}.block .grip{min-height:40px}}
 
+/* Compact phrases follow their rendered text; longer writing wraps at a limit. */
+.arc-state textarea,.recorded-state textarea,textarea.beat-state-after,
+.thread-word.wrapping-field .story-field-text,.outline .thread-word.wrapping-field .story-field-text{
+ width:min(var(--inline-field-width,14ch),36ch);flex:0 1 auto;min-width:24px;max-width:100%
+}
+.thread-word.wrapping-field,.outline .thread-word.beat-development{width:auto;flex:0 1 auto}
+
 @media(max-width:360px){.tray:has(.tray-drawer){gap:3px;padding-inline:5px}}
 
 @media(max-width:680px){.character-page-head{padding-block:10px}.character-studio .character-tabs{margin-bottom:8px}.character-workspace{gap:12px}}
