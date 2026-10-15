@@ -25,7 +25,7 @@ test('story view cards fit narrow screens without the outline creation tray',asy
 test('archived Write/Read: Read shows an undrafted plan including closings, and keeps draft prose separate',async({page})=>{
  await enableArchivedWriting(page);
  const data=fixture(),p=data.projects[0];for(const n of p.nodes)n.prose='';p.nodes[0].opening='The question opens.';p.nodes[1].opening='A clue arrives.';p.nodes[0].closing='The question is answered.';
- await page.goto('/');await page.locator('#import-file').setInputFiles({name:'plan.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(data))});await page.locator('[data-action=accept-import]').click();await view(page,'Read');
+ await page.goto('/');await expect(page.locator('.story-viewbar')).toBeVisible();await page.locator('#import-file').setInputFiles({name:'plan.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(data))});await page.locator('[data-action=accept-import]').click();await view(page,'Read');
  await expect(page.locator('.manuscript-prose')).toHaveText(['The question opens.','A clue arrives.','The question is answered.']);
  await expect(page.getByRole('button',{name:'Plan',exact:true})).toHaveAttribute('aria-pressed','true');
  await page.locator('[data-reading-moment="ui-node-0:close"] button').click();await expect(page.getByLabel('Closing plan',{exact:true})).toHaveValue('The question is answered.');
