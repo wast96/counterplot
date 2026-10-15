@@ -10,3 +10,10 @@ test('plot management uses one title row with separate nonoverlapping actions',a
  for(const width of [320,390,768,1440]){await page.setViewportSize({width,height:1000});const rows=page.locator('.plot-row');expect(await rows.evaluateAll(rows=>rows.every(row=>{const title=row.querySelector('strong').getBoundingClientRect(),actions=[...row.querySelectorAll('.btn')].map(x=>x.getBoundingClientRect());return row.scrollWidth<=row.clientWidth+1&&actions.every(a=>a.left>=title.right||a.right<=title.left||a.top>=title.bottom||a.bottom<=title.top);}))).toBeTruthy();}
  await page.screenshot({path:testInfo.outputPath('manage-plots.png'),fullPage:false});await page.locator('.plot-row').first().getByRole('button',{name:'Cast roles',exact:true}).click();await expect(page.getByRole('heading',{name:'A · The mission',exact:true})).toBeVisible();
 });
+test('a quick edit preserves plot scrolling before the browser delivers its scroll event',async({page})=>{
+ await load(page);const nav=page.getByRole('navigation',{name:'Plot views'});
+ await nav.evaluate(el=>{el.scrollLeft=el.scrollWidth;document.querySelector('.page-actions [data-action=collapse-all]').click();});
+ await expect(page.locator('.page-actions [data-action=collapse-all]')).toHaveText('Expand all');
+ await expect.poll(()=>nav.evaluate(el=>el.scrollLeft)).toBeGreaterThan(0);
+ await expect(page.locator('.plot-scroll')).toHaveClass(/can-scroll-left/);
+});

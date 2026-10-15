@@ -890,6 +890,7 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
     for (const n of allNodes(p)) { n.writingId ||= n.sceneId || n.id; n.plotIds ||= []; if(n.closingCraft&&typeof n.closingCraft==='object'&&!Array.isArray(n.closingCraft)){n.closingCraft.cast ||= [];n.closingCraft.worldIds ||= [];} }
     for (const c of allCharacters(p)) {
       c.lifeStatus ||= 'alive'; c.lifeChanges ||= []; c.stateCheckpoints ||= [];
+      c.blockFolders ||= [];
       c.prominence ||= {opening:'',changes:[],checkpoints:[]};
     }
     normalizeScenes(p);
@@ -1044,6 +1045,14 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
       const knowledge=o=>{for(const id of o.knownBy||[])if(!targets.has(id))fail('Knowledge points to a missing person or faction.');for(const [id,mid] of Object.entries(o.knownFrom||{})){if(!(o.knownBy||[]).includes(id)||mid&&!eventIds.has(mid))fail('Invalid knowledge timing.');}};
       const block=b=>{knowledge(b);for(const link of [...(b.targetId?[{targetId:b.targetId,role:'target'}]:[]),...list(b.links)])if(!targets.has(link.targetId)||!['target','for','from','at','with','against'].includes(link.role))fail('A block attachment is invalid.');};
       for(const c of people){timing(c.lifeChanges,'Life history');for(const x of [{status:c.lifeStatus},...c.lifeChanges])if(!['alive','dead'].includes(x.status))fail('Invalid life status.');timing(c.stateCheckpoints,'Character checkpoints');for(const x of c.stateCheckpoints){if(!['alive','dead'].includes(x.lifeStatus))fail('Invalid checkpoint life status.');unique(array(x.blocks,'Checkpoint pieces').map(b=>b.id),'checkpoint piece');for(const b of x.blocks)block(b);}for(const b of [...c.blocks,...c.changes.flatMap(x=>x.block?[x.block]:[])])block(b);timing(c.prominence.changes,'Prominence');timing(c.prominence.checkpoints,'Prominence checkpoints');}
+      for(const c of people){
+        const folders=array(c.blockFolders,'Card folders',100),known=new Set(characterBlockSnapshots(p,c).map(b=>b.id)),assigned=new Set();
+        unique(folders.map(f=>f?.id),'card folder');
+        for(const f of folders){
+          if(!f||!/^[A-Za-z0-9_-]{1,120}$/.test(f.id)||typeof f.label!=='string'||!f.label.trim()||f.label.length>100||typeof f.collapsed!=='boolean')fail('Folders need a label within 100 characters.');
+          for(const id of unique(array(f.blockIds,'Folder cards'),'folder card')){if(!known.has(id)||assigned.has(id))fail('A card must belong to at most one folder for its character.');assigned.add(id);}
+        }
+      }
       for(const n of nodes){if(!date(n.storyDate)||!date(n.storyEndDate))fail('Use a valid scene date.');for(const id of n.cast)if(!targets.has(id))fail('A scene participant is missing.');for(const id of n.worldIds)if(!targets.has(id))fail('A world link is missing.');for(const evidence of n.evidenceLinks||[]){if(!['supports','challenges','complicates'].includes(evidence.bearing))fail('Invalid evidence interpretation.');if(evidence.sourceType==='fact'?!world.some(w=>w.id===evidence.sourceId&&w.type==='fact'):evidence.sourceType!=='scene'||!nodes.some(x=>[x.id,x.writingId,x.sceneId].includes(evidence.sourceId)))fail('Evidence points to a missing fact or scene.');}}
       const scenes=new Set(nodes.flatMap(n=>[n.id,n.writingId,n.sceneId].filter(Boolean)));
       for(const c of craftRecords(p)){if(c.refinement!==undefined){if(!c.refinement||typeof c.refinement!=='object'||Array.isArray(c.refinement))fail('Refinement must be a record.');for(const value of Object.values(c.refinement))if(typeof value!=='string'||value.length>2000000)fail('Refinement answers must be text.');}}
@@ -1133,7 +1142,7 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
     // The writing remains a stable fragment, and both historical edges remain addressable.
     n.removedFrame={type:n.type,opening:n.opening,closing:n.closing};n.type='B';n.closing='';n.title ||= 'Writing from removed frame';p.nodes.splice(index,1,n);
   }
-  function duplicateCharacter(p,id){const c=p.characters.find(x=>x.id===id);if(!c)throw Error('Choose a character.');const clone=copy(c),map=new Map();const newId=id=>{if(!map.has(id))map.set(id,W.uid());return map.get(id);};clone.id=W.uid();clone.name+=' · copy';for(const b of clone.blocks)b.id=newId(b.id);for(const x of clone.changes){x.id=W.uid();x.blockId=newId(x.blockId);if(x.block)x.block.id=x.blockId;}for(const x of clone.stateCheckpoints||[]){x.id=W.uid();for(const b of x.blocks)b.id=newId(b.id);}for(const x of clone.lifeChanges||[])x.id=W.uid();for(const b of [...clone.blocks,...clone.changes.flatMap(x=>x.block?[x.block]:[]),...(clone.stateCheckpoints||[]).flatMap(x=>x.blocks)])if(b.forkedFrom)b.forkedFrom=newId(b.forkedFrom);p.characters.push(clone);return clone;}
+  function duplicateCharacter(p,id){const c=p.characters.find(x=>x.id===id);if(!c)throw Error('Choose a character.');const clone=copy(c),map=new Map();const newId=id=>{if(!map.has(id))map.set(id,W.uid());return map.get(id);};clone.id=W.uid();clone.name+=' · copy';for(const b of clone.blocks)b.id=newId(b.id);for(const x of clone.changes){x.id=W.uid();x.blockId=newId(x.blockId);if(x.block)x.block.id=x.blockId;}for(const x of clone.stateCheckpoints||[]){x.id=W.uid();for(const b of x.blocks)b.id=newId(b.id);}for(const x of clone.lifeChanges||[])x.id=W.uid();for(const b of [...clone.blocks,...clone.changes.flatMap(x=>x.block?[x.block]:[]),...(clone.stateCheckpoints||[]).flatMap(x=>x.blocks)])if(b.forkedFrom)b.forkedFrom=newId(b.forkedFrom);clone.blockFolders=(clone.blockFolders||[]).map(f=>({...f,id:W.uid(),blockIds:f.blockIds.filter(id=>map.has(id)).map(id=>map.get(id))}));p.characters.push(clone);return clone;}
   function snapshot(p,n){const key=W.events(p).find(e=>e.nodeId===n.id&&e.edge==='open')?.key||'';return {characters:n.cast.map(id=>allCharacters(p).find(c=>c.id===id)).filter(Boolean).map(c=>{const state=W.characterState(p,c,key,true);return {id:c.id,name:c.name,identity:c.identity,blocks:state.blocks,lifeStatus:state.lifeStatus};}),world:n.worldIds.map(id=>allWorld(p).find(w=>w.id===id)).filter(Boolean).map(w=>({id:w.id,...worldState(p,w,key)})),parents:[n.parent,...(n.extraParents||[]).map(x=>x.id)].filter(Boolean).map(id=>{const s=allNodes(p).find(n=>n.id===id||n.sceneId===id);return s?{id,title:s.title,prose:s.prose,action:s.action,after:s.after}: {id,missing:true};})};}
   function continuity(p,n){const current=snapshot(p,n);return {stale:!!n.continuityUnreviewed||!!n.continuitySnapshot&&JSON.stringify(current)!==JSON.stringify(n.continuitySnapshot),previous:n.continuitySnapshot||n.sourceSnapshot||null,current};}
   function acceptContinuity(p,n){n.continuitySnapshot=snapshot(p,n);n.continuityUnreviewed=false;}
@@ -1195,6 +1204,29 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
       ...(c.stateCheckpoints||[]).flatMap(x=>x.blocks),
       ...p.archive.filter(a=>a.kind==='branch').flatMap(a=>a.changes.filter(x=>x.characterId===c.id&&x.change.block).map(x=>x.change.block)),
       ...p.archive.filter(a=>a.kind==='block'&&a.characterId===c.id).flatMap(a=>[a.item,...(a.changes||[]).flatMap(x=>x.block?[x.block]:[])])];
+  }
+  function characterFolderBlocks(p,c){
+    const hidden=new Set(p.archive.filter(a=>a.kind==='block'&&a.characterId===c.id).map(a=>a.item.id));
+    return [...new Map(characterBlockSnapshots(p,c).filter(b=>!hidden.has(b.id)).map(b=>[b.id,b])).values()];
+  }
+  function setBlockFolder(p,cid,{id='',label='',blockIds=[]}={}){
+    const c=allCharacters(p).find(c=>c.id===cid),folder=c?.blockFolders.find(f=>f.id===id);
+    if(!c||id&&!folder)throw Error('This folder is no longer available.');
+    if(typeof label!=='string'||!label.trim()||label.length>100)throw Error('Name the folder in 100 characters or fewer.');
+    if(!id&&c.blockFolders.length>=100)throw Error('Keep up to 100 folders for each character.');
+    const known=new Set(characterBlockSnapshots(p,c).map(b=>b.id));
+    if(!Array.isArray(blockIds)||blockIds.some(bid=>!known.has(bid)))throw Error('Choose cards belonging to this character.');
+    const ids=[...new Set(blockIds)],selected=new Set(ids);
+    for(const other of c.blockFolders)if(other!==folder)other.blockIds=other.blockIds.filter(bid=>!selected.has(bid));
+    if(folder)Object.assign(folder,{label:label.trim(),blockIds:ids});
+    else c.blockFolders.push({id:id=W.uid(),label:label.trim(),blockIds:ids,collapsed:false});
+    return id;
+  }
+  function moveBlockToFolder(p,cid,bid,folderId=''){
+    const c=allCharacters(p).find(c=>c.id===cid),folder=c?.blockFolders.find(f=>f.id===folderId);
+    if(!c||folderId&&!folder||!characterBlockSnapshots(p,c).some(b=>b.id===bid))throw Error('Choose a card and folder belonging to this character.');
+    for(const other of c.blockFolders)other.blockIds=other.blockIds.filter(id=>id!==bid);
+    if(folder)folder.blockIds.push(bid);
   }
   function blockLabelResolver(p,c){
     const snapshots=characterBlockSnapshots(p,c),labels=new Map(),blocks=new Map(),parents=new Map();
@@ -1268,7 +1300,7 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
     if(source?.checkpoint){
       // A saved self contains other cards and life status. Retime only this card.
       if(position>(order.get(origin.at)??-1))source.checkpoint.blocks=source.checkpoint.blocks.filter(b=>b.id!==bid);
-    }else if(source)removeCharacterChange(p,cid,source.change.id);
+    }else if(source)removeCharacterChange(p,cid,source.change.id,{preserveFolders:true});
     if(!at)c.blocks.push(block);
     else c.changes.push({id:source&&!source.checkpoint?source.change.id:W.uid(),at,momentId:momentId(p,at),blockId:bid,op:'add',block,reason:source?.change.reason||''});
     const n=p.nodes.find(n=>n.id===events.find(e=>e.key===at)?.nodeId);if(n&&!n.cast.includes(cid))n.cast.push(cid);
@@ -1282,10 +1314,11 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
     for(const a of p.archive.filter(a=>a.kind==='branch'))for(const x of a.changes)if(x.characterId===cid&&x.change.blockId===bid)x.archiveBlockId=entry.id;
     return entry;
   }
-  function removeCharacterChange(p,cid,id){
+  function removeCharacterChange(p,cid,id,{preserveFolders=false}={}){
     const c=p.characters.find(c=>c.id===cid);if(!c)return;
     c.changes=c.changes.filter(x=>x.id!==id);
     for(const a of p.archive.filter(a=>a.kind==='branch'))a.changes=a.changes.filter(x=>x.characterId!==cid||x.change.id!==id);
+    if(!preserveFolders){const known=new Set(characterBlockSnapshots(p,c).map(b=>b.id));for(const f of c.blockFolders)f.blockIds=f.blockIds.filter(bid=>known.has(bid));}
   }
   function setBlockLabel(p,cid,bid,value){
     const c=allCharacters(p).find(c=>c.id===cid);if(!c||typeof value!=='string'||value.length>1000)throw Error('Choose a block label within 1,000 characters.');
@@ -1564,6 +1597,7 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
     const people=new Set(allCharacters(p).map(c=>c.id)),world=new Set(allWorld(p).map(w=>w.id)),targets=new Set([...people,...world]),nodes=new Set(allNodes(p).map(n=>n.id)),scenes=new Set(allNodes(p).flatMap(n=>[n.id,n.sceneId,n.writingId].filter(Boolean)));
     p.connections=p.connections.filter(r=>targets.has(r.a)&&targets.has(r.b));p.archive=p.archive.filter(a=>a.kind!=='connection'||targets.has(a.item.a)&&targets.has(a.item.b));
     for(const n of allNodes(p))if(n.characterArc){const a=n.characterArc,c=arcSubject(p,a);if(!c)a.subjectId='';for(const row of a.changes)for(const v of [row.from,row.to,...(row.outcomes||[])])if(v.linked&&(!c||!arcStateOptions(p,c).some(b=>b.id===v.blockId))){const old=arcs.get(n.id)?.changes.find(r=>r.id===row.id),prior=v===row.from?old?.from:v===row.to?old?.to:old?.outcomes?.find(x=>x.id===v.id);Object.assign(v,emptyArcState(),{text:prior?.text||''});}}
+    for(const c of allCharacters(p)){const known=new Set(characterBlockSnapshots(p,c).map(b=>b.id));for(const f of c.blockFolders)f.blockIds=f.blockIds.filter(id=>known.has(id));}
     const prune=o=>{if(!o||typeof o!=='object')return;if(Array.isArray(o)){o.forEach(prune);return;}if(o.knownBy)o.knownBy=o.knownBy.filter(id=>targets.has(id));if(o.knownFrom)o.knownFrom=Object.fromEntries(Object.entries(o.knownFrom).filter(([id])=>targets.has(id)));if(o.links)o.links=o.links.filter(x=>targets.has(x.targetId));for(const key of ['targetId','stateTargetId'])if(o[key]&&!targets.has(o[key]))o[key]='';if(o.readerAppearances)o.readerAppearances=o.readerAppearances.filter(x=>scenes.has(x.sceneId));for(const [key,value]of Object.entries(o))if(!['source','retiredPlanning','migration','drafts','continuitySnapshot'].includes(key))prune(value);};prune(p);
     for(const n of craftRecords(p)){n.cast=(n.cast||[]).filter(id=>people.has(id));n.worldIds=(n.worldIds||[]).filter(id=>world.has(id));n.ensemble=(n.ensemble||[]).filter(x=>people.has(x.id));n.factionIds=(n.factionIds||[]).filter(id=>world.has(id));for(const key of ['povId','focus','partner','characterId'])if(n[key]&&!people.has(n[key]))n[key]='';if(n.parent&&!scenes.has(n.parent))n.parent='';n.extraParents=(n.extraParents||[]).filter(x=>scenes.has(x.id));n.miceLinks=(n.miceLinks||[]).filter(x=>nodes.has(x.miceId));n.evidenceLinks=(n.evidenceLinks||[]).filter(x=>x.sourceType==='fact'?world.has(x.sourceId):scenes.has(x.sourceId));for(const key of ['openSceneId','closeSceneId'])if(n[key]&&!scenes.has(n[key]))n[key]='';}
     for(const plot of p.plots)plot.cast=(plot.cast||[]).filter(x=>people.has(x.characterId));
@@ -1605,7 +1639,7 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
       }
       for(const plot of p.plots||[])for(const tr of plot.cast||[])tr.characterId=rename(tr.characterId);
     }
-    if(entity==='block'){for(const c of allCharacters(p).filter(c=>c.id===cid))for(const b of [...c.blocks,...c.changes.flatMap(x=>x.block?[x.block]:[]),...(c.stateCheckpoints||[]).flatMap(x=>x.blocks),...p.archive.filter(x=>x.kind==='branch').flatMap(x=>x.changes.filter(y=>y.characterId===cid&&y.change.block).map(y=>y.change.block))])if(b.forkedFrom===from)b.forkedFrom=to;for(const c of allCharacters(p).filter(c=>c.id===cid))for(const checkpoint of c.stateCheckpoints||[])for(const b of checkpoint.blocks)if(b.id===from)b.id=to;for(const n of allNodes(p))if(n.characterArc?.subjectId===cid)for(const row of n.characterArc.changes)for(const v of [row.from,row.to,...(row.outcomes||[])])if(v.blockId===from)v.blockId=to;}
+    if(entity==='block'){for(const c of allCharacters(p).filter(c=>c.id===cid))for(const f of c.blockFolders)f.blockIds=f.blockIds.map(rename);for(const c of allCharacters(p).filter(c=>c.id===cid))for(const b of [...c.blocks,...c.changes.flatMap(x=>x.block?[x.block]:[]),...(c.stateCheckpoints||[]).flatMap(x=>x.blocks),...p.archive.filter(x=>x.kind==='branch').flatMap(x=>x.changes.filter(y=>y.characterId===cid&&y.change.block).map(y=>y.change.block))])if(b.forkedFrom===from)b.forkedFrom=to;for(const c of allCharacters(p).filter(c=>c.id===cid))for(const checkpoint of c.stateCheckpoints||[])for(const b of checkpoint.blocks)if(b.id===from)b.id=to;for(const n of allNodes(p))if(n.characterArc?.subjectId===cid)for(const row of n.characterArc.changes)for(const v of [row.from,row.to,...(row.outcomes||[])])if(v.blockId===from)v.blockId=to;}
     const visit=o=>{
       if(!o||typeof o!=='object')return;if(Array.isArray(o)){o.forEach(visit);return;}
       if(entity==='node'){
@@ -1652,7 +1686,7 @@ return { validateWorkspace, CounterplotStory, CounterplotEnsemble };
     W.restore(candidate,id);if(anchor!==undefined)W.move(candidate,rootId,anchor,where);
     Object.assign(p,candidate);return rootId;
   }
-  Object.assign(W,{archiveScene,archiveSceneBeat,developingBeats,scene,normalizeScenes,characterBlockOrigin,setCharacterBlockStart,matchOutlineOrder,characterHistory,archiveCharacterBlock,removeCharacterChange,characterState,stateAt:(p,c,key='',before=false)=>characterState(p,c,key,before).blocks,characterBlockLabel,setBlockLabel,move,retainedBeatThread,THREAD_FIELDS,threadPlan,setThreadPlan,addThreadOutcome,removeThreadOutcome,changeStateAt,recordedThreadStates,setPieceState,openThreadContext,setAdvancedThreads,editableTitle,setPieceTitle,applyBulk,addArcOutcome,removeArcOutcome,arcSubjects,arcSubject,addArcChange,removeArcChange,characterArc,pieceTitle,setArcCharacter,setArcState,arcStateOptions,pieceChanges,drawerEntries,archivedItems,stashNode,returnFromDrawer,normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,readingMoments,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
+  Object.assign(W,{characterFolderBlocks,setBlockFolder,moveBlockToFolder,archiveScene,archiveSceneBeat,developingBeats,scene,normalizeScenes,characterBlockOrigin,setCharacterBlockStart,matchOutlineOrder,characterHistory,archiveCharacterBlock,removeCharacterChange,characterState,stateAt:(p,c,key='',before=false)=>characterState(p,c,key,before).blocks,characterBlockLabel,setBlockLabel,move,retainedBeatThread,THREAD_FIELDS,threadPlan,setThreadPlan,addThreadOutcome,removeThreadOutcome,changeStateAt,recordedThreadStates,setPieceState,openThreadContext,setAdvancedThreads,editableTitle,setPieceTitle,applyBulk,addArcOutcome,removeArcOutcome,arcSubjects,arcSubject,addArcChange,removeArcChange,characterArc,pieceTitle,setArcCharacter,setArcState,arcStateOptions,pieceChanges,drawerEntries,archivedItems,stashNode,returnFromDrawer,normalize,validate,legacy:migrate,migrate,allNodes,allCharacters,allWorld,allConnections,reading,readingMoments,reorder,removeFrame,duplicateCharacter,worldState,connectionState,knownAt,readerAt,fold,momentId,continuity,acceptContinuity,consequences,usedHere,search,sharedStakes,taggedOutline,parseOutline,structureIssues,continueScene,addEarlierSelf,transitionFaction,purgeArchive,rekeyEntity,duplicateNode,markdown,
     factionAt:(p,e,key)=>L.CounterplotEnsemble.factionAt(timelineProject(p),e,momentId(p,key)),
     roleAt:(p,track,key)=>L.CounterplotEnsemble.roleAt(timelineProject(p),track,momentId(p,key)),
     prominenceAt:(p,c,key)=>L.CounterplotEnsemble.prominenceAt(timelineProject(p),c,momentId(p,key))});

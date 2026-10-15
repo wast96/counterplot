@@ -406,7 +406,7 @@ document.addEventListener('input',e=>{if(e.target.id==='refine-picker-search')re
 document.addEventListener('change',e=>{const el=e.target;if(el.name==='refine-link-kind'){renderRefinePicker();return;}if(!el.dataset.refineRole&&!el.dataset.refinePov)return;mutate('Updated people',()=>{const c=refineTarget(el.dataset.id,el.dataset.edge,true);if(el.dataset.refinePov){c.povId=el.value;c.focus=el.value;}else{c.ensemble||=[];const role=c.ensemble.find(x=>x.id===el.dataset.refineRole);if(role)role.role=el.value;else c.ensemble.push({id:el.dataset.refineRole,role:el.value});}},{rerender:false,notify:false});});
 
 let plotScrollObserver;
-function updatePlotOverflow(nav){const wrapper=nav.parentElement;wrapper.classList.toggle('can-scroll-left',nav.scrollLeft>2);wrapper.classList.toggle('can-scroll-right',nav.scrollLeft+nav.clientWidth<nav.scrollWidth-2);ui.plotScrollLeft=nav.scrollLeft;}
+function updatePlotOverflow(nav){if(!nav.isConnected)return;const wrapper=nav.parentElement;wrapper.classList.toggle('can-scroll-left',nav.scrollLeft>2);wrapper.classList.toggle('can-scroll-right',nav.scrollLeft+nav.clientWidth<nav.scrollWidth-2);ui.plotScrollLeft=nav.scrollLeft;}
 function syncPlotToolbar(){
  plotScrollObserver?.disconnect();const nav=$('.plot-scroll nav');if(!nav)return;
  nav.scrollLeft=ui.plotScrollLeft||0;updatePlotOverflow(nav);
