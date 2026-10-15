@@ -1,6 +1,8 @@
 const {test,expect}=require('@playwright/test');
 const AxeBuilder=require('@axe-core/playwright').default;
 const W=require('../src/integration.js'),fixture=require('./ui-fixture.cjs');
+// Contrast checks should inspect settled dialog colors, not entrance opacity.
+test.beforeEach(async({page})=>{await page.emulateMedia({reducedMotion:'reduce'});});
 const snapshot=page=>page.evaluate(()=>{const d=CounterplotTutorial.snapshot();return d.projects.find(p=>p.id===d.active);});
 async function load(page,{beats=false,beliefs=false,unchanged=false}={}){
  const data=fixture(),p=data.projects[0],n=p.nodes[0],c=p.characters[0];n.type='C';n.cast.push('ui-other');n.title='From Innocent civilian to Communist agent';
