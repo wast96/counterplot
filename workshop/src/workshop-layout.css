@@ -66,3 +66,5 @@ textarea.draft-title{display:block;width:100%;resize:none;overflow:hidden;white-
 @media(max-width:360px){.tray:has(.tray-drawer){gap:3px;padding-inline:5px}}
 
 @media(max-width:680px){.character-page-head{padding-block:10px}.character-studio .character-tabs{margin-bottom:8px}.character-workspace{gap:12px}}
+
+@media(max-width:680px){.tray-drawer,.tray-trash{padding-inline:0}}
