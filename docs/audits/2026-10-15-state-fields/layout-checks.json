@@ -1,0 +1,1973 @@
+[
+  {
+    "variant": "normal",
+    "width": 320,
+    "height": 1777,
+    "view": "Outline",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 320,
+    "height": 1367,
+    "view": "Chronology",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 320,
+    "height": 1183,
+    "view": "Sequence",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 320,
+    "height": 2528,
+    "view": "Refine",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 320,
+    "height": 2640,
+    "view": "Scene constructor",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 320,
+    "height": 1269,
+    "view": "characters",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 320,
+    "height": 953,
+    "view": "world",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 320,
+    "height": 793,
+    "view": "connections",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 320,
+    "height": 733,
+    "view": "archive",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 390,
+    "height": 1612,
+    "view": "Outline",
+    "documentWidth": 390,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 390,
+    "height": 1095,
+    "view": "Chronology",
+    "documentWidth": 390,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 390,
+    "height": 1049,
+    "view": "Sequence",
+    "documentWidth": 390,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 390,
+    "height": 2298,
+    "view": "Refine",
+    "documentWidth": 390,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 390,
+    "height": 2585,
+    "view": "Scene constructor",
+    "documentWidth": 390,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 390,
+    "height": 1150,
+    "view": "characters",
+    "documentWidth": 390,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 390,
+    "height": 947,
+    "view": "world",
+    "documentWidth": 390,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 390,
+    "height": 947,
+    "view": "connections",
+    "documentWidth": 390,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 390,
+    "height": 947,
+    "view": "archive",
+    "documentWidth": 390,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 640,
+    "height": 1357,
+    "view": "Outline",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 640,
+    "height": 1049,
+    "view": "Chronology",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 640,
+    "height": 999,
+    "view": "Sequence",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 640,
+    "height": 2073,
+    "view": "Refine",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 640,
+    "height": 2483,
+    "view": "Scene constructor",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 640,
+    "height": 1150,
+    "view": "characters",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 640,
+    "height": 859,
+    "view": "world",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 640,
+    "height": 593,
+    "view": "connections",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 640,
+    "height": 691,
+    "view": "archive",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 768,
+    "height": 1244,
+    "view": "Outline",
+    "documentWidth": 768,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 768,
+    "height": 1024,
+    "view": "Chronology",
+    "documentWidth": 768,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 768,
+    "height": 1024,
+    "view": "Sequence",
+    "documentWidth": 768,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 768,
+    "height": 1930,
+    "view": "Refine",
+    "documentWidth": 768,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 768,
+    "height": 1991,
+    "view": "Scene constructor",
+    "documentWidth": 768,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 768,
+    "height": 1173,
+    "view": "characters",
+    "documentWidth": 768,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 768,
+    "height": 1024,
+    "view": "world",
+    "documentWidth": 768,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 768,
+    "height": 1024,
+    "view": "connections",
+    "documentWidth": 768,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 768,
+    "height": 1024,
+    "view": "archive",
+    "documentWidth": 768,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 1024,
+    "height": 1065,
+    "view": "Outline",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 1024,
+    "height": 768,
+    "view": "Chronology",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 1024,
+    "height": 768,
+    "view": "Sequence",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 1024,
+    "height": 1786,
+    "view": "Refine",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 1024,
+    "height": 1724,
+    "view": "Scene constructor",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 1024,
+    "height": 1162,
+    "view": "characters",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 1024,
+    "height": 768,
+    "view": "world",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 1024,
+    "height": 768,
+    "view": "connections",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 1024,
+    "height": 768,
+    "view": "archive",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 1440,
+    "height": 1000,
+    "view": "Outline",
+    "documentWidth": 1440,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 1440,
+    "height": 1000,
+    "view": "Chronology",
+    "documentWidth": 1440,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 1440,
+    "height": 1000,
+    "view": "Sequence",
+    "documentWidth": 1440,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 1440,
+    "height": 1575,
+    "view": "Refine",
+    "documentWidth": 1440,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 1440,
+    "height": 1612,
+    "view": "Scene constructor",
+    "documentWidth": 1440,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 1440,
+    "height": 1000,
+    "view": "characters",
+    "documentWidth": 1440,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 1440,
+    "height": 1000,
+    "view": "world",
+    "documentWidth": 1440,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 1440,
+    "height": 1000,
+    "view": "connections",
+    "documentWidth": 1440,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "normal",
+    "width": 1440,
+    "height": 1000,
+    "view": "archive",
+    "documentWidth": 1440,
+    "errors": [],
+    "axe": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 320,
+    "height": 750,
+    "view": "Outline",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 320,
+    "height": 680,
+    "view": "Chronology",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 320,
+    "height": 671,
+    "view": "Sequence",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 320,
+    "height": 926,
+    "view": "Refine",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 320,
+    "height": 710,
+    "view": "Scene constructor",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 320,
+    "height": 671,
+    "view": "characters",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 320,
+    "height": 751,
+    "view": "world",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 320,
+    "height": 873,
+    "view": "connections",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 320,
+    "height": 733,
+    "view": "archive",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 390,
+    "height": 947,
+    "view": "Outline",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 390,
+    "height": 947,
+    "view": "Chronology",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 390,
+    "height": 947,
+    "view": "Sequence",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 390,
+    "height": 947,
+    "view": "Refine",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 390,
+    "height": 947,
+    "view": "Scene constructor",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 390,
+    "height": 947,
+    "view": "characters",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 390,
+    "height": 947,
+    "view": "world",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 390,
+    "height": 947,
+    "view": "connections",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 390,
+    "height": 947,
+    "view": "archive",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 640,
+    "height": 750,
+    "view": "Outline",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 640,
+    "height": 583,
+    "view": "Chronology",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 640,
+    "height": 563,
+    "view": "Sequence",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 640,
+    "height": 822,
+    "view": "Refine",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 640,
+    "height": 638,
+    "view": "Scene constructor",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 640,
+    "height": 624,
+    "view": "characters",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 640,
+    "height": 659,
+    "view": "world",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 640,
+    "height": 781,
+    "view": "connections",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 640,
+    "height": 691,
+    "view": "archive",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 768,
+    "height": 1024,
+    "view": "Outline",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 768,
+    "height": 1024,
+    "view": "Chronology",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 768,
+    "height": 1024,
+    "view": "Sequence",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 768,
+    "height": 1024,
+    "view": "Refine",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 768,
+    "height": 1024,
+    "view": "Scene constructor",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 768,
+    "height": 1024,
+    "view": "characters",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 768,
+    "height": 1024,
+    "view": "world",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 768,
+    "height": 1024,
+    "view": "connections",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 768,
+    "height": 1024,
+    "view": "archive",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 1024,
+    "height": 768,
+    "view": "Outline",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 1024,
+    "height": 768,
+    "view": "Chronology",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 1024,
+    "height": 768,
+    "view": "Sequence",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 1024,
+    "height": 768,
+    "view": "Refine",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 1024,
+    "height": 768,
+    "view": "Scene constructor",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 1024,
+    "height": 768,
+    "view": "characters",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 1024,
+    "height": 768,
+    "view": "world",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 1024,
+    "height": 768,
+    "view": "connections",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 1024,
+    "height": 768,
+    "view": "archive",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 1440,
+    "height": 1000,
+    "view": "Outline",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 1440,
+    "height": 1000,
+    "view": "Chronology",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 1440,
+    "height": 1000,
+    "view": "Sequence",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 1440,
+    "height": 1000,
+    "view": "Refine",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 1440,
+    "height": 1000,
+    "view": "Scene constructor",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 1440,
+    "height": 1000,
+    "view": "characters",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 1440,
+    "height": 1000,
+    "view": "world",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 1440,
+    "height": 1000,
+    "view": "connections",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "empty",
+    "width": 1440,
+    "height": 1000,
+    "view": "archive",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 320,
+    "height": 7864,
+    "view": "Outline",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 320,
+    "height": 5090,
+    "view": "Chronology",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 320,
+    "height": 4219,
+    "view": "Sequence",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 320,
+    "height": 2615,
+    "view": "Refine",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 320,
+    "height": 4343,
+    "view": "Scene constructor",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 320,
+    "height": 1378,
+    "view": "characters",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 320,
+    "height": 1109,
+    "view": "world",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 320,
+    "height": 807,
+    "view": "connections",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 320,
+    "height": 733,
+    "view": "archive",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 390,
+    "height": 6599,
+    "view": "Outline",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 390,
+    "height": 3720,
+    "view": "Chronology",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 390,
+    "height": 3648,
+    "view": "Sequence",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 390,
+    "height": 2358,
+    "view": "Refine",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 390,
+    "height": 3868,
+    "view": "Scene constructor",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 390,
+    "height": 1210,
+    "view": "characters",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 390,
+    "height": 1004,
+    "view": "world",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 390,
+    "height": 947,
+    "view": "connections",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 390,
+    "height": 947,
+    "view": "archive",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 640,
+    "height": 4976,
+    "view": "Outline",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 640,
+    "height": 2936,
+    "view": "Chronology",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 640,
+    "height": 2886,
+    "view": "Sequence",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 640,
+    "height": 2115,
+    "view": "Refine",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 640,
+    "height": 3159,
+    "view": "Scene constructor",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 640,
+    "height": 1157,
+    "view": "characters",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 640,
+    "height": 922,
+    "view": "world",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 640,
+    "height": 593,
+    "view": "connections",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 640,
+    "height": 691,
+    "view": "archive",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 768,
+    "height": 5617,
+    "view": "Outline",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 768,
+    "height": 3577,
+    "view": "Chronology",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 768,
+    "height": 2809,
+    "view": "Sequence",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 768,
+    "height": 1980,
+    "view": "Refine",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 768,
+    "height": 3306,
+    "view": "Scene constructor",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 768,
+    "height": 1218,
+    "view": "characters",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 768,
+    "height": 1024,
+    "view": "world",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 768,
+    "height": 1024,
+    "view": "connections",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 768,
+    "height": 1024,
+    "view": "archive",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 1024,
+    "height": 3762,
+    "view": "Outline",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 1024,
+    "height": 2584,
+    "view": "Chronology",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 1024,
+    "height": 2207,
+    "view": "Sequence",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 1024,
+    "height": 1818,
+    "view": "Refine",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 1024,
+    "height": 2917,
+    "view": "Scene constructor",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 1024,
+    "height": 1172,
+    "view": "characters",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 1024,
+    "height": 768,
+    "view": "world",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 1024,
+    "height": 768,
+    "view": "connections",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 1024,
+    "height": 768,
+    "view": "archive",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 1440,
+    "height": 3075,
+    "view": "Outline",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 1440,
+    "height": 2207,
+    "view": "Chronology",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 1440,
+    "height": 2207,
+    "view": "Sequence",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 1440,
+    "height": 2030,
+    "view": "Refine",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 1440,
+    "height": 2360,
+    "view": "Scene constructor",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 1440,
+    "height": 1000,
+    "view": "characters",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 1440,
+    "height": 1000,
+    "view": "world",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 1440,
+    "height": 1000,
+    "view": "connections",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "long",
+    "width": 1440,
+    "height": 1000,
+    "view": "archive",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 320,
+    "height": 38849,
+    "view": "Outline",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 320,
+    "height": 26499,
+    "view": "Chronology",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 320,
+    "height": 21255,
+    "view": "Sequence",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 320,
+    "height": 2528,
+    "view": "Refine",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 320,
+    "height": 2640,
+    "view": "Scene constructor",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 320,
+    "height": 1269,
+    "view": "characters",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 320,
+    "height": 953,
+    "view": "world",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 320,
+    "height": 793,
+    "view": "connections",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 320,
+    "height": 733,
+    "view": "archive",
+    "documentWidth": 320,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 390,
+    "height": 26674,
+    "view": "Outline",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 390,
+    "height": 20946,
+    "view": "Chronology",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 390,
+    "height": 20645,
+    "view": "Sequence",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 390,
+    "height": 2298,
+    "view": "Refine",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 390,
+    "height": 2585,
+    "view": "Scene constructor",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 390,
+    "height": 1150,
+    "view": "characters",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 390,
+    "height": 947,
+    "view": "world",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 390,
+    "height": 947,
+    "view": "connections",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 390,
+    "height": 947,
+    "view": "archive",
+    "documentWidth": 390,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 640,
+    "height": 24157,
+    "view": "Outline",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 640,
+    "height": 18350,
+    "view": "Chronology",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 640,
+    "height": 18300,
+    "view": "Sequence",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 640,
+    "height": 2073,
+    "view": "Refine",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 640,
+    "height": 2483,
+    "view": "Scene constructor",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 640,
+    "height": 1150,
+    "view": "characters",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 640,
+    "height": 859,
+    "view": "world",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 640,
+    "height": 593,
+    "view": "connections",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 640,
+    "height": 691,
+    "view": "archive",
+    "documentWidth": 640,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 768,
+    "height": 19501,
+    "view": "Outline",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 768,
+    "height": 17304,
+    "view": "Chronology",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 768,
+    "height": 14285,
+    "view": "Sequence",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 768,
+    "height": 1930,
+    "view": "Refine",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 768,
+    "height": 1991,
+    "view": "Scene constructor",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 768,
+    "height": 1173,
+    "view": "characters",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 768,
+    "height": 1024,
+    "view": "world",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 768,
+    "height": 1024,
+    "view": "connections",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 768,
+    "height": 1024,
+    "view": "archive",
+    "documentWidth": 768,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 1024,
+    "height": 16062,
+    "view": "Outline",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 1024,
+    "height": 14242,
+    "view": "Chronology",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 1024,
+    "height": 14235,
+    "view": "Sequence",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 1024,
+    "height": 1786,
+    "view": "Refine",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 1024,
+    "height": 1724,
+    "view": "Scene constructor",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 1024,
+    "height": 1162,
+    "view": "characters",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 1024,
+    "height": 768,
+    "view": "world",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 1024,
+    "height": 768,
+    "view": "connections",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 1024,
+    "height": 768,
+    "view": "archive",
+    "documentWidth": 1024,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 1440,
+    "height": 14817,
+    "view": "Outline",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 1440,
+    "height": 14235,
+    "view": "Chronology",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 1440,
+    "height": 14235,
+    "view": "Sequence",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 1440,
+    "height": 9502,
+    "view": "Refine",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 1440,
+    "height": 1612,
+    "view": "Scene constructor",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 1440,
+    "height": 1000,
+    "view": "characters",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 1440,
+    "height": 1000,
+    "view": "world",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 1440,
+    "height": 1000,
+    "view": "connections",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  },
+  {
+    "variant": "dense",
+    "width": 1440,
+    "height": 1000,
+    "view": "archive",
+    "documentWidth": 1440,
+    "errors": [],
+    "clippedValues": []
+  }
+]

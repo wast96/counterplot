@@ -820,6 +820,9 @@ textarea.node-title:focus-visible{outline:2px solid #74947a;outline-offset:3px;b
 #arc-type-list [role=option]{padding:9px 12px;min-height:36px;cursor:pointer;border-radius:5px;overflow-wrap:anywhere}
 #arc-type-list [role=option]:hover,#arc-type-list [aria-selected=true]{background:var(--sage-light,#e8eee5)}
 #arc-type-list small{display:block;color:var(--muted);font-size:11px}
+#arc-type-list{max-height:min(320px,40dvh);scroll-padding-block:36px}
+#arc-type-list [role=group]+[role=group]{margin-top:6px;border-top:1px solid var(--line)}
+.arc-type-category{position:sticky;top:-4px;z-index:1;padding:8px 12px 5px;background:var(--paper,#fff);color:var(--green);font-size:12px;font-weight:600;letter-spacing:.04em}
 .change-editor-options{display:flex;flex-wrap:wrap;gap:8px;border-top:1px solid var(--line);padding-top:14px;margin-top:18px}
 .change-editor-options .btn{font-size:12px;padding:8px 10px}
 
@@ -1204,6 +1207,13 @@ body:not(.drag-active) .outline .node-children>.insert-slot:last-child{min-heigh
 
 textarea.draft-title{display:block;width:100%;resize:none;overflow:hidden;white-space:pre-wrap;overflow-wrap:anywhere;min-height:38px;line-height:1.25}
 @media(pointer:coarse){.breadcrumb button{min-height:40px}.block .grip{min-height:40px}}
+
+/* Compact phrases follow their rendered text; longer writing wraps at a limit. */
+.arc-state textarea,.recorded-state textarea,textarea.beat-state-after,
+.thread-word.wrapping-field .story-field-text,.outline .thread-word.wrapping-field .story-field-text{
+ width:min(var(--inline-field-width,14ch),36ch);flex:0 1 auto;min-width:24px;max-width:100%
+}
+.thread-word.wrapping-field,.outline .thread-word.beat-development{width:auto;flex:0 1 auto}
 
 @media(max-width:360px){.tray:has(.tray-drawer){gap:3px;padding-inline:5px}}
 
@@ -2706,14 +2716,40 @@ if (typeof module !== "undefined") module.exports = CounterplotLegacy;
   }
   // The character view must expose every record that contributes to its state,
   // including retained changes in archived threads and saved earlier selves.
-  function characterHistory(p,c){
+  function sameBlockState(a,b){
+    if(!a||!b)return false;
+    // Labels describe a block across its history; property order is irrelevant.
+    const canonical=value=>Array.isArray(value)?value.map(canonical):value&&typeof value==='object'?Object.fromEntries(Object.keys(value).sort().map(k=>[k,canonical(value[k])])):value;
+    return JSON.stringify(canonical({...a,label:''}))===JSON.stringify(canonical({...b,label:''}));
+  }
+  function characterHistory(p,c,{changesOnly=false}={}){
     const hidden=new Set(p.archive.filter(a=>a.kind==='block'&&a.characterId===c.id).map(a=>a.item.id)),seen=new Set();
     const entries=c.changes.map(change=>({change}));
     for(const archive of p.archive.filter(a=>a.kind==='branch'))for(const x of archive.changes)if(x.characterId===c.id&&!p.archive.some(a=>a.kind==='block'&&a.id===x.archiveBlockId))entries.push({change:x.change,archive});
     const unique=entries.filter(({change:x})=>{if(hidden.has(x.blockId)||seen.has(x.id))return false;seen.add(x.id);return true;});
     for(const checkpoint of c.stateCheckpoints||[])for(const b of checkpoint.blocks)if(!hidden.has(b.id))unique.push({checkpoint,change:{id:checkpoint.id+':'+b.id,at:W.events(p).find(e=>e.key===(checkpoint.at||checkpoint.momentId)||e.id===(checkpoint.at||checkpoint.momentId))?.key||checkpoint.at||checkpoint.momentId,blockId:b.id,op:'saved',block:b}});
-    const order=new Map(W.events(p).flatMap((e,i)=>[[e.key,i],[e.id,i]]));
-    return unique.sort((a,b)=>(order.get(a.change.at)??Infinity)-(order.get(b.change.at)??Infinity)||(a.checkpoint?0:1)-(b.checkpoint?0:1));
+    const events=W.events(p),order=new Map(events.flatMap((e,i)=>[[e.key,i],[e.id,i]]));
+    const sorted=unique.sort((a,b)=>(order.get(a.change.at)??Infinity)-(order.get(b.change.at)??Infinity)||(a.checkpoint?0:1)-(b.checkpoint?0:1));
+    if(!changesOnly)return sorted;
+    let moment,blocks,starting,checkpoints,changesStarted;
+    return sorted.flatMap(entry=>{
+      const x=entry.change,key=events.find(e=>e.key===x.at||e.id===x.at)?.key||x.at;
+      if(key!==moment){
+        moment=key;starting=new Map(W.stateAt(p,c,key,true).map(b=>[b.id,b]));blocks=starting;changesStarted=false;
+        checkpoints=(c.stateCheckpoints||[]).filter(x=>order.get(x.at||x.momentId)===order.get(key));
+      }
+      if(entry.checkpoint){
+        const previous=checkpoints[checkpoints.indexOf(entry.checkpoint)-1];
+        return [{...entry,before:previous?previous.blocks.find(b=>b.id===x.blockId):starting.get(x.blockId)}];
+      }
+      if(!changesStarted){changesStarted=true;if(checkpoints.length)blocks=new Map(checkpoints.at(-1).blocks.map(b=>[b.id,b]));}
+      const before=blocks.get(x.blockId);
+      const after=x.op==='retire'?undefined:x.op==='add'?(before||x.block):before?x.block:undefined;
+      if(after)blocks.set(x.blockId,after);else blocks.delete(x.blockId);
+      // Keep unresolved or mistimed records available for review. Only hide
+      // snapshots that repeat a block already present at this exact point.
+      return before&&x.op!=='retire'&&sameBlockState(before,x.block)?[]:[{...entry,before}];
+    });
   }
   function characterBlockOrigin(p,c,bid){
     const block=c.blocks.find(b=>b.id===bid);if(block)return {block,at:'',entry:null};
@@ -2841,15 +2877,17 @@ if (typeof module !== "undefined") module.exports = CounterplotLegacy;
     if(value&&blockId){
       if(!c)throw Error('Choose a character or group before recording a building block.');
       const group=c.type==='group';if(group)c.faction||={blocks:[],changes:[],checkpoints:[]};
-      const records=group?c.faction.changes:c.changes,at=n.id+':'+(edge==='from'?'open':'close'),before=arcBlocksAt(p,c,at,true);
+      const records=group?c.faction.changes:c.changes,at=n.id+':'+(edge==='from'?'open':'close');
       const existing=blockId==='new'?null:records.findLast(x=>x.blockId===blockId&&(x.at===at||x.momentId===momentId(p,at)));
       const original=blockId==='new'?(group?{id:W.uid(),kind,key:'custom',title:'',text:'',detail:'',context:'any',knownBy:[],links:[]}:W.block(kind)):arcBlocksAt(p,c,at).find(b=>b.id===blockId)||existing?.block||arcStateOptions(p,c).find(b=>b.id===blockId);
       if(!original)throw Error('That building block is no longer available.');
-      const block={...copy(original),text:value},present=before.some(b=>b.id===block.id);
+      const withoutExisting=records.filter(x=>x!==existing),prior=arcBlocksAt(p,group?{...c,faction:{...c.faction,changes:withoutExisting}}:{...c,changes:withoutExisting},at).find(b=>b.id===original.id);
+      const block={...copy(original),text:value},present=!!prior;
       if(blockId==='new')block[group?'title':'label']=row.label;
       if(outcome&&blockId==='new'){block.forkedFrom=row.from.blockId||row.to.blockId||'';block[group?'title':'label']=row.label;}
       const record={id:existing?.id||W.uid(),at,momentId:momentId(p,at),blockId:block.id,...(group?{operation:present?'replace':'add'}:{op:present?'develop':'add'}),block,reason:existing?.reason||'Set in character thread'};
-      if(existing)Object.assign(existing,record);else records.push(record);
+      if(sameBlockState(prior,block)){if(existing)records.splice(records.indexOf(existing),1);}
+      else if(existing)Object.assign(existing,record);else records.push(record);
       assign({text:value,blockId:block.id,linked:true});if(!outcome){row.kind=block.kind;row.label=block.label||block.title||'';}
     }else {assign({text:value,blockId:'',linked:false});if(!outcome&&!row.from.linked&&!row.to.linked)row.kind=kind;}
     if(label!==undefined){
@@ -4275,18 +4313,37 @@ function navigate(page){finishEdit();ui.filtersOpen=false;ui.page=page;ui.focus=
 /* Read projections are shared for one render only. Edits never see cached state. */
 function withStoryReadCache(renderView){
  const originals=new Map(),resultKey=Symbol();
- for(const name of ['events','ordered','plotView','children','descendants','characterState','stateAt','characterArc','arcStateOptions','openThreadContext','pieceChanges','recordedThreadStates']){
+ for(const name of ['events','ordered','plotView','children','descendants','characterState','characterHistory','stateAt','characterArc','arcStateOptions','openThreadContext','pieceChanges','recordedThreadStates']){
   const original=W[name],cache=new Map();if(!original)continue;originals.set(name,original);
   W[name]=(...args)=>{let entry=cache;for(const argument of args){const key=argument&&typeof argument==='object'&&!argument.id&&!argument.nodes?JSON.stringify(argument):argument;if(!entry.has(key))entry.set(key,new Map());entry=entry.get(key);}if(!entry.has(resultKey))entry.set(resultKey,original(...args));return entry.get(resultKey);};
  }
  try{return renderView();}finally{for(const [name,original]of originals)W[name]=original;}
 }
+const compactFieldSelector='textarea.story-field-text,textarea[data-arc-inline],textarea[data-beat-inline],textarea[data-piece-state]';
+const inlineFieldMeasure=document.createElement('canvas').getContext('2d');
+function compactFieldWidth(el){
+ if(!el.matches(compactFieldSelector))return null;
+ const style=getComputedStyle(el),spacing=parseFloat(style.letterSpacing)||0;
+ inlineFieldMeasure.font=style.font||`${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+ const tabWidth=inlineFieldMeasure.measureText(' ').width*(parseFloat(style.tabSize)||8);
+ const widths=(el.value||el.placeholder||'').split(/\r?\n/).map(line=>{
+  let width=0;const parts=line.split('\t');
+  parts.forEach((part,index)=>{if(index)width=(Math.floor(width/tabWidth)+1)*tabWidth;width+=inlineFieldMeasure.measureText(part).width+Array.from(part).length*spacing;});
+  return width;
+ });
+ const inset=['paddingLeft','paddingRight','borderLeftWidth','borderRightWidth'].reduce((sum,key)=>sum+(parseFloat(style[key])||0),0);
+ // Measure the actual font, keeping only a small allowance for the caret.
+ return Math.max(24,Math.ceil(Math.max(0,...widths)+inset+2))+'px';
+}
 function fitTextareas(fields){
  const rows=[...fields].filter(el=>el.tagName==='TEXTAREA'&&!el.classList.contains('prose')&&el.getClientRects().length&&el.clientWidth>0);
+ const widths=rows.map(compactFieldWidth);
+ rows.forEach((el,i)=>{if(widths[i])el.style.setProperty('--inline-field-width',widths[i]);});
  for(const el of rows)el.style.height='auto';
  const heights=rows.map(el=>Math.ceil(el.scrollHeight+el.offsetHeight-el.clientHeight));
  rows.forEach((el,i)=>{el.style.height=Math.max(24,heights[i])+'px';});
 }
+document.fonts?.addEventListener('loadingdone',()=>fitTextareas($$(compactFieldSelector)));
 
 function render(){
  if(ui.bulkProject!==p().id){ui.bulkIds.clear();ui.bulkMode=false;ui.bulkAnchor='';ui.bulkProject=p().id;}
@@ -4370,13 +4427,13 @@ function words(s){return (s.trim().match(/\S+/g)||[]).length}
 function empty(title,description,actions='',which='spark'){return `<div class="empty"><div class="empty-icon">${icon(which)}</div><h2>${esc(title)}</h2><p>${esc(description)}</p>${actions}</div>`}
 function characters(){const c=person(ui.character);const head=heading('THE CHARACTER STUDIO','Characters','A person is more than a profile. Give them something to want, keep, or become.',btn('new-character','New character','plus',true)).replace('class="page-head"','class="page-head character-page-head"');
 if(!c)return head+`<div class="character-layout character-studio">${empty('Start with someone.','A name or one intriguing detail is enough. The rest can come later.',btn('new-character','Create your first character','plus',true),'characters')}</div>`;
-const blocks=W.stateAt(p(),c,ui.at),history=W.characterHistory(p(),c),timeEvents=activeStoryEvents(),original=ui.at==='';
+const blocks=W.stateAt(p(),c,ui.at),history=W.characterHistory(p(),c,{changesOnly:true}),timeEvents=activeStoryEvents(),original=ui.at==='';
 return head+`<div class="character-layout character-studio">${W.review(p(),c).length?'<div class="review-note">Some character changes need a timing check. Open Their arc to see which pieces are affected.</div>':''}<div class="character-tabs">${p().characters.map(c2=>`<button class="character-tab${c2.id===c.id?' active':''}" style="${colorStyle(c2.color)}" ${paintAttrs('character',c2.id)} draggable="true" data-drag="character" data-drag-id="${c2.id}" ${act('open-character',c2.id)} aria-pressed="${c2.id===c.id}">${avatar(c2)}${esc(c2.name)}</button>`).join('')}</div><div class="character-workspace"><aside class="character-profile" aria-label="Character profile"><header class="character-hero" ${paintAttrs('character',c.id)}><div class="row"><button class="portrait-button" ${act('portrait',c.id)} aria-label="Change portrait for ${esc(c.name)}">${avatar(c,true)}<span>＋</span></button><div class="character-summary"><div class="character-name-row"><h1>${esc(c.name)}</h1>${ib('edit-character',c.id,'edit','Edit '+c.name)}</div><p class="identity">${esc(c.identity||'A person you’re still getting to know.')}</p>${characterPresence(c)}</div></div></header>${referenceSummary('character',c.id)}</aside><section class="character-pieces" aria-label="Character building blocks and arc"><div class="character-tools"><div class="segmented"><button class="${ui.characterTab==='blocks'?'active':''}" ${act('character-tab','blocks')} aria-pressed="${ui.characterTab==='blocks'}">Building blocks <small>${blocks.length}</small></button><button class="${ui.characterTab==='arc'?'active':''}" ${act('character-tab','arc')} aria-pressed="${ui.characterTab==='arc'}">Their arc <small>${history.length}</small></button></div>${btn('add-block','Add block','plus',true,`data-cid="${c.id}"`)}</div><div class="character-moments${timeEvents.length?'':' is-beginning'}"><div class="row between"><span class="eyebrow">Story moment</span><span class="eyebrow">${history.length} ${history.length===1?'block change':'block changes'}</span></div><div class="time-strip" aria-label="Character state along the story"><button class="time-stop${original?' active':''}" ${act('time','')} aria-pressed="${original}"><small>Before the story</small><span>The beginning</span></button>${timeEvents.map((e,i)=>`<button class="time-stop${ui.at===e.key?' active':''}" ${act('time',e.key)} data-drop="moment" data-at="${e.key}" aria-pressed="${ui.at===e.key}"><small>${!e.nodeId&&e.key.endsWith(':moment')?'Story moment':e.edge==='close'?'Thread closes':e.node.type==='B'?'After beat':'Thread opens'} ${String(i+1).padStart(2,'0')}</small><span>${esc(eventTitle(e))}</span></button>`).join('')}</div><div class="state-caption">${icon(original?'book':'change')}<span>${original?(timeEvents.length?'Drag a block onto a moment to make it change.':'Their starting pieces. Add what matters to this character.'):esc(eventLabel(ui.at))+'. Changes up to this point are reflected below.'}</span></div></div>${ui.characterTab==='blocks'?`<div class="blocks-grid">${blocks.map(b=>blockHTML(c,b,original)).join('')}<button class="add-block-tile" ${act('add-block','',`data-cid="${c.id}"`)}><span class="plus">+</span>Something else about them<small>${Object.keys(KINDS).length} kinds of possibility</small></button></div>`:arcHTML(c)}<details class="character-note"><summary>Loose notes about ${esc(c.name)}</summary><textarea data-inline="character" data-id="${c.id}" data-field="notes" placeholder="Anything that does not need a block yet…" aria-label="Character notes">${esc(c.notes)}</textarea></details></section></div></div>`}
 function blockHTML(c,b,original){return `<article class="block${b.pinned?' pinned':''}" style="${colorStyle(b.color||c.color)}" ${paintAttrs('block',b.id,c.id)} data-block="${b.id}" data-drop="block" data-cid="${c.id}" data-anchor="${b.id}"><div class="block-head">${grip('block',b.id,c.id)}<span class="block-label">${esc(b.label||kind(b.kind).label)}</span>${original?paintButton('block',b.id,c.id):''}${original?ib('pin-block',b.id,'pin',b.pinned?'Unpin block':'Pin block',`data-cid="${c.id}" aria-pressed="${!!b.pinned}"`):''}</div><button class="block-body" style="text-align:left;padding:0" ${act(original?'edit-block':'edit-visible-block',b.id,`data-cid="${c.id}" data-at="${esc(ui.at)}"`)}>${esc(b.text||'An unfinished thought…')}</button>${b.detail?`<p class="block-detail">${esc(b.detail)}</p>`:''}${blockStartButton(c,b)}<footer class="block-footer"><button class="text-btn" ${act('evolve',b.id,`data-cid="${c.id}" data-at="${esc(ui.at)}"`)}>${icon('change')}Let this change</button>${original?ib('archive-block',b.id,'archive','Archive block',`data-cid="${c.id}"`):`<span class="row">${ib(c.blocks.some(x=>x.id===b.id)?'edit-block':'edit-visible-block',b.id,'edit',c.blocks.some(x=>x.id===b.id)?'Edit starting block':'Edit this state',`data-cid="${c.id}"`)}${ib('archive-block',b.id,'archive','Archive block',`data-cid="${c.id}"`)}</span>`}</footer></article>`}
 function blockStartOptions(current=''){const events=activeStoryEvents();if(current&&!events.some(e=>e.key===current)){const e=W.events(p()).find(e=>e.key===current);if(e)events.push(e);}return [['','Before the story'],...events.map(e=>[e.key,eventLabel(e.key)])];}
 function blockStartButton(c,b){const origin=W.characterBlockOrigin(p(),c,b.id);return `<button class="block-start text-btn" ${act('block-start',b.id,`data-cid="${c.id}"`)} aria-label="Change when ${esc(b.label||kind(b.kind).label)} appears"><span>Appears at</span><span>${esc(origin?.at?eventLabel(origin.at):'Before the story')}</span>${icon('edit')}</button>`;}
 function editBlockStart(cid,bid){const c=person(cid),origin=c&&W.characterBlockOrigin(p(),c,bid);if(!origin)return;modalData={kind:'block-start',cid,bid};dialog('WHEN THIS PIECE BEGINS',origin.block.label||kind(origin.block.kind).label,`<p class="help">${esc(origin.block.text)}</p>${select('Appears at','at',blockStartOptions(origin.at),origin.at)}<p class="help">This changes when the card first becomes part of ${esc(c.name)}. Later changes keep their own timing.</p>`,submit('Save timing'),'block-start');}
-function arcHTML(c){const entries=W.characterHistory(p(),c);if(!entries.length)return empty('They don’t have to stay this way.','Drag a building block onto a story moment, or choose “Let this change” on a block.',btn('character-tab','Back to their pieces','arrow',false,'data-id="blocks"'),'change');return `<div class="change-list">${entries.map(({change:x,archive,checkpoint})=>{const before=W.stateAt(p(),c,x.at,true).find(b=>b.id===x.blockId);return `<article class="change-card" data-change="${esc(x.id)}"><div><div class="eyebrow">${esc(W.characterBlockLabel(p(),c,x.block||before||{id:x.blockId})||kind(x.block?.kind||before?.kind||'custom').label)}</div>${archive?`<p class="help">Archived thread · ${esc(archive.title)}</p>`:checkpoint?'<p class="help">Saved character state</p>':`<button class="change-when" ${act('jump-moment',x.at)} style="text-align:left;padding:7px 0">${esc(eventLabel(x.at))} ↗</button>`}${archive||checkpoint?`<p class="help">${esc(eventLabel(x.at))}</p>`:''}</div><div><div class="change-before">${esc(before?.text||'Not yet part of them')}</div><div class="change-after">↳ ${x.op==='retire'?'They let this go':esc(x.block.text)}</div>${W.review(p(),c).find(i=>i.id===x.id)?`<p class="review-note">${esc(W.review(p(),c).find(i=>i.id===x.id).message)}</p>`:''}${x.reason?`<p>Because ${esc(x.reason)}</p>`:''}<div class="row wrap"><button class="text-btn" ${checkpoint?act('edit-saved-block',x.blockId,`data-cid="${c.id}" data-checkpoint="${checkpoint.id}"`):act('edit-change',x.id,`data-cid="${c.id}"`)}>${checkpoint?'Edit saved state':'Edit this change'}</button><button class="text-btn" ${act('archive-block',x.blockId,`data-cid="${c.id}"`)}>Archive block</button></div></div></article>`}).join('')}</div>`}
+function arcHTML(c){const entries=W.characterHistory(p(),c,{changesOnly:true});if(!entries.length)return empty('They don’t have to stay this way.','Drag a building block onto a story moment, or choose “Let this change” on a block.',btn('character-tab','Back to their pieces','arrow',false,'data-id="blocks"'),'change');return `<div class="change-list">${entries.map(({change:x,archive,checkpoint,before})=>{return `<article class="change-card" data-change="${esc(x.id)}"><div><div class="eyebrow">${esc(W.characterBlockLabel(p(),c,x.block||before||{id:x.blockId})||kind(x.block?.kind||before?.kind||'custom').label)}</div>${archive?`<p class="help">Archived thread · ${esc(archive.title)}</p>`:checkpoint?'<p class="help">Saved character state</p>':`<button class="change-when" ${act('jump-moment',x.at)} style="text-align:left;padding:7px 0">${esc(eventLabel(x.at))} ↗</button>`}${archive||checkpoint?`<p class="help">${esc(eventLabel(x.at))}</p>`:''}</div><div><div class="change-before">${esc(before?.text||'Not yet part of them')}</div><div class="change-after">↳ ${x.op==='retire'?'They let this go':esc(x.block.text)}</div>${W.review(p(),c).find(i=>i.id===x.id)?`<p class="review-note">${esc(W.review(p(),c).find(i=>i.id===x.id).message)}</p>`:''}${x.reason?`<p>Because ${esc(x.reason)}</p>`:''}<div class="row wrap"><button class="text-btn" ${checkpoint?act('edit-saved-block',x.blockId,`data-cid="${c.id}" data-checkpoint="${checkpoint.id}"`):act('edit-change',x.id,`data-cid="${c.id}"`)}>${checkpoint?'Edit saved state':'Edit this change'}</button><button class="text-btn" ${act('archive-block',x.blockId,`data-cid="${c.id}"`)}>Archive block</button></div></div></article>`}).join('')}</div>`}
 function editVisibleBlock(cid,bid){
  const c=person(cid);if(!c)return;const events=W.events(p()),order=new Map(events.flatMap((e,i)=>[[e.key,i],[e.id,i]])),stop=order.get(ui.at)??Infinity;
  const entry=ui.at?W.characterHistory(p(),c).filter(e=>e.change.blockId===bid&&(order.get(e.change.at)??Infinity)<=stop).at(-1):null;
@@ -4393,7 +4450,7 @@ function archiveRows(query=''){const q=query.toLowerCase();return W.archivedItem
 function archive(){return heading('ROOM FOR SECOND THOUGHTS','Archive','Restore something worth keeping. Permanently delete what you are ready to let go.',W.archivedItems(p()).length?btn('purge-all','Empty archive','trash'):'')+`<div class="content-page">${W.archivedItems(p()).length?`<input id="archive-search" class="archive-search" placeholder="Find an archived idea…" aria-label="Search archive"><div id="archive-rows">${archiveRows()}</div>`:empty('Room for the ideas you set aside.','Archived pieces keep their writing and character changes. Restore them whenever you need them.','','archive')}</div>`}
 function fitDialogFooter(){const d=$('#dialog');d.style.setProperty('--dialog-footer-height',(d.querySelector('.dialog-foot')?.offsetHeight||0)+'px');}
 const dialogFooterObserver=new ResizeObserver(fitDialogFooter);
-function dialog(eyebrow,title,body,foot='',form='') {finishEdit();const d=$('#dialog');if(!d.open)returnFocus=document.activeElement;d.innerHTML=`${form?`<form data-form="${form}">`:''}<header class="dialog-head"><div><div class="eyebrow">${esc(eyebrow)}</div><h2 id="dialog-title">${esc(title)}</h2></div><div class="dialog-utilities"><button type="button" class="text-btn dialog-tutorials" data-tutorial="browse">Tutorials</button><button type="button" class="icon" data-action="close-dialog" aria-label="Close dialog">${icon('close')}</button></div></header><div class="dialog-body">${body}<div class="error" id="form-error" role="alert"></div></div>${foot?`<footer class="dialog-foot">${foot}</footer>`:''}${form?'</form>':''}`;const editor=d.querySelector('form');if(editor)for(const key of ['kind','id','cid','bid','kindId','type','rid','changeId','linkNode'])if(typeof modalData?.[key]==='string')editor.dataset['context'+key[0].toUpperCase()+key.slice(1)]=modalData[key];if(!d.open)d.showModal();dialogFooterObserver.disconnect();const footer=d.querySelector('.dialog-foot');if(footer)dialogFooterObserver.observe(footer);fitDialogFooter();const focusable=el=>el&&!el.disabled&&!el.closest('[data-tutorial-ui]')&&el.getClientRects().length&&getComputedStyle(el).visibility!=='hidden';const initial=[d.querySelector('[autofocus]'),...d.querySelectorAll('.dialog-body input:not([type=hidden]):not([type=checkbox]):not([type=radio]),.dialog-body textarea,.dialog-body select'),...d.querySelectorAll('.dialog-body button,.dialog-head button')].find(focusable);initial?.focus({preventScroll:true})}
+function dialog(eyebrow,title,body,foot='',form='') {finishEdit();const d=$('#dialog');if(!d.open)returnFocus=document.activeElement;d.innerHTML=`${form?`<form data-form="${form}">`:''}<header class="dialog-head"><div><div class="eyebrow">${esc(eyebrow)}</div><h2 id="dialog-title">${esc(title)}</h2></div><div class="dialog-utilities"><button type="button" class="text-btn dialog-tutorials" data-tutorial="browse">Tutorials</button><button type="button" class="icon" data-action="close-dialog" aria-label="Close dialog">${icon('close')}</button></div></header><div class="dialog-body">${body}<div class="error" id="form-error" role="alert"></div></div>${foot?`<footer class="dialog-foot">${foot}</footer>`:''}${form?'</form>':''}`;const editor=d.querySelector('form');if(editor)for(const key of ['kind','id','cid','bid','kindId','type','rid','changeId','linkNode'])if(typeof modalData?.[key]==='string')editor.dataset['context'+key[0].toUpperCase()+key.slice(1)]=modalData[key];if(!d.open)d.showModal();fitTextareas(d.querySelectorAll('textarea'));dialogFooterObserver.disconnect();const footer=d.querySelector('.dialog-foot');if(footer)dialogFooterObserver.observe(footer);fitDialogFooter();const focusable=el=>el&&!el.disabled&&!el.closest('[data-tutorial-ui]')&&el.getClientRects().length&&getComputedStyle(el).visibility!=='hidden';const initial=[d.querySelector('[autofocus]'),...d.querySelectorAll('.dialog-body input:not([type=hidden]):not([type=checkbox]):not([type=radio]),.dialog-body textarea,.dialog-body select'),...d.querySelectorAll('.dialog-body button,.dialog-head button')].find(focusable);initial?.focus({preventScroll:true})}
 function closeDialog(){if(!$('#dialog').open)return;$('#dialog').close();modalData=null;if(returnFocus?.isConnected)returnFocus.focus({preventScroll:true});else $('#main')?.focus({preventScroll:true})}
 const submit=(label='Keep this',extra='')=>`<span class="hint">${extra||'Every piece can change later.'}</span><button class="btn primary" type="submit">${label}${icon('check')}</button>`;
 const formError=e=>{$('#form-error').textContent=e instanceof Error?e.message:e};
@@ -4910,9 +4967,9 @@ function inlineUpdate(el){const d=el.dataset,target=d.inline==='node'?node(d.id)
 function syncInlineFields(el){
  const keys=['inline','id','field','edge','fieldId','index','outcome'];
  const selector=keys.filter(key=>el.dataset[key]!==undefined).map(key=>'[data-'+key.replace(/[A-Z]/g,x=>'-'+x.toLowerCase())+'="'+CSS.escape(el.dataset[key])+'"]').join('');
- for(const other of $$(selector))if(other!==el&&keys.every(key=>other.dataset[key]===el.dataset[key])){other.value=el.value;if(el.style.getPropertyValue('--state-chars'))other.style.setProperty('--state-chars',el.style.getPropertyValue('--state-chars'));fit(other);}
+ for(const other of $$(selector))if(other!==el&&keys.every(key=>other.dataset[key]===el.dataset[key])){other.value=el.value;fit(other);}
 }
-function fit(el){if(el.matches('textarea[data-arc-inline],textarea[data-beat-inline],textarea[data-piece-state]')){el.style.height='auto';el.style.height=Math.ceil(el.scrollHeight+el.offsetHeight-el.clientHeight)+'px';return;}if(el.tagName!=='TEXTAREA'||el.classList.contains('prose')||(!el.dataset.inline&&!el.classList.contains('story-field-text')))return;if(el.classList.contains('story-field-text')||el.classList.contains('draft-title')||el.dataset.inline==='board'){el.style.height='auto';el.style.height=Math.ceil(el.scrollHeight+el.offsetHeight-el.clientHeight)+'px';return;}if(['opening','closing','development'].includes(el.dataset.field)||el.classList.contains('node-title')){el.style.height='auto';el.style.height=Math.min(el.classList.contains('node-title')||el.dataset.field==='development'?Infinity:220,Math.max(24,el.scrollHeight))+'px'}}
+function fit(el){if(el.matches(compactFieldSelector)){fitTextareas([el]);return;}if(el.tagName!=='TEXTAREA'||el.classList.contains('prose')||(!el.dataset.inline&&!el.classList.contains('story-field-text')))return;if(el.classList.contains('story-field-text')||el.classList.contains('draft-title')||el.dataset.inline==='board'){el.style.height='auto';el.style.height=Math.ceil(el.scrollHeight+el.offsetHeight-el.clientHeight)+'px';return;}if(['opening','closing','development'].includes(el.dataset.field)||el.classList.contains('node-title')){el.style.height='auto';el.style.height=Math.min(el.classList.contains('node-title')||el.dataset.field==='development'?Infinity:220,Math.max(24,el.scrollHeight))+'px'}}
 function followPiece(target){
  // A drag handle opens its own menu; avoid moving the card under the pointer.
  if(ui.bulkMode||target.closest?.('[data-drag],[data-action]'))return;
@@ -4927,7 +4984,7 @@ function followPiece(target){
 }
 document.addEventListener('pointerdown',e=>followPiece(e.target));
 document.addEventListener('focusin',e=>followPiece(e.target));
-document.addEventListener('input',e=>{const el=e.target;if(el.matches('.thread-word input,.story-field-text,.recorded-state input,.arc-state-text,.beat-state-after'))el.style.setProperty('--state-chars',Math.min(36,Math.max(10,(el.value||el.placeholder||'').length+1))+'ch');if(el.matches('.story-field-text,textarea[data-arc-inline],textarea[data-beat-inline],textarea[data-piece-state]'))fit(el);if(el.dataset.inline){inlineUpdate(el);syncInlineFields(el);}if(el.id==='shelf-search'){shelfQuery=el.value;$('#shelf-rows').innerHTML=shelfRows();}if(el.id==='archive-search')$('#archive-rows').innerHTML=archiveRows(el.value);if(['picker','hex'].includes(el.name)&&modalData?.kind==='swatch'){const hex=el.value;if(/^#[0-9a-f]{6}$/i.test(hex)){$('#dialog [name=picker]').value=hex;$('#dialog [name=hex]').value=hex;$('#swatch-preview').style.cssText=tokenStyle(hex)}}if(el.id==='kind-search')$('#kind-grid').innerHTML=kindTiles(el.value,modalData.group);if(el.id==='story-search')$('#search-results').innerHTML=searchResults(el.value)});
+document.addEventListener('input',e=>{const el=e.target;if(el.matches('.story-field-text,textarea[data-arc-inline],textarea[data-beat-inline],textarea[data-piece-state]'))fit(el);if(el.dataset.inline){inlineUpdate(el);syncInlineFields(el);}if(el.id==='shelf-search'){shelfQuery=el.value;$('#shelf-rows').innerHTML=shelfRows();}if(el.id==='archive-search')$('#archive-rows').innerHTML=archiveRows(el.value);if(['picker','hex'].includes(el.name)&&modalData?.kind==='swatch'){const hex=el.value;if(/^#[0-9a-f]{6}$/i.test(hex)){$('#dialog [name=picker]').value=hex;$('#dialog [name=hex]').value=hex;$('#swatch-preview').style.cssText=tokenStyle(hex)}}if(el.id==='kind-search')$('#kind-grid').innerHTML=kindTiles(el.value,modalData.group);if(el.id==='story-search')$('#search-results').innerHTML=searchResults(el.value)});
 document.addEventListener('change',e=>{const el=e.target;if(el.dataset.inline){inlineUpdate(el);syncInlineFields(el);finishEdit()}if(el.id==='import-file')importFile(el.files[0]);if(el.id==='media-file')receiveImage(el.files[0]);if(el.name==='character'&&modalData?.kind==='choose-change')chooseChange(modalData.at,el.value);if(el.name==='op'&&modalData?.kind==='change')$('#change-text-fields').hidden=el.value==='retire';if(el.name==='at'&&modalData?.kind==='change'){const c=person(modalData.cid),b=W.stateAt(p(),c,el.value,true).find(b=>b.id===modalData.bid);$('#change-before').textContent=b?.text||'Not yet part of them'}});
 document.addEventListener('focusout',e=>{if(e.target.dataset.inline)finishEdit()});
 document.addEventListener('beforeinput',e=>{if(e.defaultPrevented||!['historyUndo','historyRedo'].includes(e.inputType)||e.target.closest('input,textarea,[contenteditable]:not([contenteditable="false"]),[data-tutorial-ui]'))return;e.preventDefault();undo(e.inputType==='historyRedo');});
@@ -5410,14 +5467,14 @@ const drawerSubmit=extraSubmit;extraSubmit=function(form,data,m){if(form.dataset
 
 function threadPlanFields(n,edge='open',view='outline'){
  const labels=W.THREAD_FIELDS[n.type];if(!labels)return '';
- const plan=W.threadPlan(n),field=(key,value,outcomeId='')=>storyFieldHidden(n,edge,key)?'':`<label class="thread-word wrapping-field ${value?'':'optional-empty'}"><span>${esc(labels[key])}</span><textarea class="story-field-text" rows="1" data-inline="thread-plan" data-field="${key}" data-thread-field="${key}" data-id="${n.id}" data-outcome="${outcomeId}" placeholder="${esc(labels[key+'Hint'])}" maxlength="1000" aria-label="${esc(W.TYPES[n.type].name+' '+labels[key])}${outcomeId?' · additional outcome':''}" style="--state-chars:${Math.min(36,Math.max(14,(value||labels[key+'Hint']).length+1))}ch">${esc(value)}</textarea>${outcomeId?`<button type="button" class="arc-state-options" ${act('thread-remove-outcome',n.id,`data-outcome="${outcomeId}"`)} aria-label="Remove additional ${esc(labels.to.toLowerCase())}">${icon('close')}</button>`:''}</label>`;
+ const plan=W.threadPlan(n),field=(key,value,outcomeId='')=>storyFieldHidden(n,edge,key)?'':`<label class="thread-word wrapping-field ${value?'':'optional-empty'}"><span>${esc(labels[key])}</span><textarea class="story-field-text" rows="1" data-inline="thread-plan" data-field="${key}" data-thread-field="${key}" data-id="${n.id}" data-outcome="${outcomeId}" placeholder="${esc(labels[key+'Hint'])}" maxlength="1000" aria-label="${esc(W.TYPES[n.type].name+' '+labels[key])}${outcomeId?' · additional outcome':''}">${esc(value)}</textarea>${outcomeId?`<button type="button" class="arc-state-options" ${act('thread-remove-outcome',n.id,`data-outcome="${outcomeId}"`)} aria-label="Remove additional ${esc(labels.to.toLowerCase())}">${icon('close')}</button>`:''}</label>`;
  return `<div class="thread-plan-fields color-${W.TYPES[n.type].color}" role="group" aria-label="${W.TYPES[n.type].name} ${edge==='open'?'opening':'closing'} fields">${edge==='open'?(n.type==='E'?['from','focus']:['focus','from']).map(key=>field(key,plan[key])).join(''):field('to',plan.to)+plan.outcomes.map(x=>field('to',x.text,x.id)).join('')+(storyFieldHidden(n,edge,'to')?'':`<button type="button" class="arc-fork" ${act('thread-add-outcome',n.id)} aria-label="Add another ${esc(labels.to.toLowerCase())}" title="Add another outcome">Add outcome</button>`) }${storyFieldExtras(n,edge)}${view==='outline'&&edge==='open'&&!n.opening?`<button type="button" class="text-btn thread-note-launch contextual-action" ${act('reveal-thread-note',n.id,`data-edge="${edge}"`)} aria-label="Add ${edge==='open'?'opening':'closing'} note">Add note</button>`:''}</div>`;
 }
 function recordedStates(n,edge){
  // Keep inherited state in history; this endpoint shows only its own changes.
  const direct=new Set(W.pieceChanges(p(),n,{edge,nested:false}).map(x=>x.id));
  const changes=W.recordedThreadStates(p(),n,edge).filter(x=>direct.has(x.id));
- return `<div class="thread-recorded-states" data-recorded-node="${n.id}" data-recorded-edge="${edge}" ${changes.length?'':'hidden'} role="group" aria-label="Recorded states at ${edge==='open'?'opening':'closing'}">${changes.map(x=>`<div class="recorded-state"><span class="recorded-state-who">${esc(x.subject)}</span><span class="arc-state-label">${esc(human(x.label))}</span><textarea rows="1" data-piece-state="${esc(x.id)}" data-id="${n.id}" data-edge="${edge}" aria-label="${esc(x.subject+' '+human(x.label))} at ${edge==='open'?'opening':'closing'}" title="${esc(x.value)}" maxlength="1000" style="--state-chars:${Math.min(36,Math.max(12,x.value.length+1))}ch">${esc(x.value)}</textarea>${x.canFork?`<button type="button" class="arc-fork" ${act('fork-piece-state',n.id,`data-change="${esc(x.id)}" data-edge="${edge}"`)} aria-label="Fork ${esc(x.subject+' '+human(x.label))}" title="Keep this state and add another">Fork</button>`:''}</div>`).join('')}</div>`;
+ return `<div class="thread-recorded-states" data-recorded-node="${n.id}" data-recorded-edge="${edge}" ${changes.length?'':'hidden'} role="group" aria-label="Recorded states at ${edge==='open'?'opening':'closing'}">${changes.map(x=>`<div class="recorded-state"><span class="recorded-state-who">${esc(x.subject)}</span><span class="arc-state-label">${esc(human(x.label))}</span><textarea rows="1" data-piece-state="${esc(x.id)}" data-id="${n.id}" data-edge="${edge}" aria-label="${esc(x.subject+' '+human(x.label))} at ${edge==='open'?'opening':'closing'}" title="${esc(x.value)}" maxlength="1000">${esc(x.value)}</textarea>${x.canFork?`<button type="button" class="arc-fork" ${act('fork-piece-state',n.id,`data-change="${esc(x.id)}" data-edge="${edge}"`)} aria-label="Fork ${esc(x.subject+' '+human(x.label))}" title="Keep this state and add another">Fork</button>`:''}</div>`).join('')}</div>`;
 }
 function threadEndpoint(n,edge,view='outline'){
  return (n.type==='C'?characterArcHeader(n,edge==='open'?'from':'to',view):threadPlanFields(n,edge,view))+recordedStates(n,edge);
@@ -5486,7 +5543,7 @@ window.addEventListener('resize',()=>requestAnimationFrame(alignOpenBeats));
 const arcLabel=row=>row.label||(row.kind==='custom'?'State':kind(row.kind).label);
 function characterArcHeader(n,edge='from',view='outline'){
  const a=W.characterArc(p(),n),c=W.arcSubject(p(),a),states=W.arcStateOptions(p(),c),listId='arc-options-'+view+'-'+n.id+'-'+edge;
- const state=(row,side,value=row[side])=>`<span class="arc-state ${value.text?'':'is-empty'}" data-arc-row="${row.id}"><span class="arc-state-label">${esc(arcLabel(row))}</span><textarea rows="1" class="arc-state-text" data-arc-inline="${n.id}" data-row="${row.id}" data-edge="${side}" data-outcome="${value.id||''}" placeholder="Add state…" maxlength="1000" style="--state-chars:${Math.min(36,Math.max(10,value.text.length+1))}ch" aria-label="${side==='from'?'Starting':'Ending'} ${esc(arcLabel(row))}${value.id?' · additional outcome':''}" title="${esc(value.text)}">${esc(value.text)}</textarea><button type="button" class="arc-state-options" ${act('arc-state',n.id,`data-edge="${side}" data-row="${row.id}" data-outcome="${value.id||''}"`)} aria-label="Options for ${side==='from'?'starting':'ending'} ${esc(arcLabel(row))}${value.id?' · additional outcome':''}">${icon('edit')}</button></span>`;
+ const state=(row,side,value=row[side])=>`<span class="arc-state ${value.text?'':'is-empty'}" data-arc-row="${row.id}"><span class="arc-state-label">${esc(arcLabel(row))}</span><textarea rows="1" class="arc-state-text" data-arc-inline="${n.id}" data-row="${row.id}" data-edge="${side}" data-outcome="${value.id||''}" placeholder="Add state…" maxlength="1000" aria-label="${side==='from'?'Starting':'Ending'} ${esc(arcLabel(row))}${value.id?' · additional outcome':''}" title="${esc(value.text)}">${esc(value.text)}</textarea><button type="button" class="arc-state-options" ${act('arc-state',n.id,`data-edge="${side}" data-row="${row.id}" data-outcome="${value.id||''}"`)} aria-label="Options for ${side==='from'?'starting':'ending'} ${esc(arcLabel(row))}${value.id?' · additional outcome':''}">${icon('edit')}</button></span>`;
  const rows=side=>a.changes.filter(row=>view==='dialog'||!storyFieldHidden(n,side==='from'?'open':'close','state:'+row.id)).map(row=>{
   const values=side==='from'?[row.from]:[row.to,...(row.outcomes||[])];
   return `<div class="arc-state-group" data-arc-group="${row.id}">${values.map((value,index)=>side==='from'?state(row,side,value):`<span class="arc-outcome">${state(row,side,value)}${index===values.length-1?`<button type="button" class="arc-fork" ${act('arc-fork',n.id,`data-row="${row.id}"`)} aria-label="Add another ${esc(arcLabel(row))} outcome" title="Split into another outcome">Fork</button>`:''}</span>`).join('')}</div>`;
@@ -5502,7 +5559,7 @@ document.addEventListener('change',e=>{
  const matching=W.arcStateOptions(p(),c).find(b=>b.text===el.value),partner=side==='to'&&!el.dataset.outcome?row.from:null;
  const blockId=matching?.id||(current.linked?current.blockId:current.text?'':partner?.linked?partner.blockId:c?'new':'');
  mutate('Edited character state',()=>W.setArcState(p(),n,side,{rowId:row.id,outcomeId:el.dataset.outcome,value:el.value,blockId,kind:matching?.kind||row.kind}),{rerender:false,notify:false});
- el.style.setProperty('--state-chars',Math.min(36,Math.max(10,el.value.length+1))+'ch');el.title=el.value;refreshStateFields();
+ el.title=el.value;refreshStateFields();
 });
 document.addEventListener('keydown',e=>{if(e.target.matches('[data-arc-inline],[data-beat-inline],[data-thread-field],[data-piece-state]')&&e.key==='Enter'&&!e.isComposing){e.preventDefault();e.target.blur();}});
 // Save during typing as well as on blur; leaving a tab flushes the pending field.
@@ -5520,7 +5577,7 @@ function editArcPerson(id){
 function arcTypeOptions(c){
  const defaults=(c?.type==='group'?['want','method','value','boundary','capability','obligation','custom']:Object.keys(KINDS)).map(id=>({kind:id,label:kind(id).label}));
  const used=[...W.arcStateOptions(p(),c).map(b=>({kind:b.kind,label:b.label||b.title||kind(b.kind).label})),...p().nodes.flatMap(n=>(n.characterArc?.changes||[]).map(r=>({kind:r.kind,label:r.label||kind(r.kind).label})))];
- return [...new Map([...used,...defaults].map(x=>[x.label.toLocaleLowerCase(),x])).values()];
+ return [...new Map([...used,...defaults].map(x=>[x.label.toLocaleLowerCase(),x])).values()].map(x=>({...x,group:x.label===kind(x.kind).label?kind(x.kind).group:'Your labels'}));
 }
 function arcTypePicker(row,c){
  const label=row.label||(row.kind==='custom'?'':kind(row.kind).label);modalData.typeOptions=arcTypeOptions(c);modalData.typeLabel=label;modalData.typeKind=row.kind;
@@ -5529,10 +5586,11 @@ function arcTypePicker(row,c){
 function closeArcTypes(){const input=$('#arc-type-input'),list=$('#arc-type-list');if(!input||!list)return;list.hidden=true;input.setAttribute('aria-expanded','false');input.removeAttribute('aria-activedescendant');}
 function showArcTypes(all=false){
  const input=$('#arc-type-input'),list=$('#arc-type-list');if(!input||!list)return;
- const query=all?'':input.value.trim().toLocaleLowerCase(),options=modalData.typeOptions.filter(x=>x.label.toLocaleLowerCase().includes(query));
- if(query&&!options.some(x=>x.label.toLocaleLowerCase()===query))options.unshift({kind:input.form.elements.arcKind.value||'custom',label:input.value.trim(),custom:true});
- modalData.visibleTypes=options;
- list.innerHTML=options.map((x,i)=>`<div id="arc-type-option-${i}" role="option" aria-selected="false" data-arc-type-option="${i}">${x.custom?'Use “'+esc(x.label)+'”':esc(x.label)}${x.custom?'<small>Custom label</small>':''}</div>`).join('');
+ const query=all?'':input.value.trim().toLocaleLowerCase(),options=modalData.typeOptions.filter(x=>(x.label+' '+x.group).toLocaleLowerCase().includes(query));
+ if(query&&!options.some(x=>x.label.toLocaleLowerCase()===query))options.unshift({kind:input.form.elements.arcKind.value||'custom',label:input.value.trim(),custom:true,group:'Create a label'});
+ const groups=['Create a label','Your labels',...KIND_GROUPS].map(group=>({group,options:options.filter(x=>x.group===group)})).filter(x=>x.options.length);
+ modalData.visibleTypes=groups.flatMap(x=>x.options);let index=0;
+ list.innerHTML=groups.map(({group,options},g)=>`<div role="group" aria-labelledby="arc-type-group-${g}"><div class="arc-type-category" id="arc-type-group-${g}">${esc(group)}</div>${options.map(x=>{const i=index++;return `<div id="arc-type-option-${i}" role="option" aria-selected="false" data-arc-type-option="${i}">${x.custom?'Use “'+esc(x.label)+'”':esc(x.label)}${x.custom?'<small>Custom label</small>':''}</div>`;}).join('')}</div>`).join('');
  list.hidden=false;input.setAttribute('aria-expanded','true');input.removeAttribute('aria-activedescendant');
 }
 function chooseArcType(index){
@@ -5547,7 +5605,7 @@ document.addEventListener('keydown',e=>{
  if(e.target.id!=='arc-type-input'||e.isComposing)return;const list=$('#arc-type-list'),input=e.target;
  if(e.key==='Tab'){closeArcTypes();return;}
  if(e.key==='Escape'&&!list.hidden){e.preventDefault();e.stopImmediatePropagation();closeArcTypes();return;}
- if(['ArrowDown','ArrowUp'].includes(e.key)){e.preventDefault();if(list.hidden)showArcTypes(true);const options=[...list.children],old=options.findIndex(x=>x.getAttribute('aria-selected')==='true'),index=old<0?(e.key==='ArrowDown'?0:options.length-1):(old+(e.key==='ArrowDown'?1:-1)+options.length)%options.length;
+ if(['ArrowDown','ArrowUp'].includes(e.key)){e.preventDefault();if(list.hidden)showArcTypes(true);const options=[...list.querySelectorAll('[role=option]')],old=options.findIndex(x=>x.getAttribute('aria-selected')==='true'),index=old<0?(e.key==='ArrowDown'?0:options.length-1):(old+(e.key==='ArrowDown'?1:-1)+options.length)%options.length;
  options.forEach((x,i)=>x.setAttribute('aria-selected',String(i===index)));if(options[index]){input.setAttribute('aria-activedescendant',options[index].id);options[index].scrollIntoView({block:'nearest'});}return;}
  if(e.key==='Enter'){e.preventDefault();const selected=list.querySelector('[aria-selected="true"]');if(!list.hidden&&selected)chooseArcType(Number(selected.dataset.arcTypeOption));else{closeArcTypes();input.form.elements.arcText.focus();}}
 },true);
@@ -5576,7 +5634,7 @@ function updateArcEditor(){
  if(form.dataset.form!=='arc-state')return;
  const block=form.elements.arcBlock?.value||'',text=form.elements.arcText.value.trim();
  const preview=$('#arc-current-state'),source=modalData.blockOptions?.find(b=>b.id===block);if(preview){preview.hidden=!source;if(source){preview.querySelector('span').textContent=source.hasPrior?'Before this change':'Selected building block';preview.querySelector('p').textContent=source.text||'Blank state';}}
- if($('#arc-state-effect'))$('#arc-state-effect').textContent=block&&text?'This saves the building block at this thread’s '+(modalData.edge==='from'?'opening':'closing')+'. Earlier states are preserved.':'This state stays in the thread without changing recorded history.';
+ if($('#arc-state-effect'))$('#arc-state-effect').textContent=block&&text?(source?.hasPrior&&text===source.text.trim()?'This uses the existing state without recording another change.':'This saves the building block at this thread’s '+(modalData.edge==='from'?'opening':'closing')+'. Earlier states are preserved.'):'This state stays in the thread without changing recorded history.';
  form.querySelector('[type=submit]').disabled=text.length>1000;
  $('#form-error').textContent=text.length>1000?'Keep this state within 1,000 characters.':'';
 }
@@ -5612,7 +5670,7 @@ extraSubmit=function(form,data,m){
 function refreshStateFields(){
  for(const group of $$('[data-recorded-node]')){const n=node(group.dataset.recordedNode);if(n&&!group.contains(document.activeElement))group.outerHTML=recordedStates(n,group.dataset.recordedEdge);}
  for(const input of $$('[data-piece-state]')){const n=node(input.dataset.id);if(n&&input!==document.activeElement){const state=W.changeStateAt(p(),input.dataset.pieceState,n.id+':'+input.dataset.edge);if(state.present)input.value=state.value;}}
- for(const input of $$('[data-arc-inline]')){const n=node(input.dataset.arcInline);if(!n)continue;const a=W.characterArc(p(),n),row=a.changes.find(r=>r.id===input.dataset.row),value=input.dataset.outcome?row?.outcomes?.find(v=>v.id===input.dataset.outcome):row?.[input.dataset.edge];if(value&&input!==document.activeElement){input.value=value.text;input.title=value.text;input.style.setProperty('--state-chars',Math.min(36,Math.max(10,value.text.length+1))+'ch');}}
+ for(const input of $$('[data-arc-inline]')){const n=node(input.dataset.arcInline);if(!n)continue;const a=W.characterArc(p(),n),row=a.changes.find(r=>r.id===input.dataset.row),value=input.dataset.outcome?row?.outcomes?.find(v=>v.id===input.dataset.outcome):row?.[input.dataset.edge];if(value&&input!==document.activeElement){input.value=value.text;input.title=value.text;}}
  for(const el of $$('.beat-state-row')){const button=el.querySelector('[data-change]'),n=node(button?.dataset.beatInline||button?.dataset.id);if(!n)continue;const x=W.pieceChanges(p(),n,{nested:false}).find(x=>x.id===button.dataset.change);if(!x)continue;el.querySelector('.beat-state-before').textContent=x.from;const input=el.querySelector('textarea[data-beat-inline]');if(input&&input!==document.activeElement)input.value=x.to;}fitTextareas($$('textarea[data-arc-inline],textarea[data-beat-inline],textarea[data-piece-state]'));
 }
 function beatChangeRecord(n,x){
@@ -5627,7 +5685,7 @@ function beatChangeRecord(n,x){
 }
 function beatStateChanges(n){
  const changes=W.pieceChanges(p(),n,{nested:false});
- return `<div class="beat-states" role="group" aria-label="State changes in this beat">${changes.map(x=>{const ref=beatChangeRecord(n,x);return `<div class="beat-state-row"><span class="beat-state-subject">${esc(x.subject)}</span><span class="beat-state-kind">${esc(human(x.label))}</span><span class="beat-state-before" title="${esc(x.from)}">${esc(x.from)}</span><span class="beat-state-result"><span class="state-arrow" aria-label="to">→</span>${ref?.field&&ref.target?`<textarea rows="1" class="beat-state-after" data-beat-inline="${n.id}" data-change="${esc(x.id)}" aria-label="${esc(x.subject)} · ${esc(human(x.label))} after this beat" title="${esc(x.to)}" style="--state-chars:${Math.min(36,Math.max(10,x.to.length+1))}ch" maxlength="1000">${esc(x.to)}</textarea>`:`<span class="beat-state-after">${esc(x.to)}</span>`}<button type="button" class="arc-state-options" ${act('beat-change-options',n.id,`data-change="${esc(x.id)}"`)} aria-label="Edit ${esc(x.subject)} ${esc(human(x.label))} change">${icon('edit')}</button>${ref?.target&&['block','faction'].includes(ref.type)?`<button type="button" class="arc-fork" ${act('fork-piece-state',n.id,`data-change="${esc(x.id)}" data-edge="open"`)} aria-label="Fork ${esc(x.subject+' '+human(x.label))}" title="Add a parallel state">Fork</button>`:''}</span></div>`;}).join('')}</div>`;
+ return `<div class="beat-states" role="group" aria-label="State changes in this beat">${changes.map(x=>{const ref=beatChangeRecord(n,x);return `<div class="beat-state-row"><span class="beat-state-subject">${esc(x.subject)}</span><span class="beat-state-kind">${esc(human(x.label))}</span><span class="beat-state-before" title="${esc(x.from)}">${esc(x.from)}</span><span class="beat-state-result"><span class="state-arrow" aria-label="to">→</span>${ref?.field&&ref.target?`<textarea rows="1" class="beat-state-after" data-beat-inline="${n.id}" data-change="${esc(x.id)}" aria-label="${esc(x.subject)} · ${esc(human(x.label))} after this beat" title="${esc(x.to)}" maxlength="1000">${esc(x.to)}</textarea>`:`<span class="beat-state-after">${esc(x.to)}</span>`}<button type="button" class="arc-state-options" ${act('beat-change-options',n.id,`data-change="${esc(x.id)}"`)} aria-label="Edit ${esc(x.subject)} ${esc(human(x.label))} change">${icon('edit')}</button>${ref?.target&&['block','faction'].includes(ref.type)?`<button type="button" class="arc-fork" ${act('fork-piece-state',n.id,`data-change="${esc(x.id)}" data-edge="open"`)} aria-label="Fork ${esc(x.subject+' '+human(x.label))}" title="Add a parallel state">Fork</button>`:''}</span></div>`;}).join('')}</div>`;
 }
 actions['beat-change-options']=el=>{const n=node(el.dataset.id),x=W.pieceChanges(p(),n,{nested:false}).find(x=>x.id===el.dataset.change),ref=x&&beatChangeRecord(n,x);if(ref)editHistoricalRecord(ref.subjectKind,ref.id,ref.collection,ref.record.id);else consequenceDialog(n.id+':open');};
 document.addEventListener('change',e=>{const el=e.target;if(!el.dataset.beatInline)return;const n=node(el.dataset.beatInline),x=W.pieceChanges(p(),n,{nested:false}).find(x=>x.id===el.dataset.change),ref=x&&beatChangeRecord(n,x);if(ref?.target&&ref.field)mutate('Edited beat state',()=>{ref.target[ref.field]=el.value.trim();},{rerender:false,notify:false});refreshStateFields();});
@@ -5795,8 +5853,8 @@ function storyFieldSettings(n,edge,create=false){
  return n.storyFields?.[key]||{hidden:[],custom:[]};
 }
 function storyFieldHidden(n,edge,key){return storyFieldSettings(n,edge).hidden.includes(key);}
-function storyFieldExtras(n,edge){return storyFieldSettings(n,edge).custom.map(f=>`<label class="thread-word custom-story-field wrapping-field ${f.text?'':'optional-empty'}"><span>${esc(f.label)}</span><textarea class="story-field-text" rows="1" data-inline="story-field" data-id="${n.id}" data-edge="${edge}" data-field-id="${f.id}" aria-label="${esc(W.TYPES[n.type].name+' '+f.label)}" placeholder="Add a detail…" maxlength="1000" style="--state-chars:${Math.min(36,Math.max(14,f.text.length+1))}ch">${esc(f.text)}</textarea></label>`).join('')+`<button type="button" class="text-btn story-fields-launch" ${act('story-fields',n.id,`data-edge="${edge}"`)} aria-label="Edit ${n.type==='B'?'beat':edge==='close'?'closing':'opening'} fields">Edit fields</button>`;}
-function beatPlanFields(n){const type=W.openThreadContext(p(),n)?.owner?.type||'B',color=W.TYPES[type].color;return `<div class="thread-plan-fields beat-plan-fields color-${color}" style="${colorStyle(n.color,color)}" role="group" aria-label="Beat story fields">${storyFieldHidden(n,'open','development')?'':`<label class="thread-word beat-development wrapping-field ${n.development?'':'optional-empty'}"><span>Development</span><textarea class="story-field-text" rows="1" data-inline="node" data-id="${n.id}" data-field="development" placeholder="What happens in this beat?" aria-label="Beat Development" maxlength="1000" style="--state-chars:${Math.min(36,Math.max(22,(n.development||'').length+1))}ch">${esc(n.development||'')}</textarea></label>`}${storyFieldExtras(n,'open')}</div>`;}
+function storyFieldExtras(n,edge){return storyFieldSettings(n,edge).custom.map(f=>`<label class="thread-word custom-story-field wrapping-field ${f.text?'':'optional-empty'}"><span>${esc(f.label)}</span><textarea class="story-field-text" rows="1" data-inline="story-field" data-id="${n.id}" data-edge="${edge}" data-field-id="${f.id}" aria-label="${esc(W.TYPES[n.type].name+' '+f.label)}" placeholder="Add a detail…" maxlength="1000">${esc(f.text)}</textarea></label>`).join('')+`<button type="button" class="text-btn story-fields-launch" ${act('story-fields',n.id,`data-edge="${edge}"`)} aria-label="Edit ${n.type==='B'?'beat':edge==='close'?'closing':'opening'} fields">Edit fields</button>`;}
+function beatPlanFields(n){const type=W.openThreadContext(p(),n)?.owner?.type||'B',color=W.TYPES[type].color;return `<div class="thread-plan-fields beat-plan-fields color-${color}" style="${colorStyle(n.color,color)}" role="group" aria-label="Beat story fields">${storyFieldHidden(n,'open','development')?'':`<label class="thread-word beat-development wrapping-field ${n.development?'':'optional-empty'}"><span>Development</span><textarea class="story-field-text" rows="1" data-inline="node" data-id="${n.id}" data-field="development" placeholder="What happens in this beat?" aria-label="Beat Development" maxlength="1000">${esc(n.development||'')}</textarea></label>`}${storyFieldExtras(n,'open')}</div>`;}
 function presetStoryFields(n,edge){
  if(n.type==='B')return [{id:'development',label:'Development',value:n.development||''}];
  if(n.type==='C')return W.characterArc(p(),n).changes.map(r=>({id:'state:'+r.id,label:arcLabel(r),value:r[edge==='close'?'to':'from'].text,state:true}));

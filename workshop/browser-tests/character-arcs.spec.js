@@ -2,10 +2,11 @@ const {test,expect}=require('@playwright/test');
 const AxeBuilder=require('@axe-core/playwright').default;
 const W=require('../src/integration.js'),fixture=require('./ui-fixture.cjs');
 const snapshot=page=>page.evaluate(()=>{const d=CounterplotTutorial.snapshot();return d.projects.find(p=>p.id===d.active);});
-async function load(page,{beats=false,beliefs=false}={}){
+async function load(page,{beats=false,beliefs=false,unchanged=false}={}){
  const data=fixture(),p=data.projects[0],n=p.nodes[0],c=p.characters[0];n.type='C';n.cast.push('ui-other');n.title='From Innocent civilian to Communist agent';
  c.blocks=[['status','Innocent civilian'],['allegiance','Neutral']].map(([kind,text])=>({...W.block(kind),id:kind,text}));
  c.changes=c.blocks.map((b,i)=>({id:'change-'+i,at:n.id+':close',momentId:W.momentId(p,n.id+':close'),blockId:b.id,op:'develop',block:{...b,text:i?'Communist':'Communist agent'},reason:''}));
+ if(unchanged)c.changes.push(...c.blocks.map((b,i)=>({id:'unchanged-'+i,at:n.id+':open',momentId:W.momentId(p,n.id+':open'),blockId:b.id,op:'develop',block:{...b},reason:'Set in character thread'})));
  if(beliefs)c.blocks.push({...W.block('belief'),id:'trust',text:'The system can be trusted'},{...W.block('belief'),id:'city',text:'Shanghai is a dangerous place'});
  if(beats){c.changes.push({id:'beat-status',at:'ui-node-1:open',blockId:'status',op:'develop',block:{...c.blocks[0],text:'Wanted by the law'},reason:''});p.world[0].stateValue='Hidden';p.world[0].stateChanges=[{id:'beat-world',momentId:W.momentId(p,'ui-node-1:open'),value:'Discovered',reason:''}];const beat=W.node('B',n.id);beat.id='ui-node-2';beat.title='An offer of protection';p.nodes.push(beat);}
  p.nodes[1].title='A wanted criminal';p.world.push({id:'resistance',name:'The resistance',type:'group',notes:''});
@@ -116,4 +117,32 @@ test('same-type building blocks show their actual wording and the selected prior
  await block.selectOption('trust');await expect(page.locator('#arc-current-state')).toContainText('The system can be trusted');await expect(page.getByLabel('Type of change')).toHaveValue('Belief');
  await block.selectOption('city');await expect(page.locator('#arc-current-state')).toContainText('Shanghai is a dangerous place');await page.getByRole('textbox',{name:'State · optional',exact:true}).fill('There are allies in Shanghai');await page.getByRole('button',{name:'Keep state',exact:true}).click();
  const p=await snapshot(page);expect(p.characters[0].changes.find(x=>x.blockId==='city').block.text).toBe('There are allies in Shanghai');expect(p.characters[0].blocks.find(x=>x.id==='trust').text).toBe('The system can be trusted');
+});
+
+test('type categories are labelled, searchable and skipped by keyboard navigation',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'});await load(page);await edit(page,'from');const type=page.getByRole('combobox',{name:'Type of change',exact:true}),list=page.getByRole('listbox',{name:'Types of change'});
+ await type.focus();await expect(list.locator('.arc-type-category')).toHaveText(['Inner life','Presence','History','Everyday life','Their world','Your own']);
+ for(const name of ['Inner life','Presence','History','Everyday life','Their world','Your own'])await expect(list.getByRole('group',{name,exact:true})).toHaveCount(1);
+ await expect(list.getByRole('group',{name:'Inner life',exact:true}).getByRole('option',{name:'Want',exact:true})).toBeVisible();
+ const count=await list.getByRole('option').count();
+ for(let i=0;i<count;i++){await type.press('ArrowDown');await expect(list.getByRole('option',{selected:true})).toHaveCount(1);const selected=list.getByRole('option',{selected:true});expect(await selected.getAttribute('id')).toBe(await type.getAttribute('aria-activedescendant'));}
+ await type.press('ArrowDown');await expect(list.getByRole('option').first()).toHaveAttribute('aria-selected','true');
+ await type.fill('Everyday life');await expect(list.getByRole('group',{name:'Everyday life',exact:true})).toBeVisible();await expect(list.getByRole('group',{name:'Presence',exact:true})).toHaveCount(0);
+ await list.getByRole('option',{name:'Home',exact:true}).click();await expect(type).toHaveValue('Home');await expect(type).toHaveAttribute('aria-expanded','false');
+ await type.fill('Private promise');await list.getByRole('option',{name:/Use “Private promise”/}).click();await page.getByRole('button',{name:'Keep state',exact:true}).click();
+ await edit(page,'from');await type.focus();await expect(list.getByRole('group',{name:'Your labels',exact:true}).getByRole('option',{name:'Private promise',exact:true})).toBeVisible();
+ const scan=await new AxeBuilder({page}).include('#dialog').withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(scan.violations).toEqual([]);
+});
+
+test('reusing an existing state avoids a false change and old duplicates disappear from Their arc',async({page})=>{
+ await load(page,{unchanged:true});await edit(page,'from');
+ await page.getByText('Use recorded wording',{exact:true}).click();await page.getByRole('combobox',{name:'Use an existing state',exact:true}).selectOption('0');
+ await expect(page.locator('#arc-state-effect')).toHaveText('This uses the existing state without recording another change.');
+ await page.getByRole('button',{name:'Keep state',exact:true}).click();
+ let p=await snapshot(page);expect(p.characters[0].changes.filter(x=>x.at==='ui-node-0:open')).toHaveLength(1);
+ await page.locator('[data-nav=characters]').first().click();await page.getByRole('button',{name:/Their arc/}).click();await expect(page.locator('.change-card')).toHaveCount(2);await expect(page.locator('.character-moments')).toContainText('2 block changes');
+ await page.locator('[data-nav=outline]').first().click();await edit(page,'to');await page.getByText('Use recorded wording',{exact:true}).click();await page.getByRole('combobox',{name:'Use an existing state',exact:true}).selectOption('0');await page.getByRole('button',{name:'Keep state',exact:true}).click();
+ await expect(state(page,'to')).toHaveValue('Innocent civilian');p=await snapshot(page);expect(p.characters[0].changes.some(x=>x.id==='change-0')).toBe(false);
+ await page.locator('.topbar [data-action=undo]').click();await expect(state(page,'to')).toHaveValue('Communist agent');await page.locator('.topbar [data-action=redo]').click();await expect(state(page,'to')).toHaveValue('Innocent civilian');
+ await expect(page.locator('#save-status')).toContainText('Saved on this device');await page.reload();await expect(state(page,'to')).toHaveValue('Innocent civilian');await page.locator('[data-nav=characters]').first().click();await page.getByRole('button',{name:/Their arc/}).click();await expect(page.locator('.change-card')).toHaveCount(1);await expect(page.locator('.character-moments')).toContainText('1 block change');
 });
