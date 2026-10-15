@@ -80,10 +80,10 @@
 textarea.draft-title{display:block;width:100%;resize:none;overflow:hidden;white-space:pre-wrap;overflow-wrap:anywhere;min-height:38px;line-height:1.25}
 @media(pointer:coarse){.breadcrumb button{min-height:40px}.block .grip{min-height:40px}}
 
-/* Compact phrases follow their rendered text; longer writing wraps at a limit. */
+/* Follow rendered text up to the available row width, then wrap. */
 .arc-state textarea,.recorded-state textarea,textarea.beat-state-after,
 .thread-word.wrapping-field .story-field-text,.outline .thread-word.wrapping-field .story-field-text{
- width:min(var(--inline-field-width,14ch),36ch);flex:0 1 auto;min-width:24px;max-width:100%
+ width:var(--inline-field-width,14ch);flex:0 1 auto;min-width:24px;max-width:100%
 }
 .thread-word.wrapping-field,.outline .thread-word.beat-development{width:auto;flex:0 1 auto}
 
