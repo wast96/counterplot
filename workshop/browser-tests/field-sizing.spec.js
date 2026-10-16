@@ -12,6 +12,28 @@ async function readable(field){
 async function expectHeight(field,check){
  await expect(async()=>{const box=await field.boundingBox();expect(box).not.toBeNull();expect(box.height).toBeGreaterThan(0);check(box.height);}).toPass({timeout:5000});
 }
+test('labels keep their width while the first characters are typed or deleted',async({page})=>{
+ await load(page,fixture());
+ for(const width of [1920,1440,768,390,320]){
+  await page.setViewportSize({width,height:1000});
+  for(const field of [page.getByRole('textbox',{name:'Inquiry Answer',exact:true}),page.getByRole('textbox',{name:'Event Resolution',exact:true}),page.getByRole('textbox',{name:'Beat Development',exact:true}),page.locator('textarea[data-arc-inline]').first()]){
+   const label=field.locator('..').locator(':scope > span').first();
+   await field.fill('A few words to establish the full label width');
+   const labelSize=()=>label.evaluate(el=>{const range=document.createRange();range.selectNodeContents(el);const box=range.getBoundingClientRect();return {width:box.width,height:box.height};});
+   const full=await labelSize();
+   await field.fill('');
+   for(const character of 'Their'){
+    await field.pressSequentially(character);
+    await expect(async()=>{const box=await labelSize();expect(box.width).toBeCloseTo(full.width,0);expect(box.height).toBeCloseTo(full.height,0);}).toPass({timeout:3000});
+   }
+   for(let i=0;i<5;i++){
+    await field.press('Backspace');
+    await expect(async()=>{const box=await labelSize();expect(box.width).toBeCloseTo(full.width,0);expect(box.height).toBeCloseTo(full.height,0);}).toPass({timeout:3000});
+   }
+  }
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width+1);
+ }
+});
 test('Resolution wraps when its row fills, stays readable and shrinks on deletion',async({page})=>{
  await load(page,fixture());await page.locator('[data-node=event] > .node-head .node-title').click();await page.setViewportSize({width:390,height:1000});const field=page.getByRole('textbox',{name:'Event Resolution',exact:true});
  await field.fill('The police');let short;await expectHeight(field,height=>{short=height;});

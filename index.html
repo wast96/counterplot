@@ -1139,11 +1139,13 @@ body:not(.drag-active) .outline .node-children>.insert-slot:last-child{min-heigh
 .beat-state-before{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
 /* Labels and actions share the value's center, including when a field grows. */
 .arc-state-group{min-width:0}.arc-state,.outline .arc-state{display:inline-flex;align-items:center;padding:2px 5px 2px 8px;gap:5px}
-.arc-state-label,.outline .arc-state-label{flex:0 0 auto;min-width:0;max-width:min(20ch,40%);overflow-wrap:anywhere}
+.arc-state-label,.outline .arc-state-label{flex:0 0 auto;min-width:0;max-width:20ch;overflow-wrap:anywhere}
 .arc-state-options{align-self:center}.arc-states{align-items:center}
 .arc-outcome{display:inline-flex;align-items:center;gap:5px;min-width:0;max-width:100%}.arc-outcome>.arc-state{flex:0 1 auto}
 .thread-word.wrapping-field,.outline .thread-word.wrapping-field{display:flex;align-items:center}
-.wrapping-field>span,.outline .thread-word.wrapping-field>span{padding-top:0;flex:0 0 auto;max-width:min(20ch,40%)}
+/* A label's cap must not depend on the value-sized container: short values
+   would otherwise squeeze even "Answer" onto multiple lines. */
+.wrapping-field>span,.outline .thread-word.wrapping-field>span{padding-top:0;flex:0 0 auto;max-width:20ch}
 .wrapping-field>.arc-state-options{margin-top:0}.thread-word.wrapping-field .story-field-text{flex:1 1 auto;border-radius:3px;padding-inline:4px}
 .beat-state-result{display:inline-flex;align-items:center;gap:6px;min-width:0;max-width:100%}.beat-state-result>.state-arrow{flex:none}
 .beat-state-subject,.recorded-state-who{min-width:0;max-width:100%;overflow-wrap:anywhere}
